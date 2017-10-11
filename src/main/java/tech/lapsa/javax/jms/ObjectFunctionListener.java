@@ -12,30 +12,38 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
-public interface ObjectFunctionListener<T extends Serializable, R extends Serializable> extends MessageListener {
+public abstract class ObjectFunctionListener<T extends Serializable, R extends Serializable>
+	implements MessageListener {
+
+    private final Class<T> objectClazz;
+
+    protected ObjectFunctionListener(final Class<T> objectClazz) {
+	this.objectClazz = objectClazz;
+    }
 
     @Override
-    default void onMessage(Message message) {
+    public void onMessage(Message message) {
 	Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 	try {
 	    if (!(message instanceof ObjectMessage)) {
 		logger.log(Level.SEVERE, "Invalid message type. javax.jms.ObjectMessage is expected.");
 		return;
 	    }
-	    Class<T> clazz = getObjectClazz();
+
 	    ObjectMessage request = (ObjectMessage) message;
 
-	    if (!request.isBodyAssignableTo(clazz)) {
+	    if (!request.isBodyAssignableTo(objectClazz)) {
 		logger.log(Level.SEVERE,
-			String.format("Invalid body type. %1$s object is expected.", clazz.getCanonicalName()));
+			String.format("Invalid body type. %1$s object is expected.", objectClazz.getCanonicalName()));
 		return;
 	    }
 
 	    try {
-		T t = request.getBody(clazz);
+		T t = request.getBody(objectClazz);
 		R r = apply(t);
 		if (request.getJMSReplyTo() != null) {
-		    try (Session session = getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+		    try (Connection connection = getConnection();
+			    Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			    MessageProducer producer = session.createProducer(request.getJMSReplyTo())) {
 			Message reply = session.createObjectMessage(r);
 			reply.setJMSCorrelationID(request.getJMSMessageID());
@@ -51,9 +59,7 @@ public interface ObjectFunctionListener<T extends Serializable, R extends Serial
 	}
     }
 
-    Class<T> getObjectClazz();
+    protected abstract Connection getConnection();
 
-    Connection getConnection();
-
-    R apply(T t);
+    protected abstract R apply(T t);
 }

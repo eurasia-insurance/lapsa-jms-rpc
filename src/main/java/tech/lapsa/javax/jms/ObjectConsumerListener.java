@@ -9,26 +9,30 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-public interface ObjectConsumerListener<T extends Serializable> extends MessageListener {
+public abstract class ObjectConsumerListener<T extends Serializable> implements MessageListener {
+
+    private final Class<T> objectClazz;
+
+    protected ObjectConsumerListener(final Class<T> objectClazz) {
+	this.objectClazz = objectClazz;
+    }
 
     @Override
-    default void onMessage(Message message) {
+    public void onMessage(Message message) {
 	Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 	try {
 	    if (!(message instanceof ObjectMessage)) {
 		logger.log(Level.SEVERE, "Invalid message type. javax.jms.ObjectMessage is expected.");
 		return;
 	    }
-	    Class<T> clazz = getObjectClazz();
-
 	    ObjectMessage requestMessage = (ObjectMessage) message;
 
-	    if (!requestMessage.isBodyAssignableTo(clazz)) {
+	    if (!requestMessage.isBodyAssignableTo(objectClazz)) {
 		logger.log(Level.SEVERE,
-			String.format("Invalid body type. %1$s object is expected.", clazz.getCanonicalName()));
+			String.format("Invalid body type. %1$s object is expected.", objectClazz.getCanonicalName()));
 		return;
 	    }
-	    T t = requestMessage.getBody(clazz);
+	    T t = requestMessage.getBody(objectClazz);
 	    try {
 		accept(t);
 	    } catch (Throwable e) {
@@ -39,8 +43,5 @@ public interface ObjectConsumerListener<T extends Serializable> extends MessageL
 	}
     }
 
-    Class<T> getObjectClazz();
-
-    void accept(T object);
-
+    protected abstract void accept(T object);
 }
