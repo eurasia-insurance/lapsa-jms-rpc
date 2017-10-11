@@ -38,8 +38,8 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 		return;
 	    }
 
+	    T t = request.getBody(objectClazz);
 	    try {
-		T t = request.getBody(objectClazz);
 		R r = apply(t);
 		if (request.getJMSReplyTo() != null) {
 		    try (Connection connection = getConnection();
@@ -51,9 +51,10 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 			logger.fine(String.format("Reply message %1$s sent", reply.getClass().getSimpleName()));
 		    }
 		}
-	    } catch (Throwable e) {
-		logger.log(Level.WARNING, "Exception", e);
+	    } catch (RuntimeException e) {
+		logger.log(Level.WARNING, "Runtime exception occured while processing the object", e);
 	    }
+
 	} catch (JMSException e) {
 	    logger.log(Level.SEVERE, e.getMessage(), e);
 	}
