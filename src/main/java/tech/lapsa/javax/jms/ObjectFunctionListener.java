@@ -42,7 +42,7 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 	    try {
 		R r = apply(t);
 		if (request.getJMSReplyTo() != null) {
-		    try (Connection connection = getConnection();
+		    try (Connection connection = newConnection();
 			    Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			    MessageProducer producer = session.createProducer(request.getJMSReplyTo())) {
 			Message reply = session.createObjectMessage(r);
@@ -60,7 +60,7 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 	}
     }
 
-    protected abstract Connection getConnection();
+    protected abstract Connection newConnection();
 
     protected abstract R apply(T t);
 }
