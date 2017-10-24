@@ -22,7 +22,7 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
     }
 
     private MyLogger logger = MyLogger.newBuilder() //
-	    .withPackageNameOf(this.getClass()) //
+	    .withNameOf(this.getClass()) //
 	    .build();
 
     @Override

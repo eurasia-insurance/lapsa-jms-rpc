@@ -18,7 +18,7 @@ public abstract class ObjectConsumerListener<T extends Serializable> implements 
     }
 
     private MyLogger logger = MyLogger.newBuilder() //
-	    .withPackageNameOf(this.getClass()) //
+	    .withNameOf(this.getClass()) //
 	    .build();
 
     @Override
