@@ -1,8 +1,6 @@
 package tech.lapsa.javax.jms;
 
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -11,6 +9,8 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+
+import tech.lapsa.java.commons.logging.MyLogger;
 
 public abstract class ObjectFunctionListener<T extends Serializable, R extends Serializable>
 	implements MessageListener {
@@ -21,20 +21,22 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 	this.objectClazz = objectClazz;
     }
 
+    private MyLogger logger = MyLogger.newBuilder() //
+	    .withPackageNameOf(this.getClass()) //
+	    .build();
+
     @Override
     public void onMessage(Message message) {
-	Logger logger = Logger.getLogger(this.getClass().getPackage().getName());
 	try {
 	    if (!(message instanceof ObjectMessage)) {
-		logger.log(Level.SEVERE, "Invalid message type. javax.jms.ObjectMessage is expected.");
+		logger.SEVERE.log("Invalid message type. javax.jms.ObjectMessage is expected.");
 		return;
 	    }
 
 	    ObjectMessage request = (ObjectMessage) message;
 
 	    if (!request.isBodyAssignableTo(objectClazz)) {
-		logger.log(Level.SEVERE,
-			String.format("Invalid body type. %1$s object is expected.", objectClazz.getCanonicalName()));
+		logger.SEVERE.log("Invalid body type. %1$s object is expected.", objectClazz.getCanonicalName());
 		return;
 	    }
 
@@ -48,15 +50,15 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 			Message reply = session.createObjectMessage(r);
 			reply.setJMSCorrelationID(request.getJMSMessageID());
 			producer.send(reply);
-			logger.fine(String.format("Reply message %1$s sent", reply.getClass().getSimpleName()));
+			logger.FINE.log("Reply message %1$s sent", reply.getClass().getSimpleName());
 		    }
 		}
 	    } catch (RuntimeException e) {
-		logger.log(Level.WARNING, "Runtime exception occured while processing the object", e);
+		logger.WARN.log(e, "Runtime exception occured while processing the object");
 	    }
 
 	} catch (JMSException e) {
-	    logger.log(Level.SEVERE, e.getMessage(), e);
+	    logger.SEVERE.log(e);
 	}
     }
 
