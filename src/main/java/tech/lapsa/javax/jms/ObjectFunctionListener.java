@@ -1,10 +1,13 @@
 package tech.lapsa.javax.jms;
 
 import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.MessageFormatException;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
@@ -40,9 +43,21 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 		return;
 	    }
 
+	    Properties p = new Properties();
+	    Enumeration<?> en = request.getPropertyNames();
+	    while (en.hasMoreElements()) {
+		String k = en.nextElement().toString();
+		String v;
+		try {
+		    v = request.getStringProperty(k);
+		    p.setProperty(k, v);
+		} catch (MessageFormatException ignored) {
+		}
+	    }
+
 	    T t = request.getBody(objectClazz);
 	    try {
-		R r = apply(t);
+		R r = apply(t, p);
 		if (request.getJMSReplyTo() != null) {
 		    try (Connection connection = newConnection();
 			    Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -64,5 +79,5 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 
     protected abstract Connection newConnection();
 
-    protected abstract R apply(T t);
+    protected abstract R apply(T t, Properties properties);
 }
