@@ -47,6 +47,8 @@ public abstract class ObjectFunctionListener<T extends Serializable, R extends S
 	    Enumeration<?> en = request.getPropertyNames();
 	    while (en.hasMoreElements()) {
 		String k = en.nextElement().toString();
+		if (k.startsWith("JMS"))
+		    continue;
 		String v;
 		try {
 		    v = request.getStringProperty(k);

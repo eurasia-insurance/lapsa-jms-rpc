@@ -42,6 +42,8 @@ public abstract class ObjectConsumerListener<T extends Serializable> implements 
 	    Enumeration<?> en = request.getPropertyNames();
 	    while (en.hasMoreElements()) {
 		String k = en.nextElement().toString();
+		if (k.startsWith("JMS"))
+		    continue;
 		String v;
 		try {
 		    v = request.getStringProperty(k);
