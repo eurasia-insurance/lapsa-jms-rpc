@@ -8,11 +8,11 @@ import javax.jms.JMSException;
 
 import org.junit.Test;
 
+import ejb.resources.consumer.simple.ConsumerSimpleDestination;
+import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
+import ejb.resources.consumer.simple.SimpleEntity;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSConsumer;
-import test.ejb.resources.consumer.simple.ConsumerSimpleDestination;
-import test.ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
-import test.ejb.resources.consumer.simple.SimpleEntity;
 
 public class ConsumerTest extends ArquillianBaseTestCase {
 

@@ -1,4 +1,4 @@
-package test.ejb.resources;
+package ejb.resources;
 
 public class DummyResources {
 

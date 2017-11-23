@@ -5,9 +5,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.runner.RunWith;
 
+import ejb.resources.DummyResources;
 import tech.lapsa.javax.jms.Constants;
 import tech.lapsa.lapsa.arquillian.archive.ArchiveBuilderFactory;
-import test.ejb.resources.DummyResources;
 
 @RunWith(Arquillian.class)
 public abstract class ArquillianBaseTestCase {

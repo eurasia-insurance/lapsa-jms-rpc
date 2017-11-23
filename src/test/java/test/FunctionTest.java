@@ -9,18 +9,18 @@ import javax.validation.ValidationException;
 
 import org.junit.Test;
 
+import ejb.resources.function.runtimeException.FunctionRuntimeExceptionDestination;
+import ejb.resources.function.runtimeException.FunctionRuntimeExceptionEntity;
+import ejb.resources.function.runtimeException.FunctionRuntimeExceptionResult;
+import ejb.resources.function.simple.FunctionSimpleDestination;
+import ejb.resources.function.simple.FunctionSimpleEntity;
+import ejb.resources.function.simple.FunctionSimpleResult;
+import ejb.resources.function.validation.FunctionValidationDestination;
+import ejb.resources.function.validation.FunctionValidationEntity;
+import ejb.resources.function.validation.FunctionValidationResult;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
 import test.assertion.Assertions;
-import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionDestination;
-import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionEntity;
-import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionResult;
-import test.ejb.resources.function.simple.FunctionSimpleDestination;
-import test.ejb.resources.function.simple.FunctionSimpleEntity;
-import test.ejb.resources.function.simple.FunctionSimpleResult;
-import test.ejb.resources.function.validation.FunctionValidationDestination;
-import test.ejb.resources.function.validation.FunctionValidationEntity;
-import test.ejb.resources.function.validation.FunctionValidationResult;
 
 public class FunctionTest extends ArquillianBaseTestCase {
 

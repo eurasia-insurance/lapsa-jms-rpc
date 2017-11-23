@@ -1,4 +1,4 @@
-package test.ejb.resources.function.validation;
+package ejb.resources.function.validation;
 
 import java.util.Properties;
 
