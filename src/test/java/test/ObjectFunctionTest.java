@@ -9,13 +9,15 @@ import javax.validation.ValidationException;
 
 import org.junit.Test;
 
-import tech.lapsa.javax.jms.InvalidResponseTypeException;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
-import test.ejb.resources.simpletest.SimpleTestDestination;
-import test.ejb.resources.simpletest.SimpleTestEntity;
-import test.ejb.resources.simpletest.SimpleTestResult;
-import tech.lapsa.javax.jms.ResponseNotReceivedException;
+import test.assertion.Assertions;
+import test.ejb.resources.simpleTest.SimpleTestDestination;
+import test.ejb.resources.simpleTest.SimpleTestEntity;
+import test.ejb.resources.simpleTest.SimpleTestResult;
+import test.ejb.resources.validationTest.ValidationTestDestination;
+import test.ejb.resources.validationTest.ValidationTestEntity;
+import test.ejb.resources.validationTest.ValidationTestResult;
 
 public class ObjectFunctionTest extends ArquillianBaseTestCase {
 
@@ -26,14 +28,53 @@ public class ObjectFunctionTest extends ArquillianBaseTestCase {
     private SimpleTestDestination simpleTestDestination;
 
     @Test
-    public void simpleTest() throws ValidationException, ResponseNotReceivedException, InvalidResponseTypeException,
-	    JMSException, RuntimeException {
+    public void simpleTest() throws JMSException {
 	final MyJMSFunction<SimpleTestEntity, SimpleTestResult> function = jmsClient.createFunction(
 		simpleTestDestination.getDestination(),
 		SimpleTestResult.class);
-	final SimpleTestEntity e = new SimpleTestEntity("Hello JMS world!");
-	final SimpleTestResult r = function.apply(e);
-	assertThat(r, not(nullValue()));
-	assertThat(r.message, allOf(not(nullValue()), is(equalTo(SimpleTestResult.PREFIX + e.message))));
+	{
+	    final String MESSAGE = "Hello JMS world!";
+	    final SimpleTestEntity e = new SimpleTestEntity(MESSAGE);
+	    final SimpleTestResult r = function.apply(e);
+	    assertThat(r, not(nullValue()));
+	    assertThat(r.message, allOf(not(nullValue()), is(equalTo(SimpleTestResult.PREFIX + e.message))));
+	}
+    }
+
+    @Inject
+    private ValidationTestDestination validationTestDestination;
+
+    @Test
+    public void validationTest_OK() throws JMSException {
+	final MyJMSFunction<ValidationTestEntity, ValidationTestResult> function = jmsClient.createFunction(
+		validationTestDestination.getDestination(),
+		ValidationTestResult.class);
+
+	{
+	    final String VALID_MESSAGE = "Hello JMS world!";
+	    final ValidationTestEntity e = new ValidationTestEntity(VALID_MESSAGE);
+	    final ValidationTestResult r = function.apply(e);
+	    assertThat(r, not(nullValue()));
+	    assertThat(r.getMessage(), allOf(not(nullValue()), is(equalTo(SimpleTestResult.PREFIX + e.getMessage()))));
+	}
+    }
+
+    @Test
+    public void validationTest_Fail() {
+	final MyJMSFunction<ValidationTestEntity, ValidationTestResult> function = jmsClient.createFunction(
+		validationTestDestination.getDestination(),
+		ValidationTestResult.class);
+
+	{
+	    final String NULL_MESSAGE = null;
+	    final ValidationTestEntity e = new ValidationTestEntity(NULL_MESSAGE);
+	    Assertions.expectException(() -> {
+		try {
+		    function.apply(e);
+		} catch (JMSException e1) {
+		    throw new RuntimeException(e1);
+		}
+	    }, ValidationException.class);
+	}
     }
 }

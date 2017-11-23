@@ -14,4 +14,9 @@
 		<property name="Name" value="test.simpleTest.queue" />
 	</admin-object-resource>
 
+	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/validationTest">
+		<property name="Name" value="test.validationTest.queue" />
+	</admin-object-resource>
+
 </resources>

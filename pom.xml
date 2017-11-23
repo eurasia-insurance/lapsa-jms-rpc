@@ -58,6 +58,11 @@
 			<optional>false</optional>
 		</dependency>
 		<dependency>
+			<groupId>tech.lapsa.java</groupId>
+			<artifactId>java-commons-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>tech.lapsa.lapsa</groupId>
 			<artifactId>lapsa-arquillian-test</artifactId>
 			<scope>test</scope>
