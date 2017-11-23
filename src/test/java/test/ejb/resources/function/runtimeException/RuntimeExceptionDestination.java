@@ -7,7 +7,7 @@ import javax.jms.Destination;
 @Singleton
 public class RuntimeExceptionDestination {
 
-    public static final String JNDI_NAME = "test/runtimeExceptionTest";
+    public static final String JNDI_NAME = "test/function/runtimeException";
 
     @Resource(name = JNDI_NAME)
     private Destination destination;

@@ -7,7 +7,7 @@ import javax.jms.Destination;
 @Singleton
 public class ValidationDestination {
 
-    public static final String JNDI_NAME = "test/validationTest";
+    public static final String JNDI_NAME = "test/function/validation";
 
     @Resource(name = JNDI_NAME)
     private Destination destination;

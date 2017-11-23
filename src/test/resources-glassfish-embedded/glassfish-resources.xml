@@ -10,18 +10,18 @@
 		jndi-name="jms/__defaultConnectionFactory" />
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/simpleTest">
-		<property name="Name" value="test.simpleTest.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/function/simple">
+		<property name="Name" value="test.function.simple.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/validationTest">
-		<property name="Name" value="test.validationTest.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/function/validation">
+		<property name="Name" value="test.function.validation.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/runtimeExceptionTest">
-		<property name="Name" value="test.runtimeException.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/function/runtimeException">
+		<property name="Name" value="test.function.runtimeException.queue" />
 	</admin-object-resource>
 
 </resources>
