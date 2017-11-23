@@ -1,4 +1,4 @@
-package test.ejb.resources.validation;
+package test.ejb.resources.function.validation;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;

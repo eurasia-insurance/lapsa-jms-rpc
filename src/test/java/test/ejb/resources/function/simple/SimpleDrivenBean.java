@@ -1,4 +1,4 @@
-package test.ejb.resources.simple;
+package test.ejb.resources.function.simple;
 
 import java.util.Properties;
 
