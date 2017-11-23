@@ -2,7 +2,7 @@ package test.ejb.resources.runtimeException;
 
 import java.io.Serializable;
 
-public class RuntimeExceptionTestResult implements Serializable {
+public class RuntimeExceptionResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,8 +10,8 @@ public class RuntimeExceptionTestResult implements Serializable {
 
     private final String message;
 
-    public RuntimeExceptionTestResult(RuntimeExceptionTestEntity runtimeExceptionTestEntity) {
-	this.message = PREFIX + runtimeExceptionTestEntity.getMessage();
+    public RuntimeExceptionResult(RuntimeExceptionEntity runtimeExceptionEntity) {
+	this.message = PREFIX + runtimeExceptionEntity.getMessage();
     }
 
     @Override

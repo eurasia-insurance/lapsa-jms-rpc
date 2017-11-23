@@ -5,7 +5,7 @@ import javax.ejb.Singleton;
 import javax.jms.Destination;
 
 @Singleton
-public class SimpleTestDestination {
+public class SimpleDestination {
 
     public static final String JNDI_NAME = "test/simpleTest";
 

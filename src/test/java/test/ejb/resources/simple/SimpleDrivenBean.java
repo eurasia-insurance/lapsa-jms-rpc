@@ -6,16 +6,16 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = SimpleTestDestination.JNDI_NAME)
-public class SimpleTestDrivenBean extends ObjectFunctionDrivenBean<SimpleTestEntity, SimpleTestResult> {
+@MessageDriven(mappedName = SimpleDestination.JNDI_NAME)
+public class SimpleDrivenBean extends ObjectFunctionDrivenBean<SimpleEntity, SimpleResult> {
 
-    public SimpleTestDrivenBean() {
-	super(SimpleTestEntity.class);
+    public SimpleDrivenBean() {
+	super(SimpleEntity.class);
     }
 
     @Override
-    protected SimpleTestResult apply(SimpleTestEntity simpleTestEntity, Properties properties) {
-	return new SimpleTestResult(simpleTestEntity);
+    protected SimpleResult apply(SimpleEntity simpleEntity, Properties properties) {
+	return new SimpleResult(simpleEntity);
     }
 
 }
