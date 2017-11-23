@@ -12,15 +12,15 @@ import org.junit.Test;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
 import test.assertion.Assertions;
-import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestDestination;
-import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestEntity;
-import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestResult;
-import test.ejb.resources.simpleTest.SimpleTestDestination;
-import test.ejb.resources.simpleTest.SimpleTestEntity;
-import test.ejb.resources.simpleTest.SimpleTestResult;
-import test.ejb.resources.validationTest.ValidationTestDestination;
-import test.ejb.resources.validationTest.ValidationTestEntity;
-import test.ejb.resources.validationTest.ValidationTestResult;
+import test.ejb.resources.runtimeException.RuntimeExceptionTestDestination;
+import test.ejb.resources.runtimeException.RuntimeExceptionTestEntity;
+import test.ejb.resources.runtimeException.RuntimeExceptionTestResult;
+import test.ejb.resources.simple.SimpleTestDestination;
+import test.ejb.resources.simple.SimpleTestEntity;
+import test.ejb.resources.simple.SimpleTestResult;
+import test.ejb.resources.validation.ValidationTestDestination;
+import test.ejb.resources.validation.ValidationTestEntity;
+import test.ejb.resources.validation.ValidationTestResult;
 
 public class ObjectFunctionTest extends ArquillianBaseTestCase {
 

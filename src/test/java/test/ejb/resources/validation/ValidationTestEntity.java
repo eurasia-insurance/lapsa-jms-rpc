@@ -1,4 +1,4 @@
-package test.ejb.resources.validationTest;
+package test.ejb.resources.validation;
 
 import java.io.Serializable;
 

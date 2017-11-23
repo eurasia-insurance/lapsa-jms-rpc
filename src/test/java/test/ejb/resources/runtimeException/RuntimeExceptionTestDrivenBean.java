@@ -1,4 +1,4 @@
-package test.ejb.resources.runtimeExceptionTest;
+package test.ejb.resources.runtimeException;
 
 import java.util.Properties;
 

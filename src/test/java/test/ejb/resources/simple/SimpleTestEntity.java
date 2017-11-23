@@ -1,4 +1,4 @@
-package test.ejb.resources.simpleTest;
+package test.ejb.resources.simple;
 
 import java.io.Serializable;
 

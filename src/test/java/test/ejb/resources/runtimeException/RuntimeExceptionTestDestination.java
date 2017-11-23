@@ -1,4 +1,4 @@
-package test.ejb.resources.runtimeExceptionTest;
+package test.ejb.resources.runtimeException;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
