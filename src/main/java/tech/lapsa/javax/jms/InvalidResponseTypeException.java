@@ -1,6 +1,6 @@
 package tech.lapsa.javax.jms;
 
-public final class InvalidResponseTypeException extends Exception {
+public final class InvalidResponseTypeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     InvalidResponseTypeException(final Class<?> expected, final Class<?> actual) {
