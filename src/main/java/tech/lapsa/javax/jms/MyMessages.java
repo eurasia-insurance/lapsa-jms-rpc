@@ -34,7 +34,7 @@ public final class MyMessages {
 		final String v = message.getStringProperty(k);
 		final String mk = k.substring(PROPERTY_PREFIX.length());
 		p.setProperty(mk, v);
-	    } catch (MessageFormatException ignored) {
+	    } catch (final MessageFormatException ignored) {
 	    }
 	}
 	return p;
@@ -42,13 +42,13 @@ public final class MyMessages {
 
     static void propertiesToJMSProducer(final JMSProducer producer, final Properties properties) {
 	final Map<String, String> map = propertiesToMap(properties);
-	for (Map.Entry<String, String> e : map.entrySet())
+	for (final Map.Entry<String, String> e : map.entrySet())
 	    producer.setProperty(e.getKey(), e.getValue());
     }
-    
+
     static void propertiesToMessage(final Message message, final Properties properties) throws JMSException {
 	final Map<String, String> map = propertiesToMap(properties);
-	for (Map.Entry<String, String> e : map.entrySet())
+	for (final Map.Entry<String, String> e : map.entrySet())
 	    message.setStringProperty(e.getKey(), e.getValue());
     }
 

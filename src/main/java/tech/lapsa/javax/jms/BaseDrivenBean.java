@@ -39,23 +39,23 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
     @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
-    BaseDrivenBean(Class<IN> inC) {
+    BaseDrivenBean(final Class<IN> inC) {
 	this.inC = inC;
     }
 
     private IN validatedObject(final Message inM) throws JMSException, ValidationException {
 	try {
-	    IN inO = inM.getBody(inC);
-	    Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(inO);
+	    final IN inO = inM.getBody(inC);
+	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(inO);
 	    if (violations != null && violations.size() > 0)
 		throw new ValidationException(violationsString(violations));
 	    return inO;
-	} catch (MessageFormatException e) {
+	} catch (final MessageFormatException e) {
 	    throw new ValidationException(String.format("Message is not a %1$s type", inC.getName()));
 	}
     }
 
-    private String violationsString(Set<ConstraintViolation<Object>> violations) {
+    private String violationsString(final Set<ConstraintViolation<Object>> violations) {
 	final StringJoiner sj = new StringJoiner(System.lineSeparator());
 	sj.setEmptyValue("With no violations");
 	violations.stream() //
@@ -68,7 +68,7 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
     }
 
     @Override
-    public final void onMessage(Message originM) {
+    public final void onMessage(final Message originM) {
 	try {
 	    try {
 		final Properties p = MyMessages.propertiesFromMessage(originM);

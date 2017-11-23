@@ -22,7 +22,7 @@ public class MyJMSClientProducerBean {
 
     @PostConstruct
     public void init() {
-	this.instance = new MyJMSClientImpl();
+	instance = new MyJMSClientImpl();
     }
 
     @Produces

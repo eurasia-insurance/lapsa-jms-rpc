@@ -64,17 +64,17 @@ public final class MyJMSFunctions {
     //
 
     public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(
-	    final JMSContext context, final Destination destination, Class<R> outClazz) {
+	    final JMSContext context, final Destination destination, final Class<R> outClazz) {
 	return new MyJMSFunctionImpl<>(outClazz, context, destination);
     }
 
     public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(
-	    final JMSContext context, final String queuePhysicalName, Class<R> outClazz) {
+	    final JMSContext context, final String queuePhysicalName, final Class<R> outClazz) {
 	return new MyJMSFunctionImpl<>(outClazz, context, context.createQueue(queuePhysicalName));
     }
 
     public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(
-	    final JMSContext context, final String topicPhysicalName, Class<R> outClazz) {
+	    final JMSContext context, final String topicPhysicalName, final Class<R> outClazz) {
 	return new MyJMSFunctionImpl<>(outClazz, context, context.createTopic(topicPhysicalName));
     }
 
@@ -111,7 +111,7 @@ public final class MyJMSFunctions {
 	    final JMSProducer producer = context.createProducer();
 	    if (properties != null)
 		MyMessages.propertiesToJMSProducer(producer, properties);
-	    for (OUT outO : outOs)
+	    for (final OUT outO : outOs)
 		producer.send(destination, outO);
 	}
 
@@ -131,7 +131,7 @@ public final class MyJMSFunctions {
 		    final String jmsCorellationID = UUID.randomUUID().toString();
 
 		    replyToD = context.createTemporaryQueue();
-		    JMSProducer producer = context.createProducer() //
+		    final JMSProducer producer = context.createProducer() //
 			    .setJMSReplyTo(replyToD) //
 			    .setJMSCorrelationID(jmsCorellationID);
 
@@ -148,7 +148,7 @@ public final class MyJMSFunctions {
 		    try {
 			if (replyToD != null)
 			    replyToD.delete();
-		    } catch (JMSException ignored) {
+		    } catch (final JMSException ignored) {
 		    }
 		}
 	    }
@@ -173,7 +173,7 @@ public final class MyJMSFunctions {
 
 		throw new InvalidResponseTypeException("Unknown response type");
 
-	    } catch (MessageFormatException e) {
+	    } catch (final MessageFormatException e) {
 		throw inM.getBody(RuntimeException.class);
 	    }
 
@@ -194,7 +194,7 @@ public final class MyJMSFunctions {
 
 	@Override
 	@SafeVarargs
-	public final void acceptNoWait(IN... inOs) throws JMSException {
+	public final void acceptNoWait(final IN... inOs) throws JMSException {
 	    _send(context, destination, null, inOs);
 	}
 
@@ -210,7 +210,7 @@ public final class MyJMSFunctions {
 	@Override
 	public void accept(final IN inO, final Properties properties)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    VoidResult outO = _request(inO, properties);
+	    final VoidResult outO = _request(inO, properties);
 	    if (outO == null)
 		throw new RuntimeException(VoidResult.class.getName() + " expected");
 	}
@@ -222,7 +222,7 @@ public final class MyJMSFunctions {
 	}
 
 	@Override
-	public void acceptNoWait(final IN inO, Properties properties) throws JMSException {
+	public void acceptNoWait(final IN inO, final Properties properties) throws JMSException {
 	    _send(properties, inO);
 	}
 
