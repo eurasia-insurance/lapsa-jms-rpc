@@ -22,7 +22,7 @@ import test.ejb.resources.function.validation.ValidationDestination;
 import test.ejb.resources.function.validation.ValidationEntity;
 import test.ejb.resources.function.validation.ValidationResult;
 
-public class ObjectFunctionTest extends ArquillianBaseTestCase {
+public class FunctionTest extends ArquillianBaseTestCase {
 
     @Inject
     private MyJMSClient jmsClient;
