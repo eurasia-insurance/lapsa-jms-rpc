@@ -21,13 +21,13 @@ import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.logging.MyLogger;
 
-abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable> implements MessageListener {
+abstract class BaseDrivenBean<I extends Serializable, O extends Serializable> implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
 	    .withNameOf(this.getClass()) //
 	    .build();
 
-    private final Class<IN> inC;
+    private final Class<I> inC;
 
     @Inject
     private ValidatorFactory validatorFactory;
@@ -39,17 +39,17 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
     @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
-    BaseDrivenBean(final Class<IN> inC) {
+    BaseDrivenBean(final Class<I> inC) {
 	this.inC = inC;
     }
 
-    private IN validatedObject(final Message inM) throws JMSException, ValidationException {
+    private I validatedObject(final Message inM) throws JMSException, ValidationException {
 	try {
-	    final IN inO = inM.getBody(inC);
-	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(inO);
+	    final I in = inM.getBody(inC);
+	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(in);
 	    if (violations != null && violations.size() > 0)
 		throw new ValidationException(violationsString(violations));
-	    return inO;
+	    return in;
 	} catch (final MessageFormatException e) {
 	    throw new ValidationException(String.format("Message is not a %1$s type", inC.getName()));
 	}
@@ -68,20 +68,20 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
     }
 
     @Override
-    public final void onMessage(final Message originM) {
+    public final void onMessage(final Message inM) {
 	try {
 	    try {
-		final Properties p = MyMessages.propertiesFromMessage(originM);
-		final IN t = validatedObject(originM);
-		final OUT r = _apply(t, p);
-		reply(originM, r);
+		final Properties p = MyMessages.propertiesFromMessage(inM);
+		final I in = validatedObject(inM);
+		final O out = _apply(in, p);
+		reply(inM, out);
 	    } catch (final ValidationException e) {
 		logger.FINE.log(e);
-		reply(originM, e);
+		reply(inM, e);
 		mdc.setRollbackOnly();
 	    } catch (final RuntimeException e) {
 		logger.WARN.log(e);
-		reply(originM, e);
+		reply(inM, e);
 		mdc.setRollbackOnly();
 	    }
 	} catch (final JMSException e) {
@@ -95,9 +95,9 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
 	if (outD == null) // for noWait senders support
 	    return;
 	context.createProducer()
-		.setJMSCorrelationID(inM.getJMSCorrelationID()) //
+		.setJMSCorrelationID(inM.getJMSCorrelationID()) // TODO DEBUG : MessageID colud be used
 		.send(outD, serializable);
     }
 
-    abstract OUT _apply(IN inO, Properties p);
+    abstract O _apply(I in, Properties p);
 }
