@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.jms.JMSException;
+import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageFormatException;
 
@@ -17,7 +18,7 @@ public final class MyMessages {
     private MyMessages() {
     }
 
-    static final String PROPERTY_PREFIX = "MyJMS_";
+    static final String PROPERTY_PREFIX = "MyMessages_";
 
     static Properties propertiesFromMessage(final Message message) throws JMSException {
 	final Properties p = new Properties();
@@ -39,13 +40,23 @@ public final class MyMessages {
 	return p;
     }
 
+    static void propertiesToJMSProducer(final JMSProducer producer, final Properties properties) {
+	final Map<String, String> map = propertiesToMap(properties);
+	for (Map.Entry<String, String> e : map.entrySet())
+	    producer.setProperty(e.getKey(), e.getValue());
+    }
+    
     static void propertiesToMessage(final Message message, final Properties properties) throws JMSException {
-	final Map<String, String> map = properties.keySet().stream() //
+	final Map<String, String> map = propertiesToMap(properties);
+	for (Map.Entry<String, String> e : map.entrySet())
+	    message.setStringProperty(e.getKey(), e.getValue());
+    }
+
+    private static Map<String, String> propertiesToMap(final Properties properties) {
+	return properties.keySet().stream() //
 		.filter(x -> MyObjects.isA(x, String.class))
 		.map(Object::toString) //
 		.filter(MyStrings::nonEmpty) //
 		.collect(Collectors.toMap(x -> PROPERTY_PREFIX + x, x -> properties.getProperty(x)));
-	for (Map.Entry<String, String> e : map.entrySet())
-	    message.setStringProperty(e.getKey(), e.getValue());
     }
 }
