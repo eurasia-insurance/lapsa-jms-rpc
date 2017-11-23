@@ -10,6 +10,11 @@
 		jndi-name="jms/__defaultConnectionFactory" />
 
 	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/consumer/simple">
+		<property name="Name" value="test.consumer.simple.queue" />
+	</admin-object-resource>
+
+	<admin-object-resource res-adapter="jmsra"
 		res-type="javax.jms.Queue" jndi-name="test/function/simple">
 		<property name="Name" value="test.function.simple.queue" />
 	</admin-object-resource>
