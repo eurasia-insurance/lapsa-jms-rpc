@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+
+	<connector-connection-pool max-pool-size="250"
+		resource-adapter-name="jmsra" steady-pool-size="1"
+		name="DefaultConnectionFactoryPool" connection-definition-name="javax.jms.ConnectionFactory" />
+
+	<connector-resource pool-name="DefaultConnectionFactoryPool"
+		jndi-name="jms/__defaultConnectionFactory" />
+
+	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/simpleTest">
+		<property name="Name" value="test.simpleTest.queue" />
+	</admin-object-resource>
+
+</resources>

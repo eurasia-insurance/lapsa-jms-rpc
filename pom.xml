@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>tech.lapsa.maven</groupId>
@@ -16,13 +17,23 @@
 
 	<properties>
 		<!-- BOMS -->
-		<java-commons.version>1.1-SNAPSHOT</java-commons.version>
 		<javax-javaee-bom.version>7.0</javax-javaee-bom.version>
+		<!-- tech -->
+		<java-commons.version>1.1-SNAPSHOT</java-commons.version>
+		<lapsa-arquillian-test.version>1.1-SNAPSHOT</lapsa-arquillian-test.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<!-- BOMS -->
+			<dependency>
+				<groupId>tech.lapsa.javax</groupId>
+				<artifactId>javax-javaee-bom</artifactId>
+				<version>${javax-javaee-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- tech -->
 			<dependency>
 				<groupId>tech.lapsa.java</groupId>
 				<artifactId>java-commons-root</artifactId>
@@ -31,11 +42,9 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>tech.lapsa.javax</groupId>
-				<artifactId>javax-javaee-bom</artifactId>
-				<version>${javax-javaee-bom.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
+				<groupId>tech.lapsa.lapsa</groupId>
+				<artifactId>lapsa-arquillian-test</artifactId>
+				<version>${lapsa-arquillian-test.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -47,6 +56,11 @@
 			<artifactId>java-commons</artifactId>
 			<scope>compile</scope>
 			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>tech.lapsa.lapsa</groupId>
+			<artifactId>lapsa-arquillian-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- Java EE -->
 		<dependency>
@@ -70,6 +84,29 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources-glassfish-embedded</directory>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+						<derby.stream.error.file>${project.build.directory}/derby.log</derby.stream.error.file>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<scm>
 		<connection>scm:git:https://gitlab.lapsa.tech/lapsa/javax/jms-commons.git</connection>
