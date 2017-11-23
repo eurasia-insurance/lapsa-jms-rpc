@@ -71,9 +71,9 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     public final void onMessage(final Message entityM) {
 	try {
 	    try {
-		final Properties p = MyMessages.propertiesFromMessage(entityM);
+		final Properties properties = MyMessages.propertiesFromMessage(entityM);
 		final E entity = validatedObject(entityM);
-		final R result = _apply(entity, p);
+		final R result = _apply(entity, properties);
 		reply(entityM, result);
 	    } catch (final ValidationException e) {
 		logger.FINE.log(e);
