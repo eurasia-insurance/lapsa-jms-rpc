@@ -6,15 +6,15 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = RuntimeExceptionDestination.JNDI_NAME)
-public class RuntimeExceptionDrivenBean extends ObjectFunctionDrivenBean<RuntimeExceptionEntity, RuntimeExceptionResult> {
+@MessageDriven(mappedName = FunctionRuntimeExceptionDestination.JNDI_NAME)
+public class FunctionRuntimeExceptionDrivenBean extends ObjectFunctionDrivenBean<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> {
 
-    public RuntimeExceptionDrivenBean() {
-	super(RuntimeExceptionEntity.class);
+    public FunctionRuntimeExceptionDrivenBean() {
+	super(FunctionRuntimeExceptionEntity.class);
     }
 
     @Override
-    protected RuntimeExceptionResult apply(RuntimeExceptionEntity runtimeExceptionEntity, Properties properties) {
+    protected FunctionRuntimeExceptionResult apply(FunctionRuntimeExceptionEntity functionRuntimeExceptionEntity, Properties properties) {
 	throw new NullPointerException();
     }
 

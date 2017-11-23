@@ -2,14 +2,14 @@ package test.ejb.resources.function.simple;
 
 import java.io.Serializable;
 
-public class SimpleResult implements Serializable {
+public class FunctionSimpleResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     public static final String PREFIX = "REPLY: ";
 
-    public SimpleResult(SimpleEntity simpleEntity) {
-	this.message = PREFIX + simpleEntity.message;
+    public FunctionSimpleResult(FunctionSimpleEntity functionSimpleEntity) {
+	this.message = PREFIX + functionSimpleEntity.message;
     }
 
     @Override

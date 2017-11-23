@@ -2,7 +2,7 @@ package test.ejb.resources.function.validation;
 
 import java.io.Serializable;
 
-public class ValidationResult implements Serializable {
+public class FunctionValidationResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,8 +10,8 @@ public class ValidationResult implements Serializable {
 
     private final String message;
 
-    public ValidationResult(ValidationEntity validationEntity) {
-	this.message = PREFIX + validationEntity.getMessage();
+    public FunctionValidationResult(FunctionValidationEntity functionValidationEntity) {
+	this.message = PREFIX + functionValidationEntity.getMessage();
     }
 
     @Override

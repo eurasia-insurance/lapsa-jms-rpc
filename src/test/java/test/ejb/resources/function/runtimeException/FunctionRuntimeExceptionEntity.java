@@ -2,13 +2,13 @@ package test.ejb.resources.function.runtimeException;
 
 import java.io.Serializable;
 
-public class RuntimeExceptionEntity implements Serializable {
+public class FunctionRuntimeExceptionEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final String message;
 
-    public RuntimeExceptionEntity(String message) {
+    public FunctionRuntimeExceptionEntity(String message) {
 	this.message = message;
     }
 

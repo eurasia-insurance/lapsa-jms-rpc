@@ -6,16 +6,16 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = ValidationDestination.JNDI_NAME)
-public class ValidationDrivenBean extends ObjectFunctionDrivenBean<ValidationEntity, ValidationResult> {
+@MessageDriven(mappedName = FunctionValidationDestination.JNDI_NAME)
+public class FunctionValidationDrivenBean extends ObjectFunctionDrivenBean<FunctionValidationEntity, FunctionValidationResult> {
 
-    public ValidationDrivenBean() {
-	super(ValidationEntity.class);
+    public FunctionValidationDrivenBean() {
+	super(FunctionValidationEntity.class);
     }
 
     @Override
-    protected ValidationResult apply(ValidationEntity validationEntity, Properties properties) {
-	return new ValidationResult(validationEntity);
+    protected FunctionValidationResult apply(FunctionValidationEntity functionValidationEntity, Properties properties) {
+	return new FunctionValidationResult(functionValidationEntity);
     }
 
 }

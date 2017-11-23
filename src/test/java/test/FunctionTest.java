@@ -12,15 +12,15 @@ import org.junit.Test;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
 import test.assertion.Assertions;
-import test.ejb.resources.function.runtimeException.RuntimeExceptionDestination;
-import test.ejb.resources.function.runtimeException.RuntimeExceptionEntity;
-import test.ejb.resources.function.runtimeException.RuntimeExceptionResult;
-import test.ejb.resources.function.simple.SimpleDestination;
-import test.ejb.resources.function.simple.SimpleEntity;
-import test.ejb.resources.function.simple.SimpleResult;
-import test.ejb.resources.function.validation.ValidationDestination;
-import test.ejb.resources.function.validation.ValidationEntity;
-import test.ejb.resources.function.validation.ValidationResult;
+import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionDestination;
+import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionEntity;
+import test.ejb.resources.function.runtimeException.FunctionRuntimeExceptionResult;
+import test.ejb.resources.function.simple.FunctionSimpleDestination;
+import test.ejb.resources.function.simple.FunctionSimpleEntity;
+import test.ejb.resources.function.simple.FunctionSimpleResult;
+import test.ejb.resources.function.validation.FunctionValidationDestination;
+import test.ejb.resources.function.validation.FunctionValidationEntity;
+import test.ejb.resources.function.validation.FunctionValidationResult;
 
 public class FunctionTest extends ArquillianBaseTestCase {
 
@@ -28,49 +28,49 @@ public class FunctionTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private SimpleDestination simpleDestination;
+    private FunctionSimpleDestination functionSimpleDestination;
 
     @Test
     public void simpleTest_1() throws JMSException {
-	final MyJMSFunction<SimpleEntity, SimpleResult> function = jmsClient.createFunction(
-		simpleDestination.getDestination(),
-		SimpleResult.class);
+	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> function = jmsClient.createFunction(
+		functionSimpleDestination.getDestination(),
+		FunctionSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final SimpleEntity e = new SimpleEntity(MESSAGE);
-	    final SimpleResult r = function.apply(e);
+	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
+	    final FunctionSimpleResult r = function.apply(e);
 	    assertThat(r, not(nullValue()));
-	    assertThat(r.message, allOf(not(nullValue()), is(equalTo(SimpleResult.PREFIX + e.message))));
+	    assertThat(r.message, allOf(not(nullValue()), is(equalTo(FunctionSimpleResult.PREFIX + e.message))));
 	}
     }
 
     @Inject
-    private ValidationDestination validationDestination;
+    private FunctionValidationDestination functionValidationDestination;
 
     @Test
     public void validationTest_1() throws JMSException {
-	final MyJMSFunction<ValidationEntity, ValidationResult> function = jmsClient.createFunction(
-		validationDestination.getDestination(),
-		ValidationResult.class);
+	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> function = jmsClient.createFunction(
+		functionValidationDestination.getDestination(),
+		FunctionValidationResult.class);
 
 	{
 	    final String VALID_MESSAGE = "Hello JMS world!";
-	    final ValidationEntity e = new ValidationEntity(VALID_MESSAGE);
-	    final ValidationResult r = function.apply(e);
+	    final FunctionValidationEntity e = new FunctionValidationEntity(VALID_MESSAGE);
+	    final FunctionValidationResult r = function.apply(e);
 	    assertThat(r, not(nullValue()));
-	    assertThat(r.getMessage(), allOf(not(nullValue()), is(equalTo(SimpleResult.PREFIX + e.getMessage()))));
+	    assertThat(r.getMessage(), allOf(not(nullValue()), is(equalTo(FunctionSimpleResult.PREFIX + e.getMessage()))));
 	}
     }
 
     @Test
     public void validationTest_2() {
-	final MyJMSFunction<ValidationEntity, ValidationResult> function = jmsClient.createFunction(
-		validationDestination.getDestination(),
-		ValidationResult.class);
+	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> function = jmsClient.createFunction(
+		functionValidationDestination.getDestination(),
+		FunctionValidationResult.class);
 
 	{
 	    final String NULL_MESSAGE = null;
-	    final ValidationEntity e = new ValidationEntity(NULL_MESSAGE);
+	    final FunctionValidationEntity e = new FunctionValidationEntity(NULL_MESSAGE);
 	    Assertions.expectException(() -> {
 		try {
 		    function.apply(e);
@@ -82,17 +82,17 @@ public class FunctionTest extends ArquillianBaseTestCase {
     }
 
     @Inject
-    private RuntimeExceptionDestination runtimeExceptionDestination;
+    private FunctionRuntimeExceptionDestination functionRuntimeExceptionDestination;
 
     @Test
     public void runtimeExceptionTest_1() throws JMSException {
-	final MyJMSFunction<RuntimeExceptionEntity, RuntimeExceptionResult> function = jmsClient.createFunction(
-		runtimeExceptionDestination.getDestination(),
-		RuntimeExceptionResult.class);
+	final MyJMSFunction<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> function = jmsClient.createFunction(
+		functionRuntimeExceptionDestination.getDestination(),
+		FunctionRuntimeExceptionResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final RuntimeExceptionEntity e = new RuntimeExceptionEntity(MESSAGE);
+	    final FunctionRuntimeExceptionEntity e = new FunctionRuntimeExceptionEntity(MESSAGE);
 	    Assertions.expectException(() -> {
 		try {
 		    function.apply(e);

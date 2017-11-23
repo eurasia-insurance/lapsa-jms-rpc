@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-public class ValidationEntity implements Serializable {
+public class FunctionValidationEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @NotNull
     private final String message;
 
-    public ValidationEntity(String message) {
+    public FunctionValidationEntity(String message) {
 	this.message = message;
     }
 

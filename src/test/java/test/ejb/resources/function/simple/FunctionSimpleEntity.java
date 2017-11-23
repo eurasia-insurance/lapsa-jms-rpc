@@ -2,11 +2,11 @@ package test.ejb.resources.function.simple;
 
 import java.io.Serializable;
 
-public class SimpleEntity implements Serializable {
+public class FunctionSimpleEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public SimpleEntity(String message) {
+    public FunctionSimpleEntity(String message) {
 	this.message = message;
     }
     
