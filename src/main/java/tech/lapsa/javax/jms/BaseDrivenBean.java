@@ -78,11 +78,9 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	    } catch (final ValidationException e) {
 		logger.FINE.log(e);
 		reply(entityM, e);
-		mdc.setRollbackOnly();
 	    } catch (final RuntimeException e) {
 		logger.WARN.log(e);
 		reply(entityM, e);
-		mdc.setRollbackOnly();
 	    }
 	} catch (final JMSException e) {
 	    logger.SEVERE.log(e);
