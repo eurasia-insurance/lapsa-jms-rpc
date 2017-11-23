@@ -68,7 +68,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     }
 
     @Override
-    public final void onMessage(final Message entityM) {
+    public void onMessage(final Message entityM) {
 	try {
 	    try {
 		final Properties properties = MyMessages.propertiesFromMessage(entityM);
@@ -95,7 +95,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	if (replyToD == null) // for noWait senders support
 	    return;
 	context.createProducer()
-		.setJMSCorrelationID(entityM.getJMSCorrelationID()) // TODO DEBUG : MessageID colud be used
+		.setJMSCorrelationID(entityM.getJMSMessageID())
 		.send(replyToD, serializable);
     }
 
