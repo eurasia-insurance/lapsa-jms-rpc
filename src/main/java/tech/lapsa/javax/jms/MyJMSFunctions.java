@@ -2,7 +2,6 @@ package tech.lapsa.javax.jms;
 
 import java.io.Serializable;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
@@ -82,7 +81,7 @@ public final class MyJMSFunctions {
 
     static class Base<E extends Serializable, R extends Serializable> {
 
-	private static final int DEFAULT_TIMEOUT = 10000; // 10 seconds
+	private static final int DEFAULT_TIMEOUT = 20 * 1000; // 20 seconds
 
 	final JMSContext context;
 	final Destination destination;
@@ -123,25 +122,21 @@ public final class MyJMSFunctions {
 	final R _request(final E entity, final Properties properties)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
 
-	    Message entityM = null;
+	    Message resultM = null;
 
 	    {
 		TemporaryQueue replyToD = null;
 		try {
-		    final String jmsCorellationID = UUID.randomUUID().toString();
-
 		    replyToD = context.createTemporaryQueue();
-		    final JMSProducer producer = context.createProducer() //
-			    .setJMSReplyTo(replyToD) //
-			    .setJMSCorrelationID(jmsCorellationID);
-
+		    final Message entityM = context.createObjectMessage(entity);
+		    entityM.setJMSReplyTo(replyToD);
 		    if (properties != null)
-			MyMessages.propertiesToJMSProducer(producer, properties);
-		    producer.send(destination, entity);
-
+			MyMessages.propertiesToMessage(entityM, properties);
+		    context.createProducer().send(destination, entityM);
+		    final String jmsCorellationID = entityM.getJMSMessageID();
 		    final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
 		    try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
-			entityM = consumer.receive(DEFAULT_TIMEOUT);
+			resultM = consumer.receive(DEFAULT_TIMEOUT);
 		    }
 
 		} finally {
@@ -153,28 +148,28 @@ public final class MyJMSFunctions {
 		}
 	    }
 
-	    if (entityM == null)
+	    if (resultM == null)
 		throw new ResponseNotReceivedException();
 
 	    try {
-		if (entityM.isBodyAssignableTo(resultClazz))
-		    return entityM.getBody(resultClazz);
+		if (resultM.isBodyAssignableTo(resultClazz))
+		    return resultM.getBody(resultClazz);
 
-		if (entityM.isBodyAssignableTo(ValidationException.class))
-		    throw entityM.getBody(ValidationException.class);
+		if (resultM.isBodyAssignableTo(ValidationException.class))
+		    throw resultM.getBody(ValidationException.class);
 
-		if (entityM.isBodyAssignableTo(RuntimeException.class))
-		    throw entityM.getBody(RuntimeException.class);
+		if (resultM.isBodyAssignableTo(RuntimeException.class))
+		    throw resultM.getBody(RuntimeException.class);
 
-		if (entityM.isBodyAssignableTo(Serializable.class)) {
-		    final Serializable inO = entityM.getBody(Serializable.class);
+		if (resultM.isBodyAssignableTo(Serializable.class)) {
+		    final Serializable inO = resultM.getBody(Serializable.class);
 		    throw new InvalidResponseTypeException(resultClazz, inO.getClass());
 		}
 
 		throw new InvalidResponseTypeException("Unknown response type");
 
 	    } catch (final MessageFormatException e) {
-		throw entityM.getBody(RuntimeException.class);
+		throw resultM.getBody(RuntimeException.class);
 	    }
 	}
     }
