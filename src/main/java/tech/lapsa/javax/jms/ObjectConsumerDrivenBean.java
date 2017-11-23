@@ -3,18 +3,18 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-public abstract class ObjectConsumerDrivenBean<I extends Serializable>
-	extends BaseDrivenBean<I, VoidResult> {
+public abstract class ObjectConsumerDrivenBean<E extends Serializable>
+	extends BaseDrivenBean<E, VoidResult> {
 
-    protected ObjectConsumerDrivenBean(final Class<I> inC) {
-	super(inC);
+    protected ObjectConsumerDrivenBean(final Class<E> entityClazz) {
+	super(entityClazz);
     }
 
-    protected abstract void accept(I in, Properties properties);
+    protected abstract void accept(E entity, Properties properties);
 
     @Override
-    final VoidResult _apply(final I in, final Properties properties) {
-	accept(in, properties);
+    final VoidResult _apply(final E entity, final Properties properties) {
+	accept(entity, properties);
 	return new VoidResult();
     }
 }

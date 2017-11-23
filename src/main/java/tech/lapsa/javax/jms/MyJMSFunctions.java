@@ -26,36 +26,36 @@ public final class MyJMSFunctions {
 
     //
 
-    public static <T extends Serializable> MyJMSConsumer<T> createConsumer(final JMSContext context,
+    public static <E extends Serializable> MyJMSConsumer<E> createConsumer(final JMSContext context,
 	    final Destination destination) {
 	return new MyJMSConsumerImpl<>(context, destination);
     }
 
-    public static <T extends Serializable> MyJMSConsumer<T> createQueueConsumer(final JMSContext context,
+    public static <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(final JMSContext context,
 	    final String queuePhysicalName) {
 	return new MyJMSConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <T extends Serializable> MyJMSConsumer<T> createTopicConsumer(final JMSContext context,
+    public static <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(final JMSContext context,
 	    final String topicPhysicalName) {
 	return new MyJMSConsumerImpl<>(context, context.createTopic(topicPhysicalName));
     }
 
     //
 
-    public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleConsumer(
+    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(
 	    final JMSContext context,
 	    final Destination destination) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, destination);
     }
 
-    public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleQueueConsumer(
+    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(
 	    final JMSContext context,
 	    final String queuePhysicalName) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleTopicConsumer(
+    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(
 	    final JMSContext context,
 	    final String topicPhysicalName) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createTopic(topicPhysicalName));
@@ -63,67 +63,67 @@ public final class MyJMSFunctions {
 
     //
 
-    public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(
-	    final JMSContext context, final Destination destination, final Class<R> outClazz) {
-	return new MyJMSFunctionImpl<>(outClazz, context, destination);
+    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(
+	    final JMSContext context, final Destination destination, final Class<R> resultClazz) {
+	return new MyJMSFunctionImpl<>(resultClazz, context, destination);
     }
 
-    public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(
-	    final JMSContext context, final String queuePhysicalName, final Class<R> outClazz) {
-	return new MyJMSFunctionImpl<>(outClazz, context, context.createQueue(queuePhysicalName));
+    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(
+	    final JMSContext context, final String queuePhysicalName, final Class<R> resultClazz) {
+	return new MyJMSFunctionImpl<>(resultClazz, context, context.createQueue(queuePhysicalName));
     }
 
-    public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(
-	    final JMSContext context, final String topicPhysicalName, final Class<R> outClazz) {
-	return new MyJMSFunctionImpl<>(outClazz, context, context.createTopic(topicPhysicalName));
+    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(
+	    final JMSContext context, final String topicPhysicalName, final Class<R> resultClazz) {
+	return new MyJMSFunctionImpl<>(resultClazz, context, context.createTopic(topicPhysicalName));
     }
 
     //
 
-    static class Base<OUT extends Serializable, IN extends Serializable> {
+    static class Base<E extends Serializable, R extends Serializable> {
 
 	private static final int DEFAULT_TIMEOUT = 10000; // 10 seconds
 
 	final JMSContext context;
 	final Destination destination;
-	final Class<IN> inC;
+	final Class<R> resultClazz;
 
-	private Base(final Class<IN> inC, final JMSContext context,
+	private Base(final Class<R> resultClazz, final JMSContext context,
 		final Destination destination) {
-	    this.inC = MyObjects.requireNonNull(inC, "inC");
+	    this.resultClazz = MyObjects.requireNonNull(resultClazz, "resultClazz");
 	    this.context = MyObjects.requireNonNull(context, "context");
 	    this.destination = MyObjects.requireNonNull(destination, "destination");
 	}
 
 	@SafeVarargs
-	final void _send(final OUT... outOs) throws JMSException {
-	    _send(null, outOs);
+	final void _send(final E... entities) throws JMSException {
+	    _send(null, entities);
 	}
 
 	@SafeVarargs
-	final void _send(final Properties properties, final OUT... outOs) throws JMSException {
-	    _send(context, destination, properties, outOs);
+	final void _send(final Properties properties, final E... entities) throws JMSException {
+	    _send(context, destination, properties, entities);
 	}
 
 	@SafeVarargs
-	final static <OUT extends Serializable> void _send(final JMSContext context, final Destination destination,
-		final Properties properties, final OUT... outOs) throws JMSException {
+	final static <E extends Serializable> void _send(final JMSContext context, final Destination destination,
+		final Properties properties, final E... entities) throws JMSException {
 	    final JMSProducer producer = context.createProducer();
 	    if (properties != null)
 		MyMessages.propertiesToJMSProducer(producer, properties);
-	    for (final OUT outO : outOs)
-		producer.send(destination, outO);
+	    for (final E entity : entities)
+		producer.send(destination, entity);
 	}
 
-	final IN _request(final OUT outO)
+	final R _request(final E entity)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    return _request(outO, null);
+	    return _request(entity, null);
 	}
 
-	final IN _request(final OUT outO, final Properties properties)
+	final R _request(final E entity, final Properties properties)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
 
-	    Message inM = null;
+	    Message entityM = null;
 
 	    {
 		TemporaryQueue replyToD = null;
@@ -137,11 +137,11 @@ public final class MyJMSFunctions {
 
 		    if (properties != null)
 			MyMessages.propertiesToJMSProducer(producer, properties);
-		    producer.send(destination, outO);
+		    producer.send(destination, entity);
 
 		    final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
 		    try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
-			inM = consumer.receive(DEFAULT_TIMEOUT);
+			entityM = consumer.receive(DEFAULT_TIMEOUT);
 		    }
 
 		} finally {
@@ -153,35 +153,34 @@ public final class MyJMSFunctions {
 		}
 	    }
 
-	    if (inM == null)
+	    if (entityM == null)
 		throw new ResponseNotReceivedException();
 
 	    try {
-		if (inM.isBodyAssignableTo(inC))
-		    return inM.getBody(inC);
+		if (entityM.isBodyAssignableTo(resultClazz))
+		    return entityM.getBody(resultClazz);
 
-		if (inM.isBodyAssignableTo(ValidationException.class))
-		    throw inM.getBody(ValidationException.class);
+		if (entityM.isBodyAssignableTo(ValidationException.class))
+		    throw entityM.getBody(ValidationException.class);
 
-		if (inM.isBodyAssignableTo(RuntimeException.class))
-		    throw inM.getBody(RuntimeException.class);
+		if (entityM.isBodyAssignableTo(RuntimeException.class))
+		    throw entityM.getBody(RuntimeException.class);
 
-		if (inM.isBodyAssignableTo(Serializable.class)) {
-		    final Serializable inO = inM.getBody(Serializable.class);
-		    throw new InvalidResponseTypeException(inC, inO.getClass());
+		if (entityM.isBodyAssignableTo(Serializable.class)) {
+		    final Serializable inO = entityM.getBody(Serializable.class);
+		    throw new InvalidResponseTypeException(resultClazz, inO.getClass());
 		}
 
 		throw new InvalidResponseTypeException("Unknown response type");
 
 	    } catch (final MessageFormatException e) {
-		throw inM.getBody(RuntimeException.class);
+		throw entityM.getBody(RuntimeException.class);
 	    }
-
 	}
     }
 
-    static final class MyJMSMultipleConsumerImpl<IN extends Serializable> extends Base<IN, VoidResult>
-	    implements MyJMSMultipleConsumer<IN> {
+    static final class MyJMSMultipleConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
+	    implements MyJMSMultipleConsumer<E> {
 
 	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination)
 		throws JMSException {
@@ -194,63 +193,60 @@ public final class MyJMSFunctions {
 
 	@Override
 	@SafeVarargs
-	public final void acceptNoWait(final IN... inOs) throws JMSException {
-	    _send(context, destination, null, inOs);
+	public final void acceptNoWait(final E... entities) throws JMSException {
+	    _send(context, destination, null, entities);
 	}
-
     }
 
-    static final class MyJMSConsumerImpl<IN extends Serializable> extends Base<IN, VoidResult>
-	    implements MyJMSConsumer<IN> {
+    static final class MyJMSConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
+	    implements MyJMSConsumer<E> {
 
 	private MyJMSConsumerImpl(final JMSContext context, final Destination destination) {
 	    super(VoidResult.class, context, destination);
 	}
 
 	@Override
-	public void accept(final IN inO, final Properties properties)
+	public void accept(final E entity, final Properties properties)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    final VoidResult outO = _request(inO, properties);
+	    final VoidResult outO = _request(entity, properties);
 	    if (outO == null)
 		throw new RuntimeException(VoidResult.class.getName() + " expected");
 	}
 
 	@Override
-	public void accept(final IN inO)
+	public void accept(final E entity)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    accept(inO, null);
+	    accept(entity, null);
 	}
 
 	@Override
-	public void acceptNoWait(final IN inO, final Properties properties) throws JMSException {
-	    _send(properties, inO);
+	public void acceptNoWait(final E entity, final Properties properties) throws JMSException {
+	    _send(properties, entity);
 	}
 
 	@Override
-	public void acceptNoWait(final IN inO) throws JMSException {
-	    acceptNoWait(inO, null);
+	public void acceptNoWait(final E entity) throws JMSException {
+	    acceptNoWait(entity, null);
 	}
-
     }
 
-    static final class MyJMSFunctionImpl<IN extends Serializable, OUT extends Serializable> extends Base<IN, OUT>
-	    implements MyJMSFunction<IN, OUT> {
+    static final class MyJMSFunctionImpl<E extends Serializable, R extends Serializable> extends Base<E, R>
+	    implements MyJMSFunction<E, R> {
 
-	private MyJMSFunctionImpl(final Class<OUT> outC, final JMSContext context, final Destination destination) {
-	    super(outC, context, destination);
+	private MyJMSFunctionImpl(final Class<R> resultClazz, final JMSContext context, final Destination destination) {
+	    super(resultClazz, context, destination);
 	}
 
 	@Override
-	public OUT apply(final IN inO, final Properties properties)
+	public R apply(final E entity, final Properties properties)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    return _request(inO, properties);
+	    return _request(entity, properties);
 	}
 
 	@Override
-	public OUT apply(final IN inO)
+	public R apply(final E entity)
 		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
-	    return apply(inO, null);
+	    return apply(entity, null);
 	}
-
     }
 }

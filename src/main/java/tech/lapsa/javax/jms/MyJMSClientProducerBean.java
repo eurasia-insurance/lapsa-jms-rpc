@@ -33,37 +33,37 @@ public class MyJMSClientProducerBean {
     private class MyJMSClientImpl implements MyJMSClient {
 
 	@Override
-	public <T extends Serializable> MyJMSConsumer<T> createConsumer(final Destination destination) {
+	public <E extends Serializable> MyJMSConsumer<E> createConsumer(final Destination destination) {
 	    return MyJMSFunctions.createConsumer(context, destination);
 	}
 
 	@Override
-	public <T extends Serializable> MyJMSConsumer<T> createQueueConsumer(final String queuePhysicalName) {
+	public <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(final String queuePhysicalName) {
 	    return MyJMSFunctions.createQueueConsumer(context, queuePhysicalName);
 	}
 
 	@Override
-	public <T extends Serializable> MyJMSConsumer<T> createTopicConsumer(final String topicPhysicalName) {
+	public <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(final String topicPhysicalName) {
 	    return MyJMSFunctions.createTopicConsumer(context, topicPhysicalName);
 	}
 
 	//
 
 	@Override
-	public <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleConsumer(final Destination destination)
+	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(final Destination destination)
 		throws JMSException {
 	    return MyJMSFunctions.createMultipleConsumer(context, destination);
 	}
 
 	@Override
-	public <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleQueueConsumer(
+	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(
 		final String queuePhysicalName)
 		throws JMSException {
 	    return MyJMSFunctions.createMultipleQueueConsumer(context, queuePhysicalName);
 	}
 
 	@Override
-	public <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleTopicConsumer(
+	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(
 		final String topicPhysicalName)
 		throws JMSException {
 	    return MyJMSFunctions.createMultipleTopicConsumer(context, topicPhysicalName);
@@ -72,21 +72,21 @@ public class MyJMSClientProducerBean {
 	//
 
 	@Override
-	public <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(
-		final Destination destination, final Class<R> outClazz) {
-	    return MyJMSFunctions.createFunction(context, destination, outClazz);
+	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(
+		final Destination destination, final Class<R> resultClazz) {
+	    return MyJMSFunctions.createFunction(context, destination, resultClazz);
 	}
 
 	@Override
-	public <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(
-		final String queuePhysicalName, final Class<R> outClazz) {
-	    return MyJMSFunctions.createQueueFunction(context, queuePhysicalName, outClazz);
+	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(
+		final String queuePhysicalName, final Class<R> resultClazz) {
+	    return MyJMSFunctions.createQueueFunction(context, queuePhysicalName, resultClazz);
 	}
 
 	@Override
-	public <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(
-		final String topicPhysicalName, final Class<R> outClazz) {
-	    return MyJMSFunctions.createTopicFunction(context, topicPhysicalName, outClazz);
+	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(
+		final String topicPhysicalName, final Class<R> resultClazz) {
+	    return MyJMSFunctions.createTopicFunction(context, topicPhysicalName, resultClazz);
 	}
 
     }

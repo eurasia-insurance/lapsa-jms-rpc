@@ -11,66 +11,65 @@ public interface MyJMSClient {
 
     //
 
-    <T extends Serializable> MyJMSConsumer<T> createConsumer(Destination destination);
+    <E extends Serializable> MyJMSConsumer<E> createConsumer(Destination destination);
 
-    <T extends Serializable> MyJMSConsumer<T> createQueueConsumer(String queuePhysicalName);
+    <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(String queuePhysicalName);
 
-    <T extends Serializable> MyJMSConsumer<T> createTopicConsumer(String topicPhysicalName);
+    <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(String topicPhysicalName);
 
-    //
+    public static interface MyJMSConsumer<E extends Serializable> {
 
-    <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleConsumer(Destination destination)
-	    throws JMSException;
-
-    <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleQueueConsumer(String queuePhysicalName)
-	    throws JMSException;
-
-    <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleTopicConsumer(String topicPhysicalName)
-	    throws JMSException;
-
-    //
-
-    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(Destination destination,
-	    Class<R> rClass);
-
-    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(String queuePhysicalName,
-	    Class<R> rClass);
-
-    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(String topicPhysicalName,
-	    Class<R> rClass);
-
-    //
-
-    public static interface MyJMSFunction<T extends Serializable, R extends Serializable> {
-
-	R apply(T inObject) throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
-
-	R apply(T inObject, Properties properties)
-		throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
-    }
-
-    public static interface MyJMSConsumer<T extends Serializable> {
-
-	void accept(T inObject)
+	void accept(E entity)
 		throws JMSException, ValidationException, RuntimeException, ResponseNotReceivedException,
 		InvalidResponseTypeException;
 
-	void accept(T inObject, Properties properties)
+	void accept(E entity, Properties properties)
 		throws JMSException, ValidationException, RuntimeException, ResponseNotReceivedException,
 		InvalidResponseTypeException;
 
-	void acceptNoWait(T inObject) throws JMSException;
+	void acceptNoWait(E entity) throws JMSException;
 
-	void acceptNoWait(T inObject, Properties properties) throws JMSException;
+	void acceptNoWait(E entity, Properties properties) throws JMSException;
     }
+
+    //
+
+    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(Destination destination)
+	    throws JMSException;
+
+    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(String queuePhysicalName)
+	    throws JMSException;
+
+    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(String topicPhysicalName)
+	    throws JMSException;
 
     @SuppressWarnings("unchecked")
-    public static interface MyJMSMultipleConsumer<T extends Serializable> extends AutoCloseable {
-	void acceptNoWait(T... inObjects) throws JMSException;
+    public static interface MyJMSMultipleConsumer<E extends Serializable> extends AutoCloseable {
+	void acceptNoWait(E... entities) throws JMSException;
 
 	@Override
 	void close() throws JMSException;
     }
+
+    //
+
+    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(Destination destination,
+	    Class<R> resultClazz);
+
+    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(String queuePhysicalName,
+	    Class<R> resultClazz);
+
+    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(String topicPhysicalName,
+	    Class<R> resultClazz);
+
+    public static interface MyJMSFunction<E extends Serializable, R extends Serializable> {
+
+	R apply(E entity) throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
+		InvalidResponseTypeException;
+
+	R apply(E entity, Properties properties)
+		throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
+		InvalidResponseTypeException;
+    }
+
 }

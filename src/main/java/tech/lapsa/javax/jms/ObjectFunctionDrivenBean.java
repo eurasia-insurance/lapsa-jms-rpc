@@ -3,17 +3,17 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-public abstract class ObjectFunctionDrivenBean<I extends Serializable, O extends Serializable>
-	extends BaseDrivenBean<I, O> {
+public abstract class ObjectFunctionDrivenBean<E extends Serializable, R extends Serializable>
+	extends BaseDrivenBean<E, R> {
 
-    protected ObjectFunctionDrivenBean(final Class<I> inC) {
-	super(inC);
+    protected ObjectFunctionDrivenBean(final Class<E> entityClazz) {
+	super(entityClazz);
     }
 
-    protected abstract O apply(I in, Properties properties);
+    protected abstract R apply(E entity, Properties properties);
 
     @Override
-    final O _apply(final I in, final Properties properties) {
-	return apply(in, properties);
+    final R _apply(final E entity, final Properties properties) {
+	return apply(entity, properties);
     }
 }
