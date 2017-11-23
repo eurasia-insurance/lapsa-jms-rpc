@@ -1,4 +1,4 @@
-package test.ejb.resources.simpletest;
+package test.ejb.resources.simpleTest;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
