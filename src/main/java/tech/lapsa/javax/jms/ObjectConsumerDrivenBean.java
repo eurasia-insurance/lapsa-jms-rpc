@@ -13,7 +13,7 @@ public abstract class ObjectConsumerDrivenBean<T extends Serializable>
     protected abstract void accept(T t, Properties properties);
 
     @Override
-    final VoidResult _apply(final T t, final Properties p) throws RuntimeException {
+    final VoidResult _apply(final T t, final Properties p) {
 	accept(t, p);
 	return new VoidResult();
     }

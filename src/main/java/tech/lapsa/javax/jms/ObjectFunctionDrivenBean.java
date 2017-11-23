@@ -13,7 +13,7 @@ public abstract class ObjectFunctionDrivenBean<T extends Serializable, R extends
     protected abstract R apply(T t, Properties properties);
 
     @Override
-    final R _apply(final T t, final Properties p) throws RuntimeException {
+    final R _apply(final T t, final Properties p) {
 	return apply(t, p);
     }
 }

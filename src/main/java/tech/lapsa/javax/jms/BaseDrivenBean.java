@@ -99,5 +99,5 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
 		.send(outD, serializable);
     }
 
-    abstract OUT _apply(IN inO, Properties p) throws RuntimeException;
+    abstract OUT _apply(IN inO, Properties p);
 }
