@@ -24,10 +24,6 @@ public final class MyJMSFunctions {
     private MyJMSFunctions() {
     }
 
-    public static final class VoidResult implements Serializable {
-	private static final long serialVersionUID = 1L;
-    }
-
     //
 
     public static <T extends Serializable> MyJMSConsumer<T> createConsumer(final JMSContext context,
@@ -181,22 +177,6 @@ public final class MyJMSFunctions {
 		throw inM.getBody(RuntimeException.class);
 	    }
 
-	}
-    }
-
-    public static class ResponseNotReceivedException extends Exception {
-	private static final long serialVersionUID = 1L;
-    }
-
-    public static class InvalidResponseTypeException extends Exception {
-	private static final long serialVersionUID = 1L;
-
-	InvalidResponseTypeException(Class<?> expected, Class<?> actual) {
-	    super(String.format("Expected type is %1$s but the actual type was %2$s", expected, actual));
-	}
-
-	InvalidResponseTypeException(String message) {
-	    super(message);
 	}
     }
 

@@ -21,7 +21,7 @@ import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.logging.MyLogger;
 
-public abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable> implements MessageListener {
+abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable> implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
 	    .withNameOf(this.getClass()) //
@@ -68,7 +68,7 @@ public abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serial
     }
 
     @Override
-    public void onMessage(Message originM) {
+    public final void onMessage(Message originM) {
 	try {
 	    try {
 		final Properties p = MyMessages.propertiesFromMessage(originM);

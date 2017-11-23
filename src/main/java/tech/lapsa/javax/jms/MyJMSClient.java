@@ -7,9 +7,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.validation.ValidationException;
 
-import tech.lapsa.javax.jms.MyJMSFunctions.InvalidResponseTypeException;
-import tech.lapsa.javax.jms.MyJMSFunctions.ResponseNotReceivedException;
-
 public interface MyJMSClient {
 
     //
@@ -32,7 +29,7 @@ public interface MyJMSClient {
 	    throws JMSException;
 
     //
-    
+
     <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(Destination destination,
 	    Class<R> rClass);
 

@@ -5,8 +5,6 @@ import java.util.Properties;
 
 import javax.validation.ValidationException;
 
-import tech.lapsa.javax.jms.MyJMSFunctions.VoidResult;
-
 public abstract class ObjectConsumerDrivenBean<T extends Serializable>
 	extends BaseDrivenBean<T, VoidResult> {
 
@@ -17,12 +15,12 @@ public abstract class ObjectConsumerDrivenBean<T extends Serializable>
     protected abstract void accept(T t, Properties properties);
 
     @Override
-    VoidResult _apply(T t, Properties p) throws RuntimeException {
+    final VoidResult _apply(T t, Properties p) throws RuntimeException {
 	accept(t, p);
 	return new VoidResult();
     }
 
     @Override
-    void _validationError(ValidationException e) {
+    final void _validationError(ValidationException e) {
     }
 }
