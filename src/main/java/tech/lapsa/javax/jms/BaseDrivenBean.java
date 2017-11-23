@@ -100,6 +100,4 @@ abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serializable>
     }
 
     abstract OUT _apply(IN inO, Properties p) throws RuntimeException;
-
-    abstract void _validationError(ValidationException e);
 }

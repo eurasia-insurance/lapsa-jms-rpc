@@ -3,8 +3,6 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-import javax.validation.ValidationException;
-
 public abstract class ObjectFunctionDrivenBean<T extends Serializable, R extends Serializable>
 	extends BaseDrivenBean<T, R> {
 
@@ -17,9 +15,5 @@ public abstract class ObjectFunctionDrivenBean<T extends Serializable, R extends
     @Override
     final R _apply(final T t, final Properties p) throws RuntimeException {
 	return apply(t, p);
-    }
-
-    @Override
-    final void _validationError(final ValidationException e) {
     }
 }
