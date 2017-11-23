@@ -12,6 +12,9 @@ import org.junit.Test;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
 import test.assertion.Assertions;
+import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestDestination;
+import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestEntity;
+import test.ejb.resources.runtimeExceptionTest.RuntimeExceptionTestResult;
 import test.ejb.resources.simpleTest.SimpleTestDestination;
 import test.ejb.resources.simpleTest.SimpleTestEntity;
 import test.ejb.resources.simpleTest.SimpleTestResult;
@@ -28,7 +31,7 @@ public class ObjectFunctionTest extends ArquillianBaseTestCase {
     private SimpleTestDestination simpleTestDestination;
 
     @Test
-    public void simpleTest() throws JMSException {
+    public void simpleTest_1() throws JMSException {
 	final MyJMSFunction<SimpleTestEntity, SimpleTestResult> function = jmsClient.createFunction(
 		simpleTestDestination.getDestination(),
 		SimpleTestResult.class);
@@ -45,7 +48,7 @@ public class ObjectFunctionTest extends ArquillianBaseTestCase {
     private ValidationTestDestination validationTestDestination;
 
     @Test
-    public void validationTest_OK() throws JMSException {
+    public void validationTest_1() throws JMSException {
 	final MyJMSFunction<ValidationTestEntity, ValidationTestResult> function = jmsClient.createFunction(
 		validationTestDestination.getDestination(),
 		ValidationTestResult.class);
@@ -60,7 +63,7 @@ public class ObjectFunctionTest extends ArquillianBaseTestCase {
     }
 
     @Test
-    public void validationTest_Fail() {
+    public void validationTest_2() {
 	final MyJMSFunction<ValidationTestEntity, ValidationTestResult> function = jmsClient.createFunction(
 		validationTestDestination.getDestination(),
 		ValidationTestResult.class);
@@ -75,6 +78,28 @@ public class ObjectFunctionTest extends ArquillianBaseTestCase {
 		    throw new RuntimeException(e1);
 		}
 	    }, ValidationException.class);
+	}
+    }
+
+    @Inject
+    private RuntimeExceptionTestDestination runtimeExceptionTestDestination;
+
+    @Test
+    public void runtimeExceptionTest_1() throws JMSException {
+	final MyJMSFunction<RuntimeExceptionTestEntity, RuntimeExceptionTestResult> function = jmsClient.createFunction(
+		runtimeExceptionTestDestination.getDestination(),
+		RuntimeExceptionTestResult.class);
+
+	{
+	    final String MESSAGE = "Hello JMS world!";
+	    final RuntimeExceptionTestEntity e = new RuntimeExceptionTestEntity(MESSAGE);
+	    Assertions.expectException(() -> {
+		try {
+		    function.apply(e);
+		} catch (JMSException e1) {
+		    throw new RuntimeException(e1);
+		}
+	    }, NullPointerException.class);
 	}
     }
 }

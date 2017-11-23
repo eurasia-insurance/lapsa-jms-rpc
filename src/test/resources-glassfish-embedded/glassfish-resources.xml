@@ -19,4 +19,9 @@
 		<property name="Name" value="test.validationTest.queue" />
 	</admin-object-resource>
 
+	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/runtimeExceptionTest">
+		<property name="Name" value="test.runtimeException.queue" />
+	</admin-object-resource>
+
 </resources>
