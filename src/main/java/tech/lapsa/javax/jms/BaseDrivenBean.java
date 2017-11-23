@@ -12,7 +12,6 @@ import javax.jms.Destination;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageFormatException;
 import javax.jms.MessageListener;
@@ -95,11 +94,9 @@ public abstract class BaseDrivenBean<IN extends Serializable, OUT extends Serial
 	final Destination outD = inM.getJMSReplyTo();
 	if (outD == null) // for noWait senders support
 	    return;
-	final JMSProducer producer = context.createProducer();
-	final Message outM = context.createObjectMessage(serializable);
-	outM.setJMSCorrelationID(inM.getJMSMessageID());
-	producer.send(outD, outM);
-	logger.FINE.log("Rplying %1$s", outM);
+	context.createProducer()
+		.setJMSCorrelationID(inM.getJMSCorrelationID()) //
+		.send(outD, serializable);
     }
 
     abstract OUT _apply(IN inO, Properties p) throws RuntimeException;
