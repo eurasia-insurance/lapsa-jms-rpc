@@ -28,10 +28,24 @@ public final class MyJMSFunctions {
 	private static final long serialVersionUID = 1L;
     }
 
+    //
+
     public static <T extends Serializable> MyJMSConsumer<T> createConsumer(final JMSContext context,
 	    final Destination destination) {
 	return new MyJMSConsumerImpl<>(context, destination);
     }
+
+    public static <T extends Serializable> MyJMSConsumer<T> createQueueConsumer(final JMSContext context,
+	    final String queuePhysicalName) {
+	return new MyJMSConsumerImpl<>(context, context.createQueue(queuePhysicalName));
+    }
+
+    public static <T extends Serializable> MyJMSConsumer<T> createTopicConsumer(final JMSContext context,
+	    final String topicPhysicalName) {
+	return new MyJMSConsumerImpl<>(context, context.createTopic(topicPhysicalName));
+    }
+
+    //
 
     public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleConsumer(
 	    final JMSContext context,
@@ -39,10 +53,36 @@ public final class MyJMSFunctions {
 	return new MyJMSMultipleConsumerImpl<>(context, destination);
     }
 
+    public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleQueueConsumer(
+	    final JMSContext context,
+	    final String queuePhysicalName) throws JMSException {
+	return new MyJMSMultipleConsumerImpl<>(context, context.createQueue(queuePhysicalName));
+    }
+
+    public static <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleTopicConsumer(
+	    final JMSContext context,
+	    final String topicPhysicalName) throws JMSException {
+	return new MyJMSMultipleConsumerImpl<>(context, context.createTopic(topicPhysicalName));
+    }
+
+    //
+
     public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(
 	    final JMSContext context, final Destination destination, Class<R> outClazz) {
 	return new MyJMSFunctionImpl<>(outClazz, context, destination);
     }
+
+    public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(
+	    final JMSContext context, final String queuePhysicalName, Class<R> outClazz) {
+	return new MyJMSFunctionImpl<>(outClazz, context, context.createQueue(queuePhysicalName));
+    }
+
+    public static <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(
+	    final JMSContext context, final String topicPhysicalName, Class<R> outClazz) {
+	return new MyJMSFunctionImpl<>(outClazz, context, context.createTopic(topicPhysicalName));
+    }
+
+    //
 
     static class Base<OUT extends Serializable, IN extends Serializable> {
 

@@ -12,13 +12,37 @@ import tech.lapsa.javax.jms.MyJMSFunctions.ResponseNotReceivedException;
 
 public interface MyJMSClient {
 
+    //
+
     <T extends Serializable> MyJMSConsumer<T> createConsumer(Destination destination);
+
+    <T extends Serializable> MyJMSConsumer<T> createQueueConsumer(String queuePhysicalName);
+
+    <T extends Serializable> MyJMSConsumer<T> createTopicConsumer(String topicPhysicalName);
+
+    //
 
     <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleConsumer(Destination destination)
 	    throws JMSException;
 
-    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(final Destination destination,
+    <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleQueueConsumer(String queuePhysicalName)
+	    throws JMSException;
+
+    <T extends Serializable> MyJMSMultipleConsumer<T> createMultipleTopicConsumer(String topicPhysicalName)
+	    throws JMSException;
+
+    //
+    
+    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createFunction(Destination destination,
 	    Class<R> rClass);
+
+    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createQueueFunction(String queuePhysicalName,
+	    Class<R> rClass);
+
+    <T extends Serializable, R extends Serializable> MyJMSFunction<T, R> createTopicFunction(String topicPhysicalName,
+	    Class<R> rClass);
+
+    //
 
     public static interface MyJMSFunction<T extends Serializable, R extends Serializable> {
 
