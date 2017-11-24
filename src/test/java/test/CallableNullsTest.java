@@ -11,13 +11,13 @@ import org.junit.Test;
 import ejb.resources.callable.nulls.CallableNullsDestination;
 import ejb.resources.callable.nulls.CallableNullsEntity;
 import ejb.resources.callable.nulls.CallableNullsResult;
-import tech.lapsa.javax.jms.JmsClient;
-import tech.lapsa.javax.jms.JmsClient.JmsCallable;
+import tech.lapsa.javax.jms.JmsClientFactory;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
 
 public class CallableNullsTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClient jmsClient;
+    private JmsClientFactory jmsClientFactory;
 
     @Inject
     private CallableNullsDestination destination;
@@ -25,7 +25,7 @@ public class CallableNullsTest extends ArquillianBaseTestCase {
     @Test
     public void basic() throws JMSException {
 	final JmsCallable<CallableNullsEntity, CallableNullsResult> callable //
-		= jmsClient.createCallable(destination.getDestination(), CallableNullsResult.class);
+		= jmsClientFactory.createCallable(destination.getDestination(), CallableNullsResult.class);
 	{
 	    final CallableNullsResult r = callable.call(null);
 	    assertThat(r, nullValue());

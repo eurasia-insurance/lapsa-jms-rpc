@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
 
-public interface JmsClient {
+public interface JmsClientFactory {
 
     //
 
@@ -18,29 +17,25 @@ public interface JmsClient {
 
     public static interface JmsConsumer<E extends Serializable> {
 
-	void accept(E entity) throws JMSException;
+	void accept(E entity);
 
-	void accept(E entity, Properties properties) throws JMSException;
+	void accept(E entity, Properties properties);
     }
 
     //
 
-    <E extends Serializable> JmsSender<E> createSender(Destination destination)
-	    throws JMSException;
+    <E extends Serializable> JmsSender<E> createSender(Destination destination);
 
     <E extends Serializable> JmsSender<E> createSenderQueue(String queuePhysicalName);
 
     <E extends Serializable> JmsSender<E> createSenderTopic(String topicPhysicalName);
 
-    public static interface JmsSender<E extends Serializable> extends AutoCloseable {
+    public static interface JmsSender<E extends Serializable> {
 
 	void send(E entity, Properties properties);
 
 	@SuppressWarnings("unchecked")
-	void send(E... entities) throws JMSException;
-
-	@Override
-	void close() throws JMSException;
+	void send(E... entities);
     }
 
     //
@@ -56,9 +51,9 @@ public interface JmsClient {
 
     public static interface JmsCallable<E extends Serializable, R extends Serializable> {
 
-	R call(E entity) throws JMSException;
+	R call(E entity);
 
-	R call(E entity, Properties properties) throws JMSException;
+	R call(E entity, Properties properties);
     }
 
 }

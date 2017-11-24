@@ -8,8 +8,8 @@ import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeDestination;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity_Unexpected;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeResult;
-import tech.lapsa.javax.jms.JmsClient;
-import tech.lapsa.javax.jms.JmsClient.JmsCallable;
+import tech.lapsa.javax.jms.JmsClientFactory;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
 import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
 import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 import test.assertion.Assertions;
@@ -17,7 +17,7 @@ import test.assertion.Assertions;
 public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClient jmsClient;
+    private JmsClientFactory jmsClientFactory;
 
     @Inject
     private CallableUnexceptedTypeDestination destination;
@@ -25,7 +25,7 @@ public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
     @Test
     public void unexpectedResult() throws Throwable {
 	final JmsCallable<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> service //
-		= jmsClient.createCallable(destination.getDestinationUnexcpetedResult(),
+		= jmsClientFactory.createCallable(destination.getDestinationUnexcpetedResult(),
 			CallableUnexceptedTypeResult.class);
 
 	{
@@ -38,7 +38,7 @@ public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
     @Test
     public void unexpectedRequest() throws Throwable {
 	final JmsCallable<CallableUnexceptedTypeEntity_Unexpected, CallableUnexceptedTypeResult> service //
-		= jmsClient.createCallable(destination.getDestination(),
+		= jmsClientFactory.createCallable(destination.getDestination(),
 			CallableUnexceptedTypeResult.class);
 
 	{
