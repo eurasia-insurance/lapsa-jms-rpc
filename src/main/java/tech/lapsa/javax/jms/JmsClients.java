@@ -12,9 +12,9 @@ import javax.jms.Message;
 import javax.jms.TemporaryQueue;
 
 import tech.lapsa.java.commons.function.MyObjects;
-import tech.lapsa.javax.jms.JmsClient.JmsConsumer;
 import tech.lapsa.javax.jms.JmsClient.JmsCallable;
-import tech.lapsa.javax.jms.JmsClient.JmsMultipleConsumer;
+import tech.lapsa.javax.jms.JmsClient.JmsConsumer;
+import tech.lapsa.javax.jms.JmsClient.JmsSender;
 
 public final class JmsClients {
 
@@ -40,19 +40,18 @@ public final class JmsClients {
 
     //
 
-    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(final JMSContext context,
-	    final Destination destination) throws JMSException {
+    public static <E extends Serializable> JmsSender<E> createSender(final JMSContext context,
+	    final Destination destination) {
 	return new MyJMSMultipleConsumerImpl<>(context, destination);
     }
 
-    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(
-	    final JMSContext context, final String queuePhysicalName) throws JMSException {
+    public static <E extends Serializable> JmsSender<E> createSenderQueue(final JMSContext context,
+	    final String queuePhysicalName) {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(
-	    final JMSContext context,
-	    final String topicPhysicalName) throws JMSException {
+    public static <E extends Serializable> JmsSender<E> createSenderTopic(final JMSContext context,
+	    final String topicPhysicalName) {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createTopic(topicPhysicalName));
     }
 
@@ -75,7 +74,7 @@ public final class JmsClients {
 
     //
 
-    static class Base<E extends Serializable, R extends Serializable> {
+    private static class BaseClient<E extends Serializable, R extends Serializable> {
 
 	private static final int DEFAULT_TIMEOUT = 20 * 1000; // 20 seconds
 
@@ -83,7 +82,7 @@ public final class JmsClients {
 	final Destination destination;
 	final Class<R> resultClazz;
 
-	private Base(final Class<R> resultClazz, final JMSContext context,
+	private BaseClient(final Class<R> resultClazz, final JMSContext context,
 		final Destination destination) {
 	    this.resultClazz = MyObjects.requireNonNull(resultClazz, "resultClazz");
 	    this.context = MyObjects.requireNonNull(context, "context");
@@ -161,10 +160,10 @@ public final class JmsClients {
 	}
     }
 
-    static final class MyJMSMultipleConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
-	    implements JmsMultipleConsumer<E> {
+    static final class MyJMSMultipleConsumerImpl<E extends Serializable> extends BaseClient<E, VoidResult>
+	    implements JmsSender<E> {
 
-	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination) throws JMSException {
+	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination) {
 	    super(VoidResult.class, context, destination);
 	}
 
@@ -174,12 +173,17 @@ public final class JmsClients {
 
 	@Override
 	@SafeVarargs
-	public final void acceptNoWait(final E... entities) throws JMSException {
+	public final void send(final E... entities) throws JMSException {
 	    _send(context, destination, null, entities);
+	}
+
+	@Override
+	public void send(E entity, Properties properties) throws JMSException {
+	    _send(context, destination, properties, entity);
 	}
     }
 
-    static final class MyJMSConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
+    static final class MyJMSConsumerImpl<E extends Serializable> extends BaseClient<E, VoidResult>
 	    implements JmsConsumer<E> {
 
 	private MyJMSConsumerImpl(final JMSContext context, final Destination destination) {
@@ -197,19 +201,9 @@ public final class JmsClients {
 	public void accept(final E entity) throws JMSException {
 	    accept(entity, null);
 	}
-
-	@Override
-	public void acceptNoWait(final E entity, final Properties properties) throws JMSException {
-	    _send(properties, entity);
-	}
-
-	@Override
-	public void acceptNoWait(final E entity) throws JMSException {
-	    acceptNoWait(entity, null);
-	}
     }
 
-    static final class MyJMSFunctionImpl<E extends Serializable, R extends Serializable> extends Base<E, R>
+    static final class MyJMSFunctionImpl<E extends Serializable, R extends Serializable> extends BaseClient<E, R>
 	    implements JmsCallable<E, R> {
 
 	private MyJMSFunctionImpl(final Class<R> resultClazz, final JMSContext context, final Destination destination) {

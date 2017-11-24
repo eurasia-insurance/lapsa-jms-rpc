@@ -50,23 +50,19 @@ public class JmsClientProducerBean {
 	//
 
 	@Override
-	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(final Destination destination)
+	public <E extends Serializable> JmsSender<E> createSender(final Destination destination)
 		throws JMSException {
-	    return JmsClients.createMultipleConsumer(context, destination);
+	    return JmsClients.createSender(context, destination);
 	}
 
 	@Override
-	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(
-		final String queuePhysicalName)
-		throws JMSException {
-	    return JmsClients.createMultipleConsumerQueue(context, queuePhysicalName);
+	public <E extends Serializable> JmsSender<E> createSenderQueue(final String queuePhysicalName) {
+	    return JmsClients.createSenderQueue(context, queuePhysicalName);
 	}
 
 	@Override
-	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(
-		final String topicPhysicalName)
-		throws JMSException {
-	    return JmsClients.createMultipleConsumerTopic(context, topicPhysicalName);
+	public <E extends Serializable> JmsSender<E> createSenderTopic(final String topicPhysicalName) {
+	    return JmsClients.createSenderTopic(context, topicPhysicalName);
 	}
 
 	//

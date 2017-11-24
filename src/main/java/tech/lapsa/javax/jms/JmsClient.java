@@ -21,27 +21,23 @@ public interface JmsClient {
 	void accept(E entity) throws JMSException;
 
 	void accept(E entity, Properties properties) throws JMSException;
-
-	void acceptNoWait(E entity) throws JMSException;
-
-	void acceptNoWait(E entity, Properties properties) throws JMSException;
     }
 
     //
 
-    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(Destination destination)
+    <E extends Serializable> JmsSender<E> createSender(Destination destination)
 	    throws JMSException;
 
-    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(String queuePhysicalName)
-	    throws JMSException;
+    <E extends Serializable> JmsSender<E> createSenderQueue(String queuePhysicalName);
 
-    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(String topicPhysicalName)
-	    throws JMSException;
+    <E extends Serializable> JmsSender<E> createSenderTopic(String topicPhysicalName);
 
-    @SuppressWarnings("unchecked")
-    public static interface JmsMultipleConsumer<E extends Serializable> extends AutoCloseable {
+    public static interface JmsSender<E extends Serializable> extends AutoCloseable {
 
-	void acceptNoWait(E... entities) throws JMSException;
+	void send(E entity, Properties properties) throws JMSException;
+
+	@SuppressWarnings("unchecked")
+	void send(E... entities) throws JMSException;
 
 	@Override
 	void close() throws JMSException;
