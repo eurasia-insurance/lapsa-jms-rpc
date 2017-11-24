@@ -29,7 +29,7 @@ public class FunctionRuntimeExceptionTest extends ArquillianBaseTestCase {
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionRuntimeExceptionEntity e = new FunctionRuntimeExceptionEntity(MESSAGE);
-	    Assertions.expectException(() -> service.apply(e), IllegalStateException.class);
+	    Assertions.expectException(() -> service.call(e), IllegalStateException.class);
 	}
     }
 }

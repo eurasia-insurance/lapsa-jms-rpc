@@ -59,9 +59,9 @@ public interface MyJMSClient {
 
     public static interface MyJMSFunction<E extends Serializable, R extends Serializable> {
 
-	R apply(E entity) throws JMSException;
+	R call(E entity) throws JMSException;
 
-	R apply(E entity, Properties properties) throws JMSException;
+	R call(E entity, Properties properties) throws JMSException;
     }
 
 }

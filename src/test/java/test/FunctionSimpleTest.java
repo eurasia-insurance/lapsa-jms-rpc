@@ -35,7 +35,7 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + MESSAGE;
 
 	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = service.apply(e);
+	    final FunctionSimpleResult r = service.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
@@ -56,7 +56,7 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(FunctionSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = service.apply(e, properties);
+	    final FunctionSimpleResult r = service.call(e, properties);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));

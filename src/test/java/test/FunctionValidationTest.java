@@ -34,7 +34,7 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
 	{
 	    final String VALID_MESSAGE = "Hello JMS world!";
 	    final FunctionValidationEntity e = new FunctionValidationEntity(VALID_MESSAGE);
-	    final FunctionValidationResult r = service.apply(e);
+	    final FunctionValidationResult r = service.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(FunctionSimpleResult.PREFIX + e.getMessage()))));
@@ -50,7 +50,7 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
 	{
 	    final String NULL_MESSAGE = null;
 	    final FunctionValidationEntity e = new FunctionValidationEntity(NULL_MESSAGE);
-	    Assertions.expectException(() -> service.apply(e), ValidationException.class);
+	    Assertions.expectException(() -> service.call(e), ValidationException.class);
 	}
     }
 }

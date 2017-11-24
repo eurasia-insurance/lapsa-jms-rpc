@@ -217,13 +217,13 @@ public final class MyJMSFunctions {
 	}
 
 	@Override
-	public R apply(final E entity, final Properties properties) throws JMSException {
+	public R call(final E entity, final Properties properties) throws JMSException {
 	    return _request(entity, properties);
 	}
 
 	@Override
-	public R apply(final E entity) throws JMSException {
-	    return apply(entity, null);
+	public R call(final E entity) throws JMSException {
+	    return call(entity, null);
 	}
     }
 }

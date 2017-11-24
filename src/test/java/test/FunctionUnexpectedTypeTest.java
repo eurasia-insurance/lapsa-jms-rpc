@@ -31,7 +31,7 @@ public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionUnexceptedTypeEntity e = new FunctionUnexceptedTypeEntity(MESSAGE);
-	    Assertions.expectException(() -> service.apply(e), UnexpectedResponseTypeException.class);
+	    Assertions.expectException(() -> service.call(e), UnexpectedResponseTypeException.class);
 	}
     }
 
@@ -44,7 +44,7 @@ public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionUnexceptedTypeEntity_Unexpected e = new FunctionUnexceptedTypeEntity_Unexpected(MESSAGE);
-	    Assertions.expectException(() -> service.apply(e), UnexpectedTypeRequestedException.class);
+	    Assertions.expectException(() -> service.call(e), UnexpectedTypeRequestedException.class);
 	}
     }
 }
