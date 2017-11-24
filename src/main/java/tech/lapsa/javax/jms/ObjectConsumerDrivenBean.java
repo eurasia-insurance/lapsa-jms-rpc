@@ -15,6 +15,6 @@ public abstract class ObjectConsumerDrivenBean<E extends Serializable>
     @Override
     final VoidResult _apply(final E entity, final Properties properties) {
 	accept(entity, properties);
-	return new VoidResult();
+	return VoidResult.INSTANCE;
     }
 }
