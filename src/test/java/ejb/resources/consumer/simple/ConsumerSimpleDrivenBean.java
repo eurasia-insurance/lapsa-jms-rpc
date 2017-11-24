@@ -5,19 +5,18 @@ import java.util.Properties;
 import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectConsumerDrivenBean;
+import test.ConsumerSimpleTest;
 
 @MessageDriven(mappedName = ConsumerSimpleDestination.JNDI_NAME)
-public class ConsumerSimpleDrivenBean extends ObjectConsumerDrivenBean<SimpleEntity> {
+public class ConsumerSimpleDrivenBean extends ObjectConsumerDrivenBean<ConsumerSimpleEntity> {
 
     public ConsumerSimpleDrivenBean() {
-	super(SimpleEntity.class);
+	super(ConsumerSimpleEntity.class);
     }
 
-    public static SimpleEntity lastReceived;
-
     @Override
-    protected void accept(SimpleEntity entity, Properties properties) {
-	ConsumerSimpleDrivenBean.lastReceived = entity;
+    protected void accept(ConsumerSimpleEntity entity, Properties properties) {
+	ConsumerSimpleTest.BASIC_EXPECTED = entity;
     }
 
 }

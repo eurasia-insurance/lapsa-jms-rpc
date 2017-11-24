@@ -2,11 +2,11 @@ package ejb.resources.consumer.simple;
 
 import java.io.Serializable;
 
-public class SimpleEntity implements Serializable {
+public class ConsumerSimpleEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public SimpleEntity(String message) {
+    public ConsumerSimpleEntity(String message) {
 	this.message = message;
     }
 
@@ -21,9 +21,9 @@ public class SimpleEntity implements Serializable {
 	    return false;
 	if (obj == this)
 	    return true;
-	if (!(obj instanceof SimpleEntity))
+	if (!(obj instanceof ConsumerSimpleEntity))
 	    return false;
-	final SimpleEntity othr = (SimpleEntity) obj;
+	final ConsumerSimpleEntity othr = (ConsumerSimpleEntity) obj;
 	if (othr.message == this.message)
 	    return true;
 	if (message != null && message.equals(othr.message))
