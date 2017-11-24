@@ -37,22 +37,30 @@ public final class MyMessages {
 	    } catch (final MessageFormatException ignored) {
 	    }
 	}
+	if (p.isEmpty())
+	    return null;
 	return p;
     }
 
     static void propertiesToJMSProducer(final JMSProducer producer, final Properties properties) {
 	final Map<String, String> map = propertiesToMap(properties);
+	if (MyObjects.isNull(map))
+	    return;
 	for (final Map.Entry<String, String> e : map.entrySet())
 	    producer.setProperty(e.getKey(), e.getValue());
     }
 
     static void propertiesToMessage(final Message message, final Properties properties) throws JMSException {
 	final Map<String, String> map = propertiesToMap(properties);
+	if (MyObjects.isNull(map))
+	    return;
 	for (final Map.Entry<String, String> e : map.entrySet())
 	    message.setStringProperty(e.getKey(), e.getValue());
     }
 
     private static Map<String, String> propertiesToMap(final Properties properties) {
+	if (MyObjects.isNull(properties))
+	    return null;
 	return properties.keySet().stream() //
 		.filter(x -> MyObjects.isA(x, String.class))
 		.map(Object::toString) //
