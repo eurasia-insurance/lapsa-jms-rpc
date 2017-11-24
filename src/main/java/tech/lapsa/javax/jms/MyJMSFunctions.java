@@ -9,9 +9,7 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
-import javax.jms.MessageFormatException;
 import javax.jms.TemporaryQueue;
-import javax.validation.ValidationException;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSConsumer;
@@ -42,15 +40,13 @@ public final class MyJMSFunctions {
 
     //
 
-    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(
-	    final JMSContext context,
+    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(final JMSContext context,
 	    final Destination destination) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, destination);
     }
 
     public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(
-	    final JMSContext context,
-	    final String queuePhysicalName) throws JMSException {
+	    final JMSContext context, final String queuePhysicalName) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
@@ -114,13 +110,11 @@ public final class MyJMSFunctions {
 		producer.send(destination, entity);
 	}
 
-	final R _request(final E entity)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	final R _request(final E entity) throws JMSException {
 	    return _request(entity, null);
 	}
 
-	final R _request(final E entity, final Properties properties)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	final R _request(final E entity, final Properties properties) throws JMSException {
 
 	    Message resultM = null;
 
@@ -151,39 +145,31 @@ public final class MyJMSFunctions {
 	    if (resultM == null)
 		throw new ResponseNotReceivedException();
 
-	    try {
-		if (resultM.isBodyAssignableTo(resultClazz))
-		    return resultM.getBody(resultClazz);
+	    if (resultM.isBodyAssignableTo(resultClazz))
+		return resultM.getBody(resultClazz);
 
-		if (resultM.isBodyAssignableTo(ValidationException.class))
-		    throw resultM.getBody(ValidationException.class);
-
-		if (resultM.isBodyAssignableTo(RuntimeException.class))
-		    throw resultM.getBody(RuntimeException.class);
-
-		if (resultM.isBodyAssignableTo(Serializable.class)) {
-		    final Serializable inO = resultM.getBody(Serializable.class);
-		    throw new InvalidResponseTypeException(resultClazz, inO.getClass());
-		}
-
-		throw new InvalidResponseTypeException("Unknown response type");
-
-	    } catch (final MessageFormatException e) {
+	    if (resultM.isBodyAssignableTo(RuntimeException.class))
 		throw resultM.getBody(RuntimeException.class);
+
+	    if (resultM.isBodyAssignableTo(Serializable.class)) {
+		final Object wrongTypedObject = resultM.getBody(Object.class);
+		if (wrongTypedObject != null)
+		    throw new UnexpectedResponseTypeException(resultClazz, wrongTypedObject.getClass());
 	    }
+
+	    throw new UnexpectedResponseTypeException("Unknown response type");
 	}
     }
 
     static final class MyJMSMultipleConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
 	    implements MyJMSMultipleConsumer<E> {
 
-	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination)
-		throws JMSException {
+	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination) throws JMSException {
 	    super(VoidResult.class, context, destination);
 	}
 
 	@Override
-	public void close() throws JMSException, IllegalStateException {
+	public void close() throws JMSException {
 	}
 
 	@Override
@@ -201,16 +187,14 @@ public final class MyJMSFunctions {
 	}
 
 	@Override
-	public void accept(final E entity, final Properties properties)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	public void accept(final E entity, final Properties properties) throws JMSException {
 	    final VoidResult outO = _request(entity, properties);
 	    if (outO == null)
 		throw new RuntimeException(VoidResult.class.getName() + " expected");
 	}
 
 	@Override
-	public void accept(final E entity)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	public void accept(final E entity) throws JMSException {
 	    accept(entity, null);
 	}
 
@@ -233,14 +217,12 @@ public final class MyJMSFunctions {
 	}
 
 	@Override
-	public R apply(final E entity, final Properties properties)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	public R apply(final E entity, final Properties properties) throws JMSException {
 	    return _request(entity, properties);
 	}
 
 	@Override
-	public R apply(final E entity)
-		throws JMSException, ResponseNotReceivedException, InvalidResponseTypeException {
+	public R apply(final E entity) throws JMSException {
 	    return apply(entity, null);
 	}
     }

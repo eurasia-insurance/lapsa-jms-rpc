@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.validation.ValidationException;
 
 public interface MyJMSClient {
 
@@ -19,13 +18,9 @@ public interface MyJMSClient {
 
     public static interface MyJMSConsumer<E extends Serializable> {
 
-	void accept(E entity)
-		throws JMSException, ValidationException, RuntimeException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
+	void accept(E entity) throws JMSException;
 
-	void accept(E entity, Properties properties)
-		throws JMSException, ValidationException, RuntimeException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
+	void accept(E entity, Properties properties) throws JMSException;
 
 	void acceptNoWait(E entity) throws JMSException;
 
@@ -64,12 +59,9 @@ public interface MyJMSClient {
 
     public static interface MyJMSFunction<E extends Serializable, R extends Serializable> {
 
-	R apply(E entity) throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
+	R apply(E entity) throws JMSException;
 
-	R apply(E entity, Properties properties)
-		throws JMSException, RuntimeException, ValidationException, ResponseNotReceivedException,
-		InvalidResponseTypeException;
+	R apply(E entity, Properties properties) throws JMSException;
     }
 
 }
