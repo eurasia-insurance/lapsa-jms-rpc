@@ -17,12 +17,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidatorFactory;
 
+import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.logging.MyLogger;
 
 abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
 	    .withNameOf(this.getClass()) //
+	    .addWithPrefix("JMS_SERVICE") //
 	    .build();
 
     private final Class<E> entityClazz;
@@ -60,9 +62,23 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     public void onMessage(final Message entityM) {
 	try {
 	    try {
+		logger.FINER.log("Message received %1$s from %2$s", entityM.getJMSMessageID(),
+			entityM.getJMSDestination());
 		final Properties properties = MyMessages.propertiesFromMessage(entityM);
+		if (MyObjects.nonNull(properties))
+		    logger.FINER.log("With properties %1$s", properties);
 		final E entity = processedEntity(entityM);
+		logger.FINER.log( //
+			MyObjects.isNull(entity) //
+				? "Entity %1$s is null" //
+				: "Entity %1$s processed %2$s",
+			entityClazz, entity);
 		final R result = _apply(entity, properties);
+		logger.FINER.log( //
+			MyObjects.isNull(entity) //
+				? "Result is null" //
+				: "Result %1$s processed %2$s",
+			result.getClass(), result);
 		reply(entityM, result);
 	    } catch (final RuntimeException e) {
 		// also catches ValidationException types
