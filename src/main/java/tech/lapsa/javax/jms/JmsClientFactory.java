@@ -6,7 +6,7 @@ import java.util.Properties;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 
-public interface JmsClient {
+public interface JmsClientFactory {
 
     //
 

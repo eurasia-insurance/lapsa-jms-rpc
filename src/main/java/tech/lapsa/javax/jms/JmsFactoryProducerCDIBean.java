@@ -12,25 +12,25 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 
 @Singleton
-public class JmsClientProducerBean {
+public class JmsFactoryProducerCDIBean {
 
     @Inject
     @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
-    private JmsClient instance;
+    private JmsClientFactory clientFactoryInstance;
 
     @PostConstruct
     public void init() {
-	instance = new MyJMSClientImpl();
+	clientFactoryInstance = new JmsClientFactoryImpl();
     }
 
     @Produces
-    public JmsClient getInstance() {
-	return instance;
+    public JmsClientFactory getClientFactory() {
+	return clientFactoryInstance;
     }
 
-    private class MyJMSClientImpl implements JmsClient {
+    private class JmsClientFactoryImpl implements JmsClientFactory {
 
 	@Override
 	public <E extends Serializable> JmsConsumer<E> createConsumer(final Destination destination) {

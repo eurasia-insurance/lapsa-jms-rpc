@@ -13,14 +13,14 @@ import ejb.resources.callable.simple.CallableSimpleResult;
 import ejb.resources.callable.validation.CallableValidationDestination;
 import ejb.resources.callable.validation.CallableValidationEntity;
 import ejb.resources.callable.validation.CallableValidationResult;
-import tech.lapsa.javax.jms.JmsClient;
-import tech.lapsa.javax.jms.JmsClient.JmsCallable;
+import tech.lapsa.javax.jms.JmsClientFactory;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
 import test.assertion.Assertions;
 
 public class CallableValidationTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClient jmsClient;
+    private JmsClientFactory jmsClientFactory;
 
     @Inject
     private CallableValidationDestination destination;
@@ -28,7 +28,7 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
     @Test
     public void validationOk() throws JMSException {
 	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
-		= jmsClient.createCallable(destination.getDestination(), CallableValidationResult.class);
+		= jmsClientFactory.createCallable(destination.getDestination(), CallableValidationResult.class);
 
 	{
 	    final String VALID_MESSAGE = "Hello JMS world!";
@@ -43,7 +43,7 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
     @Test
     public void validationFail() throws Exception {
 	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
-		= jmsClient.createCallable(destination.getDestination(), CallableValidationResult.class);
+		= jmsClientFactory.createCallable(destination.getDestination(), CallableValidationResult.class);
 
 	{
 	    final String NULL_MESSAGE = null;

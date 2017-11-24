@@ -13,9 +13,9 @@ import javax.jms.Message;
 import javax.jms.TemporaryQueue;
 
 import tech.lapsa.java.commons.function.MyObjects;
-import tech.lapsa.javax.jms.JmsClient.JmsCallable;
-import tech.lapsa.javax.jms.JmsClient.JmsConsumer;
-import tech.lapsa.javax.jms.JmsClient.JmsSender;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsSender;
 
 public final class JmsClients {
 
