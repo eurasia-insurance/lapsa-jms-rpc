@@ -3,7 +3,6 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringJoiner;
 
 import javax.annotation.Resource;
 import javax.ejb.MessageDrivenContext;
@@ -13,10 +12,9 @@ import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageFormatException;
 import javax.jms.MessageListener;
 import javax.validation.ConstraintViolation;
-import javax.validation.ValidationException;
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.logging.MyLogger;
@@ -43,28 +41,19 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	this.entityClazz = entityClazz;
     }
 
-    private E validatedObject(final Message entityM) throws JMSException, ValidationException {
-	try {
-	    final E entity = entityM.getBody(entityClazz);
+    private E processedEntity(final Message entityM) throws JMSException {
+	if (!entityM.isBodyAssignableTo(entityClazz)) {
+	    final Object wrongTypedObject = entityM.getBody(Object.class);
+	    if (wrongTypedObject != null)
+		throw new UnexpectedTypeRequestedException(entityClazz, wrongTypedObject.getClass());
+	}
+	final E entity = entityM.getBody(entityClazz);
+	if (entity != null) {
 	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
 	    if (violations != null && violations.size() > 0)
-		throw new ValidationException(violationsString(violations));
-	    return entity;
-	} catch (final MessageFormatException e) {
-	    throw new ValidationException(String.format("Message is not a %1$s type", entityClazz.getName()));
+		throw new ConstraintViolationException(violations);
 	}
-    }
-
-    private String violationsString(final Set<ConstraintViolation<Object>> violations) {
-	final StringJoiner sj = new StringJoiner(System.lineSeparator());
-	sj.setEmptyValue("With no violations");
-	violations.stream() //
-		.map(cb -> String.format("Property: %1$s, value: %2$s, message: %3$s " + System.lineSeparator(), //
-			cb.getPropertyPath(), //
-			cb.getInvalidValue(), //
-			cb.getMessage())) //
-		.forEach(sj::add);
-	return sj.toString();
+	return entity;
     }
 
     @Override
@@ -72,13 +61,11 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	try {
 	    try {
 		final Properties properties = MyMessages.propertiesFromMessage(entityM);
-		final E entity = validatedObject(entityM);
+		final E entity = processedEntity(entityM);
 		final R result = _apply(entity, properties);
 		reply(entityM, result);
-	    } catch (final ValidationException e) {
-		logger.FINE.log(e);
-		reply(entityM, e);
 	    } catch (final RuntimeException e) {
+		// also catches ValidationException types
 		logger.WARN.log(e);
 		reply(entityM, e);
 	    }
