@@ -30,15 +30,12 @@ public interface JmsClientFactory {
 
     <E extends Serializable> JmsSender<E> createSenderTopic(String topicPhysicalName);
 
-    public static interface JmsSender<E extends Serializable> extends AutoCloseable {
+    public static interface JmsSender<E extends Serializable> {
 
 	void send(E entity, Properties properties);
 
 	@SuppressWarnings("unchecked")
 	void send(E... entities);
-
-	@Override
-	void close();
     }
 
     //
