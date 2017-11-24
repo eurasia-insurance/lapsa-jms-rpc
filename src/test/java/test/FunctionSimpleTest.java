@@ -23,19 +23,19 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private FunctionSimpleDestination functionSimpleDestination;
+    private FunctionSimpleDestination destination;
 
     @Test
     public void basic() throws JMSException {
-	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> function = jmsClient.createFunction(
-		functionSimpleDestination.getDestination(),
+	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createFunction(
+		destination.getDestination(),
 		FunctionSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + MESSAGE;
 
 	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = function.apply(e);
+	    final FunctionSimpleResult r = service.apply(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
@@ -44,8 +44,8 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> function = jmsClient.createFunction(
-		functionSimpleDestination.getDestination(),
+	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createFunction(
+		destination.getDestination(),
 		FunctionSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello, %1$s!";
@@ -56,7 +56,7 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(FunctionSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = function.apply(e, properties);
+	    final FunctionSimpleResult r = service.apply(e, properties);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));

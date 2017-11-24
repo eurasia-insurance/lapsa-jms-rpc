@@ -20,12 +20,12 @@ public class FunctionNullsTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private FunctionNullsDestination dest;
+    private FunctionNullsDestination destination;
 
     @Test
     public void basic() throws JMSException {
 	final MyJMSFunction<FunctionNullsEntity, FunctionNullsResult> service = jmsClient
-		.createFunction(dest.getDestination(), FunctionNullsResult.class);
+		.createFunction(destination.getDestination(), FunctionNullsResult.class);
 	{
 	    final FunctionNullsResult r = service.apply(null);
 	    assertThat(r, nullValue());

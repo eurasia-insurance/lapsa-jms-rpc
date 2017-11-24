@@ -22,19 +22,19 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private ConsumerSimpleDestination consumerSimpleDestination;
+    private ConsumerSimpleDestination destination;
 
     public static ConsumerSimpleEntity BASIC_EXPECTED = null;
 
     @Test
     public void basic() throws JMSException {
-	final MyJMSConsumer<ConsumerSimpleEntity> consumer = jmsClient
-		.createConsumer(consumerSimpleDestination.getDestination());
+	final MyJMSConsumer<ConsumerSimpleEntity> service = jmsClient
+		.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e);
+	    service.accept(e);
 	    assertThat(BASIC_EXPECTED, allOf(not(nullValue()), is(equalTo(e))));
 	}
     }
@@ -43,8 +43,8 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final MyJMSConsumer<ConsumerSimpleEntity> consumer = jmsClient
-		.createConsumer(consumerSimpleDestination.getDestination());
+	final MyJMSConsumer<ConsumerSimpleEntity> service = jmsClient
+		.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";
@@ -53,7 +53,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(ConsumerSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e, properties);
+	    service.accept(e, properties);
 	    assertThat(WITH_PROPERTIES_EXPECTED, allOf(not(nullValue()), is(equalTo(NAME))));
 
 	}

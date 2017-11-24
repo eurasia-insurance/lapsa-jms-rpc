@@ -17,19 +17,19 @@ public class FunctionRuntimeExceptionTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private FunctionRuntimeExceptionDestination functionRuntimeExceptionDestination;
+    private FunctionRuntimeExceptionDestination destination;
 
     @Test
     public void nullPointerException() throws Exception {
-	final MyJMSFunction<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> function = jmsClient
+	final MyJMSFunction<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> service = jmsClient
 		.createFunction(
-			functionRuntimeExceptionDestination.getDestination(),
+			destination.getDestination(),
 			FunctionRuntimeExceptionResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionRuntimeExceptionEntity e = new FunctionRuntimeExceptionEntity(MESSAGE);
-	    Assertions.expectException(() -> function.apply(e), IllegalStateException.class);
+	    Assertions.expectException(() -> service.apply(e), IllegalStateException.class);
 	}
     }
 }

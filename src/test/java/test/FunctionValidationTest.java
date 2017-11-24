@@ -23,18 +23,18 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private FunctionValidationDestination functionValidationDestination;
+    private FunctionValidationDestination destination;
 
     @Test
     public void validationOk() throws JMSException {
-	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> function = jmsClient.createFunction(
-		functionValidationDestination.getDestination(),
+	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createFunction(
+		destination.getDestination(),
 		FunctionValidationResult.class);
 
 	{
 	    final String VALID_MESSAGE = "Hello JMS world!";
 	    final FunctionValidationEntity e = new FunctionValidationEntity(VALID_MESSAGE);
-	    final FunctionValidationResult r = function.apply(e);
+	    final FunctionValidationResult r = service.apply(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(FunctionSimpleResult.PREFIX + e.getMessage()))));
@@ -43,14 +43,14 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
 
     @Test
     public void validationFail() throws Exception {
-	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> function = jmsClient.createFunction(
-		functionValidationDestination.getDestination(),
+	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createFunction(
+		destination.getDestination(),
 		FunctionValidationResult.class);
 
 	{
 	    final String NULL_MESSAGE = null;
 	    final FunctionValidationEntity e = new FunctionValidationEntity(NULL_MESSAGE);
-	    Assertions.expectException(() -> function.apply(e), ValidationException.class);
+	    Assertions.expectException(() -> service.apply(e), ValidationException.class);
 	}
     }
 }

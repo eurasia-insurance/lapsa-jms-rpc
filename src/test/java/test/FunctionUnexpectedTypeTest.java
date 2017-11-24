@@ -20,31 +20,31 @@ public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
     private MyJMSClient jmsClient;
 
     @Inject
-    private FunctionUnexceptedTypeDestination functionUnexpectedTypeDestination;
+    private FunctionUnexceptedTypeDestination destination;
 
     @Test
     public void unexpectedResult() throws Throwable {
-	final MyJMSFunction<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult> function //
-		= jmsClient.createFunction(functionUnexpectedTypeDestination.getDestinationUnexcpetedResult(),
+	final MyJMSFunction<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult> service //
+		= jmsClient.createFunction(destination.getDestinationUnexcpetedResult(),
 			FunctionUnexceptedTypeResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionUnexceptedTypeEntity e = new FunctionUnexceptedTypeEntity(MESSAGE);
-	    Assertions.expectException(() -> function.apply(e), UnexpectedResponseTypeException.class);
+	    Assertions.expectException(() -> service.apply(e), UnexpectedResponseTypeException.class);
 	}
     }
 
     @Test
     public void unexpectedRequest() throws Throwable {
-	final MyJMSFunction<FunctionUnexceptedTypeEntity_Unexpected, FunctionUnexceptedTypeResult> function //
-		= jmsClient.createFunction(functionUnexpectedTypeDestination.getDestination(),
+	final MyJMSFunction<FunctionUnexceptedTypeEntity_Unexpected, FunctionUnexceptedTypeResult> service //
+		= jmsClient.createFunction(destination.getDestination(),
 			FunctionUnexceptedTypeResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final FunctionUnexceptedTypeEntity_Unexpected e = new FunctionUnexceptedTypeEntity_Unexpected(MESSAGE);
-	    Assertions.expectException(() -> function.apply(e), UnexpectedTypeRequestedException.class);
+	    Assertions.expectException(() -> service.apply(e), UnexpectedTypeRequestedException.class);
 	}
     }
 }
