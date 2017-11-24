@@ -24,7 +24,7 @@ import tech.lapsa.java.commons.logging.MyLogger;
 
 abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
 
-    private final MyLogger logger = MyLogger.newBuilder() //
+    protected final MyLogger serviceLogger = MyLogger.newBuilder() //
 	    .withNameOf(this.getClass()) //
 	    .addLoggerNameAsPrefix() //
 	    .build();
@@ -64,41 +64,41 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     public void onMessage(final Message entityM) {
 	try {
 	    try {
-		logger.FINE.log("JMS Message received '%1$s' from '%2$s'", entityM.getJMSMessageID(),
+		serviceLogger.FINE.log("JMS Message received '%1$s' from '%2$s'", entityM.getJMSMessageID(),
 			destinationName(entityM.getJMSDestination()));
 		final Properties properties = MyMessages.propertiesFromMessage(entityM);
 		if (MyObjects.nonNull(properties))
-		    logger.FINER.log("With properties '%1$s'", properties);
+		    serviceLogger.FINER.log("With properties '%1$s'", properties);
 		final E entity = processedEntity(entityM);
-		logger.FINER.log( //
+		serviceLogger.FINER.log( //
 			MyObjects.isNull(entity) //
 				? "Entity '%1$s' is null" //
 				: "Entity '%1$s' processed '%2$s'",
 			entityClazz, entity);
 		final R result = _apply(entity, properties);
 		if (MyObjects.isNull(result))
-		    logger.FINER.log("Result is null");
+		    serviceLogger.FINER.log("Result is null");
 		else
-		    logger.FINER.log("Result '%1$s' processed '%2$s'", result.getClass(), result);
+		    serviceLogger.FINER.log("Result '%1$s' processed '%2$s'", result.getClass(), result);
 		final Message resultM = reply(entityM, result);
 		if (MyObjects.isNull(resultM))
-		    logger.FINE.log("JMS Result was not sent due to it's null");
+		    serviceLogger.FINE.log("JMS Result was not sent due to it's null");
 		else
-		    logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
+		    serviceLogger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
 			    destinationName(resultM.getJMSDestination()));
 	    } catch (final RuntimeException e) {
 		// also catches ValidationException types
-		logger.WARN.log(e);
+		serviceLogger.WARN.log(e);
 		final Message runtimeExceptionM = reply(entityM, e);
 		if (MyObjects.isNull(runtimeExceptionM))
-		    logger.FINE.log("JMS RuntimeException was not sent due to it's null");
+		    serviceLogger.FINE.log("JMS RuntimeException was not sent due to it's null");
 		else
-		    logger.FINE.log("JMS RuntimeException was sent '%1$s' to '%2$s'",
+		    serviceLogger.FINE.log("JMS RuntimeException was sent '%1$s' to '%2$s'",
 			    runtimeExceptionM.getJMSMessageID(),
 			    destinationName(runtimeExceptionM.getJMSDestination()));
 	    }
 	} catch (final JMSException e) {
-	    logger.SEVERE.log(e);
+	    serviceLogger.SEVERE.log(e);
 	    mdc.setRollbackOnly();
 	}
     }
