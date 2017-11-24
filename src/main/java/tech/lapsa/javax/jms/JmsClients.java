@@ -8,6 +8,7 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
+import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
 import javax.jms.TemporaryQueue;
 
@@ -19,6 +20,12 @@ import tech.lapsa.javax.jms.JmsClient.JmsSender;
 public final class JmsClients {
 
     private JmsClients() {
+    }
+
+    //
+
+    public static JMSRuntimeException uchedked(JMSException e) {
+	return new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e.getCause());
     }
 
     //
@@ -90,18 +97,18 @@ public final class JmsClients {
 	}
 
 	@SafeVarargs
-	final void _send(final E... entities) throws JMSException {
+	final void _send(final E... entities) {
 	    _send(null, entities);
 	}
 
 	@SafeVarargs
-	final void _send(final Properties properties, final E... entities) throws JMSException {
+	final void _send(final Properties properties, final E... entities) {
 	    _send(context, destination, properties, entities);
 	}
 
 	@SafeVarargs
 	final static <E extends Serializable> void _send(final JMSContext context, final Destination destination,
-		final Properties properties, final E... entities) throws JMSException {
+		final Properties properties, final E... entities) {
 	    final JMSProducer producer = context.createProducer();
 	    if (properties != null)
 		MyMessages.propertiesToJMSProducer(producer, properties);
@@ -109,54 +116,58 @@ public final class JmsClients {
 		producer.send(destination, entity);
 	}
 
-	final R _request(final E entity) throws JMSException {
+	final R _request(final E entity) {
 	    return _request(entity, null);
 	}
 
-	final R _request(final E entity, final Properties properties) throws JMSException {
+	final R _request(final E entity, final Properties properties) {
+	    try {
+		Message resultM = null;
 
-	    Message resultM = null;
-
-	    {
-		TemporaryQueue replyToD = null;
-		try {
-		    replyToD = context.createTemporaryQueue();
-		    final Message entityM = context.createObjectMessage(entity);
-		    entityM.setJMSReplyTo(replyToD);
-		    if (properties != null)
-			MyMessages.propertiesToMessage(entityM, properties);
-		    context.createProducer().send(destination, entityM);
-		    final String jmsCorellationID = entityM.getJMSMessageID();
-		    final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
-		    try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
-			resultM = consumer.receive(DEFAULT_TIMEOUT);
-		    }
-
-		} finally {
+		{
+		    TemporaryQueue replyToD = null;
 		    try {
-			if (replyToD != null)
-			    replyToD.delete();
-		    } catch (final JMSException ignored) {
+			replyToD = context.createTemporaryQueue();
+			final Message entityM = context.createObjectMessage(entity);
+			entityM.setJMSReplyTo(replyToD);
+			if (properties != null)
+			    MyMessages.propertiesToMessage(entityM, properties);
+			context.createProducer().send(destination, entityM);
+			final String jmsCorellationID = entityM.getJMSMessageID();
+			final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
+			try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
+			    resultM = consumer.receive(DEFAULT_TIMEOUT);
+			}
+
+		    } finally {
+			try {
+			    if (replyToD != null)
+				replyToD.delete();
+			} catch (final JMSException ignored) {
+			}
 		    }
 		}
+
+		if (resultM == null)
+		    throw new ResponseNotReceivedException();
+
+		if (resultM.isBodyAssignableTo(resultClazz))
+		    return resultM.getBody(resultClazz);
+
+		if (resultM.isBodyAssignableTo(RuntimeException.class))
+		    throw resultM.getBody(RuntimeException.class);
+
+		if (resultM.isBodyAssignableTo(Serializable.class)) {
+		    final Object wrongTypedObject = resultM.getBody(Object.class);
+		    if (wrongTypedObject != null)
+			throw new UnexpectedResponseTypeException(resultClazz, wrongTypedObject.getClass());
+		}
+
+		throw new UnexpectedResponseTypeException("Unknown response type");
+
+	    } catch (JMSException e) {
+		throw uchedked(e);
 	    }
-
-	    if (resultM == null)
-		throw new ResponseNotReceivedException();
-
-	    if (resultM.isBodyAssignableTo(resultClazz))
-		return resultM.getBody(resultClazz);
-
-	    if (resultM.isBodyAssignableTo(RuntimeException.class))
-		throw resultM.getBody(RuntimeException.class);
-
-	    if (resultM.isBodyAssignableTo(Serializable.class)) {
-		final Object wrongTypedObject = resultM.getBody(Object.class);
-		if (wrongTypedObject != null)
-		    throw new UnexpectedResponseTypeException(resultClazz, wrongTypedObject.getClass());
-	    }
-
-	    throw new UnexpectedResponseTypeException("Unknown response type");
 	}
     }
 
@@ -168,17 +179,17 @@ public final class JmsClients {
 	}
 
 	@Override
-	public void close() throws JMSException {
+	public void close() {
 	}
 
 	@Override
 	@SafeVarargs
-	public final void send(final E... entities) throws JMSException {
+	public final void send(final E... entities) {
 	    _send(context, destination, null, entities);
 	}
 
 	@Override
-	public void send(E entity, Properties properties) throws JMSException {
+	public void send(E entity, Properties properties) {
 	    _send(context, destination, properties, entity);
 	}
     }
@@ -191,14 +202,14 @@ public final class JmsClients {
 	}
 
 	@Override
-	public void accept(final E entity, final Properties properties) throws JMSException {
+	public void accept(final E entity, final Properties properties) {
 	    final VoidResult outO = _request(entity, properties);
 	    if (outO == null)
 		throw new RuntimeException(VoidResult.class.getName() + " expected");
 	}
 
 	@Override
-	public void accept(final E entity) throws JMSException {
+	public void accept(final E entity) {
 	    accept(entity, null);
 	}
     }

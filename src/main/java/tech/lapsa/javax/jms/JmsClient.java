@@ -34,7 +34,7 @@ public interface JmsClient {
 
     public static interface JmsSender<E extends Serializable> extends AutoCloseable {
 
-	void send(E entity, Properties properties) throws JMSException;
+	void send(E entity, Properties properties);
 
 	@SuppressWarnings("unchecked")
 	void send(E... entities) throws JMSException;
