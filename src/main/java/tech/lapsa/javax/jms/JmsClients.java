@@ -222,12 +222,12 @@ public final class JmsClients {
 	}
 
 	@Override
-	public R call(final E entity, final Properties properties) throws JMSException {
+	public R call(final E entity, final Properties properties) {
 	    return _request(entity, properties);
 	}
 
 	@Override
-	public R call(final E entity) throws JMSException {
+	public R call(final E entity) {
 	    return call(entity, null);
 	}
     }

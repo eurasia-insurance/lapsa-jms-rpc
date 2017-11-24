@@ -18,9 +18,9 @@ public interface JmsClient {
 
     public static interface JmsConsumer<E extends Serializable> {
 
-	void accept(E entity) throws JMSException;
+	void accept(E entity);
 
-	void accept(E entity, Properties properties) throws JMSException;
+	void accept(E entity, Properties properties);
     }
 
     //
@@ -37,10 +37,10 @@ public interface JmsClient {
 	void send(E entity, Properties properties);
 
 	@SuppressWarnings("unchecked")
-	void send(E... entities) throws JMSException;
+	void send(E... entities);
 
 	@Override
-	void close() throws JMSException;
+	void close();
     }
 
     //
@@ -56,9 +56,9 @@ public interface JmsClient {
 
     public static interface JmsCallable<E extends Serializable, R extends Serializable> {
 
-	R call(E entity) throws JMSException;
+	R call(E entity);
 
-	R call(E entity, Properties properties) throws JMSException;
+	R call(E entity, Properties properties);
     }
 
 }
