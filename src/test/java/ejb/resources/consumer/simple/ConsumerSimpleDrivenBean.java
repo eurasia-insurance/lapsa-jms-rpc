@@ -6,11 +6,11 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.function.MyStrings;
-import tech.lapsa.javax.jms.ObjectConsumerDrivenBean;
+import tech.lapsa.javax.jms.ConsumerServiceDrivenBean;
 import test.ConsumerSimpleTest;
 
 @MessageDriven(mappedName = ConsumerSimpleDestination.JNDI_NAME)
-public class ConsumerSimpleDrivenBean extends ObjectConsumerDrivenBean<ConsumerSimpleEntity> {
+public class ConsumerSimpleDrivenBean extends ConsumerServiceDrivenBean<ConsumerSimpleEntity> {
 
     public static final String PROPERTY_NAME = "name";
 

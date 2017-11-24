@@ -28,13 +28,13 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void basic() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> service = jmsClient
-		.createConsumer(destination.getDestination());
+	final JmsConsumer<ConsumerSimpleEntity> consumer //
+		= jmsClient.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    service.accept(e);
+	    consumer.accept(e);
 	    assertThat(BASIC_EXPECTED, allOf(not(nullValue()), is(equalTo(e))));
 	}
     }
@@ -43,8 +43,8 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> service = jmsClient
-		.createConsumer(destination.getDestination());
+	final JmsConsumer<ConsumerSimpleEntity> consumer //
+		= jmsClient.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";
@@ -53,7 +53,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(ConsumerSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    service.accept(e, properties);
+	    consumer.accept(e, properties);
 	    assertThat(WITH_PROPERTIES_EXPECTED, allOf(not(nullValue()), is(equalTo(NAME))));
 
 	}
