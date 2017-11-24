@@ -14,7 +14,7 @@ import ejb.resources.consumer.simple.SimpleEntity;
 import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSConsumer;
 
-public class ConsumerTest extends ArquillianBaseTestCase {
+public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
     private MyJMSClient jmsClient;
@@ -23,7 +23,7 @@ public class ConsumerTest extends ArquillianBaseTestCase {
     private ConsumerSimpleDestination consumerSimpleDestination;
 
     @Test
-    public void simpleTest_1() throws JMSException {
+    public void simple() throws JMSException {
 	final MyJMSConsumer<SimpleEntity> function = jmsClient.createConsumer(consumerSimpleDestination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
