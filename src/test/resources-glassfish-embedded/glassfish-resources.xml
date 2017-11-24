@@ -15,6 +15,11 @@
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/function/nulls">
+		<property name="Name" value="test.function.nulls.queue" />
+	</admin-object-resource>
+
+	<admin-object-resource res-adapter="jmsra"
 		res-type="javax.jms.Queue" jndi-name="test/function/simple">
 		<property name="Name" value="test.function.simple.queue" />
 	</admin-object-resource>
