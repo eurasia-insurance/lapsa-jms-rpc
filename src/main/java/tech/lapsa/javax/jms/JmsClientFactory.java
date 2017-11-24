@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
 
 public interface JmsClientFactory {
 
@@ -25,8 +24,7 @@ public interface JmsClientFactory {
 
     //
 
-    <E extends Serializable> JmsSender<E> createSender(Destination destination)
-	    throws JMSException;
+    <E extends Serializable> JmsSender<E> createSender(Destination destination);
 
     <E extends Serializable> JmsSender<E> createSenderQueue(String queuePhysicalName);
 

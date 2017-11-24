@@ -9,7 +9,6 @@ import javax.inject.Singleton;
 import javax.jms.Destination;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 
 @Singleton
 public class JmsFactoryProducerCDIBean {
@@ -50,8 +49,7 @@ public class JmsFactoryProducerCDIBean {
 	//
 
 	@Override
-	public <E extends Serializable> JmsSender<E> createSender(final Destination destination)
-		throws JMSException {
+	public <E extends Serializable> JmsSender<E> createSender(final Destination destination) {
 	    return JmsClients.createSender(context, destination);
 	}
 
