@@ -1,13 +1,15 @@
 package tech.lapsa.javax.jms;
 
-public final class InvalidResponseTypeException extends RuntimeException {
+import tech.lapsa.java.commons.exceptions.UnexpectedTypeException;
+
+public final class UnexpectedResponseTypeException extends UnexpectedTypeException {
     private static final long serialVersionUID = 1L;
 
-    InvalidResponseTypeException(final Class<?> expected, final Class<?> actual) {
-	super(String.format("Expected type is %1$s but the actual type was %2$s", expected, actual));
+    public UnexpectedResponseTypeException(Class<?> expectedClazz, Class<?> actualClazz) {
+	super(expectedClazz, actualClazz);
     }
 
-    InvalidResponseTypeException(final String message) {
+    public UnexpectedResponseTypeException(String message) {
 	super(message);
     }
 }
