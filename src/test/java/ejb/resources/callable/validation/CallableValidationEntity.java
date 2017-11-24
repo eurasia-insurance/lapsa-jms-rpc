@@ -1,17 +1,17 @@
-package ejb.resources.function.validation;
+package ejb.resources.callable.validation;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-public class FunctionValidationEntity implements Serializable {
+public class CallableValidationEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @NotNull
     private final String message;
 
-    public FunctionValidationEntity(String message) {
+    public CallableValidationEntity(String message) {
 	this.message = message;
     }
 

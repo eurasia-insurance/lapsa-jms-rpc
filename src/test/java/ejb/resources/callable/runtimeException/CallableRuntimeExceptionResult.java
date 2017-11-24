@@ -1,8 +1,8 @@
-package ejb.resources.function.runtimeException;
+package ejb.resources.callable.runtimeException;
 
 import java.io.Serializable;
 
-public class FunctionRuntimeExceptionResult implements Serializable {
+public class CallableRuntimeExceptionResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,8 +10,8 @@ public class FunctionRuntimeExceptionResult implements Serializable {
 
     private final String message;
 
-    public FunctionRuntimeExceptionResult(FunctionRuntimeExceptionEntity functionRuntimeExceptionEntity) {
-	this.message = PREFIX + functionRuntimeExceptionEntity.getMessage();
+    public CallableRuntimeExceptionResult(CallableRuntimeExceptionEntity callableRuntimeExceptionEntity) {
+	this.message = PREFIX + callableRuntimeExceptionEntity.getMessage();
     }
 
     @Override

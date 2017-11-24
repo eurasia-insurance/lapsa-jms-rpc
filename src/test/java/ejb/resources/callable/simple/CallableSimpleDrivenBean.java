@@ -1,4 +1,4 @@
-package ejb.resources.function.simple;
+package ejb.resources.callable.simple;
 
 import java.util.Properties;
 
@@ -7,18 +7,18 @@ import javax.ejb.MessageDriven;
 import tech.lapsa.java.commons.function.MyStrings;
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = FunctionSimpleDestination.JNDI_NAME)
-public class FunctionSimpleDrivenBean extends ObjectFunctionDrivenBean<FunctionSimpleEntity, FunctionSimpleResult> {
+@MessageDriven(mappedName = CallableSimpleDestination.JNDI_NAME)
+public class CallableSimpleDrivenBean extends ObjectFunctionDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";
     
-    public FunctionSimpleDrivenBean() {
-	super(FunctionSimpleEntity.class);
+    public CallableSimpleDrivenBean() {
+	super(CallableSimpleEntity.class);
     }
 
     @Override
-    protected FunctionSimpleResult apply(FunctionSimpleEntity functionSimpleEntity, Properties properties) {
-	FunctionSimpleResult result = new FunctionSimpleResult(functionSimpleEntity);
+    protected CallableSimpleResult apply(CallableSimpleEntity callableSimpleEntity, Properties properties) {
+	CallableSimpleResult result = new CallableSimpleResult(callableSimpleEntity);
 	if (properties != null) {
 	    final String name = properties.getProperty(PROPERTY_NAME);
 	    if (MyStrings.nonEmpty(name))

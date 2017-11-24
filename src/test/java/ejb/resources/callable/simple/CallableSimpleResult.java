@@ -1,8 +1,8 @@
-package ejb.resources.function.simple;
+package ejb.resources.callable.simple;
 
 import java.io.Serializable;
 
-public class FunctionSimpleResult implements Serializable {
+public class CallableSimpleResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -11,8 +11,8 @@ public class FunctionSimpleResult implements Serializable {
     private final String message;
     private String name;
 
-    public FunctionSimpleResult(FunctionSimpleEntity functionSimpleEntity) {
-	this.message = PREFIX + functionSimpleEntity.getMessage();
+    public CallableSimpleResult(CallableSimpleEntity callableSimpleEntity) {
+	this.message = PREFIX + callableSimpleEntity.getMessage();
     }
 
     @Override

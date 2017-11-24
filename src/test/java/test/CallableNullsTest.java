@@ -8,26 +8,26 @@ import javax.jms.JMSException;
 
 import org.junit.Test;
 
-import ejb.resources.function.nulls.FunctionNullsDestination;
-import ejb.resources.function.nulls.FunctionNullsEntity;
-import ejb.resources.function.nulls.FunctionNullsResult;
+import ejb.resources.callable.nulls.CallableNullsDestination;
+import ejb.resources.callable.nulls.CallableNullsEntity;
+import ejb.resources.callable.nulls.CallableNullsResult;
 import tech.lapsa.javax.jms.JmsClient;
 import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 
-public class FunctionNullsTest extends ArquillianBaseTestCase {
+public class CallableNullsTest extends ArquillianBaseTestCase {
 
     @Inject
     private JmsClient jmsClient;
 
     @Inject
-    private FunctionNullsDestination destination;
+    private CallableNullsDestination destination;
 
     @Test
     public void basic() throws JMSException {
-	final JmsCallable<FunctionNullsEntity, FunctionNullsResult> service = jmsClient
-		.createCallable(destination.getDestination(), FunctionNullsResult.class);
+	final JmsCallable<CallableNullsEntity, CallableNullsResult> callable //
+		= jmsClient.createCallable(destination.getDestination(), CallableNullsResult.class);
 	{
-	    final FunctionNullsResult r = service.call(null);
+	    final CallableNullsResult r = callable.call(null);
 	    assertThat(r, nullValue());
 	}
     }

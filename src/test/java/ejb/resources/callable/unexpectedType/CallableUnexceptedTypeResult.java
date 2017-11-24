@@ -1,8 +1,8 @@
-package ejb.resources.function.unexpectedType;
+package ejb.resources.callable.unexpectedType;
 
 import java.io.Serializable;
 
-public class FunctionUnexceptedTypeResult implements Serializable {
+public class CallableUnexceptedTypeResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,8 +10,8 @@ public class FunctionUnexceptedTypeResult implements Serializable {
 
     private final String message;
 
-    public FunctionUnexceptedTypeResult(FunctionUnexceptedTypeEntity functionUnexceptedTypeEntity) {
-	this.message = PREFIX + functionUnexceptedTypeEntity.getMessage();
+    public CallableUnexceptedTypeResult(CallableUnexceptedTypeEntity callableUnexceptedTypeEntity) {
+	this.message = PREFIX + callableUnexceptedTypeEntity.getMessage();
     }
 
     @Override

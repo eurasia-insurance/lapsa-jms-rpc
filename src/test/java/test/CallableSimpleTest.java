@@ -10,32 +10,31 @@ import javax.jms.JMSException;
 
 import org.junit.Test;
 
-import ejb.resources.function.simple.FunctionSimpleDestination;
-import ejb.resources.function.simple.FunctionSimpleDrivenBean;
-import ejb.resources.function.simple.FunctionSimpleEntity;
-import ejb.resources.function.simple.FunctionSimpleResult;
+import ejb.resources.callable.simple.CallableSimpleDestination;
+import ejb.resources.callable.simple.CallableSimpleDrivenBean;
+import ejb.resources.callable.simple.CallableSimpleEntity;
+import ejb.resources.callable.simple.CallableSimpleResult;
 import tech.lapsa.javax.jms.JmsClient;
 import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 
-public class FunctionSimpleTest extends ArquillianBaseTestCase {
+public class CallableSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
     private JmsClient jmsClient;
 
     @Inject
-    private FunctionSimpleDestination destination;
+    private CallableSimpleDestination destination;
 
     @Test
     public void basic() throws JMSException {
-	final JmsCallable<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createCallable(
-		destination.getDestination(),
-		FunctionSimpleResult.class);
+	final JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable //
+		= jmsClient.createCallable(destination.getDestination(), CallableSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + MESSAGE;
+	    final String EXPECTING_MESSAGE = CallableSimpleResult.PREFIX + MESSAGE;
 
-	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = service.call(e);
+	    final CallableSimpleEntity e = new CallableSimpleEntity(MESSAGE);
+	    final CallableSimpleResult r = callable.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
@@ -44,19 +43,18 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final JmsCallable<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createCallable(
-		destination.getDestination(),
-		FunctionSimpleResult.class);
+	final JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable //
+		= jmsClient.createCallable(destination.getDestination(), CallableSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";
-	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + "Hello, " + NAME + "!";
+	    final String EXPECTING_MESSAGE = CallableSimpleResult.PREFIX + "Hello, " + NAME + "!";
 
 	    final Properties properties = new Properties();
-	    properties.setProperty(FunctionSimpleDrivenBean.PROPERTY_NAME, NAME);
+	    properties.setProperty(CallableSimpleDrivenBean.PROPERTY_NAME, NAME);
 
-	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
-	    final FunctionSimpleResult r = service.call(e, properties);
+	    final CallableSimpleEntity e = new CallableSimpleEntity(MESSAGE);
+	    final CallableSimpleResult r = callable.call(e, properties);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));

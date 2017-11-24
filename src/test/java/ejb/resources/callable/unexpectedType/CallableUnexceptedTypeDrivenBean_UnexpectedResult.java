@@ -1,4 +1,4 @@
-package ejb.resources.function.unexpectedType;
+package ejb.resources.callable.unexpectedType;
 
 import java.util.Properties;
 
@@ -6,18 +6,18 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = FunctionUnexceptedTypeDestination.JNDI_NAME_UNEXPECTED_RESULT)
-public class FunctionUnexceptedTypeDrivenBean_UnexpectedResult extends
-	ObjectFunctionDrivenBean<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult_Unexpected> {
+@MessageDriven(mappedName = CallableUnexceptedTypeDestination.JNDI_NAME_UNEXPECTED_RESULT)
+public class CallableUnexceptedTypeDrivenBean_UnexpectedResult extends
+	ObjectFunctionDrivenBean<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult_Unexpected> {
 
-    public FunctionUnexceptedTypeDrivenBean_UnexpectedResult() {
-	super(FunctionUnexceptedTypeEntity.class);
+    public CallableUnexceptedTypeDrivenBean_UnexpectedResult() {
+	super(CallableUnexceptedTypeEntity.class);
     }
 
     @Override
-    protected FunctionUnexceptedTypeResult_Unexpected apply(
-	    FunctionUnexceptedTypeEntity functionUnexceptedTypeEntity, Properties properties) {
-	return new FunctionUnexceptedTypeResult_Unexpected(functionUnexceptedTypeEntity);
+    protected CallableUnexceptedTypeResult_Unexpected apply(
+	    CallableUnexceptedTypeEntity callableUnexceptedTypeEntity, Properties properties) {
+	return new CallableUnexceptedTypeResult_Unexpected(callableUnexceptedTypeEntity);
     }
 
 }

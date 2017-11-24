@@ -4,32 +4,30 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import ejb.resources.function.runtimeException.FunctionRuntimeExceptionDestination;
-import ejb.resources.function.runtimeException.FunctionRuntimeExceptionEntity;
-import ejb.resources.function.runtimeException.FunctionRuntimeExceptionResult;
+import ejb.resources.callable.runtimeException.CallableRuntimeExceptionDestination;
+import ejb.resources.callable.runtimeException.CallableRuntimeExceptionEntity;
+import ejb.resources.callable.runtimeException.CallableRuntimeExceptionResult;
 import tech.lapsa.javax.jms.JmsClient;
 import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 import test.assertion.Assertions;
 
-public class FunctionRuntimeExceptionTest extends ArquillianBaseTestCase {
+public class CallableRuntimeExceptionTest extends ArquillianBaseTestCase {
 
     @Inject
     private JmsClient jmsClient;
 
     @Inject
-    private FunctionRuntimeExceptionDestination destination;
+    private CallableRuntimeExceptionDestination destination;
 
     @Test
     public void nullPointerException() throws Exception {
-	final JmsCallable<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> service = jmsClient
-		.createCallable(
-			destination.getDestination(),
-			FunctionRuntimeExceptionResult.class);
+	final JmsCallable<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> callable //
+		= jmsClient.createCallable(destination.getDestination(), CallableRuntimeExceptionResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final FunctionRuntimeExceptionEntity e = new FunctionRuntimeExceptionEntity(MESSAGE);
-	    Assertions.expectException(() -> service.call(e), IllegalStateException.class);
+	    final CallableRuntimeExceptionEntity e = new CallableRuntimeExceptionEntity(MESSAGE);
+	    Assertions.expectException(() -> callable.call(e), IllegalStateException.class);
 	}
     }
 }

@@ -4,46 +4,46 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeDestination;
-import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeEntity;
-import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeEntity_Unexpected;
-import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeResult;
+import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeDestination;
+import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity;
+import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity_Unexpected;
+import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeResult;
 import tech.lapsa.javax.jms.JmsClient;
 import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
 import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 import test.assertion.Assertions;
 
-public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
+public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Inject
     private JmsClient jmsClient;
 
     @Inject
-    private FunctionUnexceptedTypeDestination destination;
+    private CallableUnexceptedTypeDestination destination;
 
     @Test
     public void unexpectedResult() throws Throwable {
-	final JmsCallable<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult> service //
+	final JmsCallable<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> service //
 		= jmsClient.createCallable(destination.getDestinationUnexcpetedResult(),
-			FunctionUnexceptedTypeResult.class);
+			CallableUnexceptedTypeResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final FunctionUnexceptedTypeEntity e = new FunctionUnexceptedTypeEntity(MESSAGE);
+	    final CallableUnexceptedTypeEntity e = new CallableUnexceptedTypeEntity(MESSAGE);
 	    Assertions.expectException(() -> service.call(e), UnexpectedResponseTypeException.class);
 	}
     }
 
     @Test
     public void unexpectedRequest() throws Throwable {
-	final JmsCallable<FunctionUnexceptedTypeEntity_Unexpected, FunctionUnexceptedTypeResult> service //
+	final JmsCallable<CallableUnexceptedTypeEntity_Unexpected, CallableUnexceptedTypeResult> service //
 		= jmsClient.createCallable(destination.getDestination(),
-			FunctionUnexceptedTypeResult.class);
+			CallableUnexceptedTypeResult.class);
 
 	{
 	    final String MESSAGE = "Hello JMS world!";
-	    final FunctionUnexceptedTypeEntity_Unexpected e = new FunctionUnexceptedTypeEntity_Unexpected(MESSAGE);
+	    final CallableUnexceptedTypeEntity_Unexpected e = new CallableUnexceptedTypeEntity_Unexpected(MESSAGE);
 	    Assertions.expectException(() -> service.call(e), UnexpectedTypeRequestedException.class);
 	}
     }

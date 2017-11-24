@@ -1,4 +1,4 @@
-package ejb.resources.function.runtimeException;
+package ejb.resources.callable.runtimeException;
 
 import java.util.Properties;
 
@@ -6,16 +6,16 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = FunctionRuntimeExceptionDestination.JNDI_NAME)
-public class FunctionRuntimeExceptionDrivenBean
-	extends ObjectFunctionDrivenBean<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> {
+@MessageDriven(mappedName = CallableRuntimeExceptionDestination.JNDI_NAME)
+public class CallableRuntimeExceptionDrivenBean
+	extends ObjectFunctionDrivenBean<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> {
 
-    public FunctionRuntimeExceptionDrivenBean() {
-	super(FunctionRuntimeExceptionEntity.class);
+    public CallableRuntimeExceptionDrivenBean() {
+	super(CallableRuntimeExceptionEntity.class);
     }
 
     @Override
-    protected FunctionRuntimeExceptionResult apply(FunctionRuntimeExceptionEntity functionRuntimeExceptionEntity,
+    protected CallableRuntimeExceptionResult apply(CallableRuntimeExceptionEntity callableRuntimeExceptionEntity,
 	    Properties properties) {
 	throw new IllegalStateException();
     }

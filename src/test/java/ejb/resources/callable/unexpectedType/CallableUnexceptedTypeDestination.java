@@ -1,13 +1,13 @@
-package ejb.resources.function.unexpectedType;
+package ejb.resources.callable.unexpectedType;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.jms.Destination;
 
 @Singleton
-public class FunctionUnexceptedTypeDestination {
+public class CallableUnexceptedTypeDestination {
 
-    public static final String JNDI_NAME = "test/function/unexpectedType";
+    public static final String JNDI_NAME = "test/callable/unexpectedType";
 
     @Resource(name = JNDI_NAME)
     private Destination destination;
@@ -16,7 +16,7 @@ public class FunctionUnexceptedTypeDestination {
 	return destination;
     }
 
-    public static final String JNDI_NAME_UNEXPECTED_RESULT = "test/function/unexpectedType_unexpectedResult";
+    public static final String JNDI_NAME_UNEXPECTED_RESULT = "test/callable/unexpectedType_unexpectedResult";
 
     @Resource(name = JNDI_NAME_UNEXPECTED_RESULT)
     private Destination destinationUnexcpetedResult;

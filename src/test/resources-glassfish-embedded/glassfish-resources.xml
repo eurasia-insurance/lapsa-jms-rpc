@@ -15,33 +15,33 @@
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/nulls">
-		<property name="Name" value="test.function.nulls.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/nulls">
+		<property name="Name" value="test.callable.nulls.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/simple">
-		<property name="Name" value="test.function.simple.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/simple">
+		<property name="Name" value="test.callable.simple.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/validation">
-		<property name="Name" value="test.function.validation.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/validation">
+		<property name="Name" value="test.callable.validation.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/runtimeException">
-		<property name="Name" value="test.function.runtimeException.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/runtimeException">
+		<property name="Name" value="test.callable.runtimeException.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/unexpectedType">
-		<property name="Name" value="test.function.unexpectedType.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/unexpectedType">
+		<property name="Name" value="test.callable.unexpectedType.queue" />
 	</admin-object-resource>
 
 	<admin-object-resource res-adapter="jmsra"
-		res-type="javax.jms.Queue" jndi-name="test/function/unexpectedType_unexpectedResult">
-		<property name="Name" value="test.function.unexpectedType.unexpectedResult.queue" />
+		res-type="javax.jms.Queue" jndi-name="test/callable/unexpectedType_unexpectedResult">
+		<property name="Name" value="test.callable.unexpectedType.unexpectedResult.queue" />
 	</admin-object-resource>
 
 </resources>

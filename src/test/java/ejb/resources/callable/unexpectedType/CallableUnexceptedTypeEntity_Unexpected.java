@@ -1,14 +1,14 @@
-package ejb.resources.function.unexpectedType;
+package ejb.resources.callable.unexpectedType;
 
 import java.io.Serializable;
 
-public class FunctionUnexceptedTypeEntity_Unexpected implements Serializable {
+public class CallableUnexceptedTypeEntity_Unexpected implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final String message;
 
-    public FunctionUnexceptedTypeEntity_Unexpected(String message) {
+    public CallableUnexceptedTypeEntity_Unexpected(String message) {
 	this.message = message;
     }
 

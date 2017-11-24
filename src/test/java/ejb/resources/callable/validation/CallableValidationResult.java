@@ -1,8 +1,8 @@
-package ejb.resources.function.validation;
+package ejb.resources.callable.validation;
 
 import java.io.Serializable;
 
-public class FunctionValidationResult implements Serializable {
+public class CallableValidationResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -10,8 +10,8 @@ public class FunctionValidationResult implements Serializable {
 
     private final String message;
 
-    public FunctionValidationResult(FunctionValidationEntity functionValidationEntity) {
-	this.message = PREFIX + functionValidationEntity.getMessage();
+    public CallableValidationResult(CallableValidationEntity callableValidationEntity) {
+	this.message = PREFIX + callableValidationEntity.getMessage();
     }
 
     @Override

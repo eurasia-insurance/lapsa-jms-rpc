@@ -1,4 +1,4 @@
-package ejb.resources.function.validation;
+package ejb.resources.callable.validation;
 
 import java.util.Properties;
 
@@ -6,16 +6,16 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
 
-@MessageDriven(mappedName = FunctionValidationDestination.JNDI_NAME)
-public class FunctionValidationDrivenBean extends ObjectFunctionDrivenBean<FunctionValidationEntity, FunctionValidationResult> {
+@MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME)
+public class CallableValidationDrivenBean extends ObjectFunctionDrivenBean<CallableValidationEntity, CallableValidationResult> {
 
-    public FunctionValidationDrivenBean() {
-	super(FunctionValidationEntity.class);
+    public CallableValidationDrivenBean() {
+	super(CallableValidationEntity.class);
     }
 
     @Override
-    protected FunctionValidationResult apply(FunctionValidationEntity functionValidationEntity, Properties properties) {
-	return new FunctionValidationResult(functionValidationEntity);
+    protected CallableValidationResult apply(CallableValidationEntity callableValidationEntity, Properties properties) {
+	return new CallableValidationResult(callableValidationEntity);
     }
 
 }
