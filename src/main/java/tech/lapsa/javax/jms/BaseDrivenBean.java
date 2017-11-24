@@ -13,6 +13,8 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.Queue;
+import javax.jms.Topic;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidatorFactory;
@@ -24,7 +26,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 
     private final MyLogger logger = MyLogger.newBuilder() //
 	    .withNameOf(this.getClass()) //
-	    .addWithPrefix("JMS_SERVICE") //
+	    .addLoggerNameAsPrefix() //
 	    .build();
 
     private final Class<E> entityClazz;
@@ -62,28 +64,38 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     public void onMessage(final Message entityM) {
 	try {
 	    try {
-		logger.FINER.log("Message received %1$s from %2$s", entityM.getJMSMessageID(),
-			entityM.getJMSDestination());
+		logger.FINE.log("JMS Message received '%1$s' from '%2$s'", entityM.getJMSMessageID(),
+			destinationName(entityM.getJMSDestination()));
 		final Properties properties = MyMessages.propertiesFromMessage(entityM);
 		if (MyObjects.nonNull(properties))
-		    logger.FINER.log("With properties %1$s", properties);
+		    logger.FINER.log("With properties '%1$s'", properties);
 		final E entity = processedEntity(entityM);
 		logger.FINER.log( //
 			MyObjects.isNull(entity) //
-				? "Entity %1$s is null" //
-				: "Entity %1$s processed %2$s",
+				? "Entity '%1$s' is null" //
+				: "Entity '%1$s' processed '%2$s'",
 			entityClazz, entity);
 		final R result = _apply(entity, properties);
-		logger.FINER.log( //
-			MyObjects.isNull(entity) //
-				? "Result is null" //
-				: "Result %1$s processed %2$s",
-			result.getClass(), result);
-		reply(entityM, result);
+		if (MyObjects.isNull(result))
+		    logger.FINER.log("Result is null");
+		else
+		    logger.FINER.log("Result '%1$s' processed '%2$s'", result.getClass(), result);
+		final Message resultM = reply(entityM, result);
+		if (MyObjects.isNull(resultM))
+		    logger.FINE.log("JMS Result was not sent due to it's null");
+		else
+		    logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
+			    destinationName(resultM.getJMSDestination()));
 	    } catch (final RuntimeException e) {
 		// also catches ValidationException types
 		logger.WARN.log(e);
-		reply(entityM, e);
+		final Message runtimeExceptionM = reply(entityM, e);
+		if (MyObjects.isNull(runtimeExceptionM))
+		    logger.FINE.log("JMS RuntimeException was not sent due to it's null");
+		else
+		    logger.FINE.log("JMS RuntimeException was sent '%1$s' to '%2$s'",
+			    runtimeExceptionM.getJMSMessageID(),
+			    destinationName(runtimeExceptionM.getJMSDestination()));
 	    }
 	} catch (final JMSException e) {
 	    logger.SEVERE.log(e);
@@ -91,13 +103,35 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	}
     }
 
-    private void reply(final Message entityM, final Serializable serializable) throws JMSException {
+    private static String destinationName(final Destination d) {
+	return MyObjects.optionalA(d, Queue.class) //
+		.map(x -> {
+		    try {
+			return x.getQueueName();
+		    } catch (JMSException e) {
+			return null;
+		    }
+		}) //
+		.orElseGet(() -> MyObjects.optionalA(d, Topic.class) //
+			.map(x -> {
+			    try {
+				return x.getTopicName();
+			    } catch (JMSException e) {
+				return null;
+			    }
+			}) //
+			.orElse(null));
+    }
+
+    private Message reply(final Message entityM, final Serializable serializable) throws JMSException {
 	final Destination replyToD = entityM.getJMSReplyTo();
 	if (replyToD == null) // for noWait senders support
-	    return;
+	    return null;
+	final Message resultM = context.createObjectMessage(serializable);
+	resultM.setJMSCorrelationID(entityM.getJMSMessageID());
 	context.createProducer()
-		.setJMSCorrelationID(entityM.getJMSMessageID())
-		.send(replyToD, serializable);
+		.send(replyToD, resultM);
+	return resultM;
     }
 
     abstract R _apply(E entity, Properties properties);
