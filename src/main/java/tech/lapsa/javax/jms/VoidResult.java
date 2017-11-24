@@ -17,7 +17,7 @@ final class VoidResult implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-	return obj != null && obj instanceof VoidResult;
+	return obj == this || (obj != null && obj instanceof VoidResult);
     }
 
     @Override
