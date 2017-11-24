@@ -4,10 +4,10 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
+import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME)
-public class CallableValidationDrivenBean extends ObjectFunctionDrivenBean<CallableValidationEntity, CallableValidationResult> {
+public class CallableValidationDrivenBean extends CallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {
 
     public CallableValidationDrivenBean() {
 	super(CallableValidationEntity.class);

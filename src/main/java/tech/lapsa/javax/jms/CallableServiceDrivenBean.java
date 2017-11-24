@@ -3,10 +3,10 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-public abstract class ObjectFunctionDrivenBean<E extends Serializable, R extends Serializable>
+public abstract class CallableServiceDrivenBean<E extends Serializable, R extends Serializable>
 	extends BaseDrivenBean<E, R> {
 
-    protected ObjectFunctionDrivenBean(final Class<E> entityClazz) {
+    protected CallableServiceDrivenBean(final Class<E> entityClazz) {
 	super(entityClazz);
     }
 

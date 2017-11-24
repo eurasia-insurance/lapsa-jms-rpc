@@ -5,10 +5,10 @@ import java.util.Properties;
 import javax.ejb.MessageDriven;
 
 import tech.lapsa.java.commons.function.MyStrings;
-import tech.lapsa.javax.jms.ObjectFunctionDrivenBean;
+import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableSimpleDestination.JNDI_NAME)
-public class CallableSimpleDrivenBean extends ObjectFunctionDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
+public class CallableSimpleDrivenBean extends CallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";
     

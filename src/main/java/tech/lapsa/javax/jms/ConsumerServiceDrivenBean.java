@@ -3,10 +3,10 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-public abstract class ObjectConsumerDrivenBean<E extends Serializable>
+public abstract class ConsumerServiceDrivenBean<E extends Serializable>
 	extends BaseDrivenBean<E, VoidResult> {
 
-    protected ObjectConsumerDrivenBean(final Class<E> entityClazz) {
+    protected ConsumerServiceDrivenBean(final Class<E> entityClazz) {
 	super(entityClazz);
     }
 
