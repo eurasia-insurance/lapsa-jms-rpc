@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 import javax.ejb.MessageDrivenContext;
 import javax.inject.Inject;
 import javax.jms.Destination;
-import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -38,7 +37,6 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     private MessageDrivenContext mdc;
 
     @Inject
-    @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
     BaseDrivenBean(final Class<E> entityClazz) {

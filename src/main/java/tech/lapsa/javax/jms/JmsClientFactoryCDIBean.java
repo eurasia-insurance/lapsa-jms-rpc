@@ -5,14 +5,12 @@ import java.io.Serializable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.jms.Destination;
-import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
 
 @Dependent
 public class JmsClientFactoryCDIBean implements JmsClientFactory {
 
     @Inject
-    @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
     @Override
