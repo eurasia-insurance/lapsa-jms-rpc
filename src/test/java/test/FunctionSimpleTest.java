@@ -22,7 +22,7 @@ import tech.lapsa.javax.jms.MyJMSClient;
 import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
 import test.assertion.Assertions;
 
-public class FunctionTest extends ArquillianBaseTestCase {
+public class FunctionSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
     private MyJMSClient jmsClient;
