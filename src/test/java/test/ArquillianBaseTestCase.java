@@ -6,7 +6,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.junit.runner.RunWith;
 
 import ejb.resources.DummyResources;
-import tech.lapsa.javax.jms.Constants;
+import tech.lapsa.javax.jms.JmsClientFactory;
 import tech.lapsa.lapsa.arquillian.archive.ArchiveBuilderFactory;
 
 @RunWith(Arquillian.class)
@@ -14,7 +14,7 @@ public abstract class ArquillianBaseTestCase {
 
     private static final Archive<?> DEPLOYMENT = ArchiveBuilderFactory.newEarBuilder() //
 	    .withModule(ArchiveBuilderFactory.newEjbBuilder() //
-		    .withPackageOf(Constants.class, DummyResources.class) //
+		    .withPackageOf(JmsClientFactory.class, DummyResources.class) //
 		    .withManifestFolder() //
 		    .withTestManifestFolder() //
 		    .build() //

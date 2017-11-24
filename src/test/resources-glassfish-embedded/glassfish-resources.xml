@@ -2,12 +2,13 @@
 <!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
 
-	<connector-connection-pool max-pool-size="250"
-		resource-adapter-name="jmsra" steady-pool-size="1"
-		name="DefaultConnectionFactoryPool" connection-definition-name="javax.jms.ConnectionFactory" />
+	<connector-connection-pool
+		resource-adapter-name="jmsra" max-pool-size="250" steady-pool-size="1"
+		name="jms/__defaultConnectionFactory-Connection-Pool"
+		connection-definition-name="javax.jms.ConnectionFactory" />
 
-	<connector-resource pool-name="DefaultConnectionFactoryPool"
-		jndi-name="jms/__defaultConnectionFactory" />
+	<connector-resource pool-name="jms/__defaultConnectionFactory-Connection-Pool"
+		object-type="system-all" jndi-name="jms/__defaultConnectionFactory" />
 
 	<admin-object-resource res-adapter="jmsra"
 		res-type="javax.jms.Queue" jndi-name="test/consumer/simple">
@@ -41,7 +42,8 @@
 
 	<admin-object-resource res-adapter="jmsra"
 		res-type="javax.jms.Queue" jndi-name="test/callable/unexpectedType_unexpectedResult">
-		<property name="Name" value="test.callable.unexpectedType.unexpectedResult.queue" />
+		<property name="Name"
+			value="test.callable.unexpectedType.unexpectedResult.queue" />
 	</admin-object-resource>
 
 </resources>
