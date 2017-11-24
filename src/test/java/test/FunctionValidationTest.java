@@ -42,7 +42,7 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
     }
 
     @Test
-    public void validationFail() {
+    public void validationFail() throws Exception {
 	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> function = jmsClient.createFunction(
 		functionValidationDestination.getDestination(),
 		FunctionValidationResult.class);
@@ -50,13 +50,7 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
 	{
 	    final String NULL_MESSAGE = null;
 	    final FunctionValidationEntity e = new FunctionValidationEntity(NULL_MESSAGE);
-	    Assertions.expectException(() -> {
-		try {
-		    function.apply(e);
-		} catch (JMSException e1) {
-		    throw new RuntimeException(e1);
-		}
-	    }, ValidationException.class);
+	    Assertions.expectException(() -> function.apply(e), ValidationException.class);
 	}
     }
 }
