@@ -15,7 +15,6 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.function.MyObjects;
@@ -52,8 +51,9 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	final E entity = entityM.getBody(entityClazz);
 	if (entity != null) {
 	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
-	    if (violations != null && violations.size() > 0)
-		throw new ConstraintViolationException(violations);
+	    if (violations != null && violations.size() > 0) {
+		throw new MyConstraintViolationExcetpion(violations);
+	    }
 	}
 	return entity;
     }
