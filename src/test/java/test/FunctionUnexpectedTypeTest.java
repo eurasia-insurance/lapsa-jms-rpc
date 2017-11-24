@@ -8,8 +8,8 @@ import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeDestination;
 import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeEntity;
 import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeEntity_Unexpected;
 import ejb.resources.function.unexpectedType.FunctionUnexceptedTypeResult;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
 import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 import test.assertion.Assertions;
@@ -17,15 +17,15 @@ import test.assertion.Assertions;
 public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private FunctionUnexceptedTypeDestination destination;
 
     @Test
     public void unexpectedResult() throws Throwable {
-	final MyJMSFunction<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult> service //
-		= jmsClient.createFunction(destination.getDestinationUnexcpetedResult(),
+	final JmsCallable<FunctionUnexceptedTypeEntity, FunctionUnexceptedTypeResult> service //
+		= jmsClient.createCallable(destination.getDestinationUnexcpetedResult(),
 			FunctionUnexceptedTypeResult.class);
 
 	{
@@ -37,8 +37,8 @@ public class FunctionUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Test
     public void unexpectedRequest() throws Throwable {
-	final MyJMSFunction<FunctionUnexceptedTypeEntity_Unexpected, FunctionUnexceptedTypeResult> service //
-		= jmsClient.createFunction(destination.getDestination(),
+	final JmsCallable<FunctionUnexceptedTypeEntity_Unexpected, FunctionUnexceptedTypeResult> service //
+		= jmsClient.createCallable(destination.getDestination(),
 			FunctionUnexceptedTypeResult.class);
 
 	{

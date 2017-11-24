@@ -13,21 +13,21 @@ import ejb.resources.function.simple.FunctionSimpleResult;
 import ejb.resources.function.validation.FunctionValidationDestination;
 import ejb.resources.function.validation.FunctionValidationEntity;
 import ejb.resources.function.validation.FunctionValidationResult;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 import test.assertion.Assertions;
 
 public class FunctionValidationTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private FunctionValidationDestination destination;
 
     @Test
     public void validationOk() throws JMSException {
-	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createFunction(
+	final JmsCallable<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createCallable(
 		destination.getDestination(),
 		FunctionValidationResult.class);
 
@@ -43,7 +43,7 @@ public class FunctionValidationTest extends ArquillianBaseTestCase {
 
     @Test
     public void validationFail() throws Exception {
-	final MyJMSFunction<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createFunction(
+	final JmsCallable<FunctionValidationEntity, FunctionValidationResult> service = jmsClient.createCallable(
 		destination.getDestination(),
 		FunctionValidationResult.class);
 

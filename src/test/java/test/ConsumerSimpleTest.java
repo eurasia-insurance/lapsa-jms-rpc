@@ -13,13 +13,13 @@ import org.junit.Test;
 import ejb.resources.consumer.simple.ConsumerSimpleDestination;
 import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSConsumer;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsConsumer;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private ConsumerSimpleDestination destination;
@@ -28,7 +28,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void basic() throws JMSException {
-	final MyJMSConsumer<ConsumerSimpleEntity> service = jmsClient
+	final JmsConsumer<ConsumerSimpleEntity> service = jmsClient
 		.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
@@ -43,7 +43,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final MyJMSConsumer<ConsumerSimpleEntity> service = jmsClient
+	final JmsConsumer<ConsumerSimpleEntity> service = jmsClient
 		.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello, %1$s!";

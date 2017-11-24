@@ -14,20 +14,20 @@ import ejb.resources.function.simple.FunctionSimpleDestination;
 import ejb.resources.function.simple.FunctionSimpleDrivenBean;
 import ejb.resources.function.simple.FunctionSimpleEntity;
 import ejb.resources.function.simple.FunctionSimpleResult;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 
 public class FunctionSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private FunctionSimpleDestination destination;
 
     @Test
     public void basic() throws JMSException {
-	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createFunction(
+	final JmsCallable<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createCallable(
 		destination.getDestination(),
 		FunctionSimpleResult.class);
 	{
@@ -44,7 +44,7 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createFunction(
+	final JmsCallable<FunctionSimpleEntity, FunctionSimpleResult> service = jmsClient.createCallable(
 		destination.getDestination(),
 		FunctionSimpleResult.class);
 	{

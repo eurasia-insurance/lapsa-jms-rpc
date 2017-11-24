@@ -12,13 +12,13 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 
 @Singleton
-public class MyJMSClientProducerBean {
+public class JmsClientProducerBean {
 
     @Inject
     @JMSConnectionFactory(Constants.JNDI_DEFAULT_JMS_CONNECTION_FACTORY)
     private JMSContext context;
 
-    private MyJMSClient instance;
+    private JmsClient instance;
 
     @PostConstruct
     public void init() {
@@ -26,67 +26,67 @@ public class MyJMSClientProducerBean {
     }
 
     @Produces
-    public MyJMSClient generateClient() {
+    public JmsClient getInstance() {
 	return instance;
     }
 
-    private class MyJMSClientImpl implements MyJMSClient {
+    private class MyJMSClientImpl implements JmsClient {
 
 	@Override
-	public <E extends Serializable> MyJMSConsumer<E> createConsumer(final Destination destination) {
-	    return MyJMSFunctions.createConsumer(context, destination);
+	public <E extends Serializable> JmsConsumer<E> createConsumer(final Destination destination) {
+	    return JmsClients.createConsumer(context, destination);
 	}
 
 	@Override
-	public <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(final String queuePhysicalName) {
-	    return MyJMSFunctions.createQueueConsumer(context, queuePhysicalName);
+	public <E extends Serializable> JmsConsumer<E> createConsumerQueue(final String queuePhysicalName) {
+	    return JmsClients.createConsumerQueue(context, queuePhysicalName);
 	}
 
 	@Override
-	public <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(final String topicPhysicalName) {
-	    return MyJMSFunctions.createTopicConsumer(context, topicPhysicalName);
+	public <E extends Serializable> JmsConsumer<E> createConsumerTopic(final String topicPhysicalName) {
+	    return JmsClients.createConsumerTopic(context, topicPhysicalName);
 	}
 
 	//
 
 	@Override
-	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(final Destination destination)
+	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(final Destination destination)
 		throws JMSException {
-	    return MyJMSFunctions.createMultipleConsumer(context, destination);
+	    return JmsClients.createMultipleConsumer(context, destination);
 	}
 
 	@Override
-	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(
+	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(
 		final String queuePhysicalName)
 		throws JMSException {
-	    return MyJMSFunctions.createMultipleQueueConsumer(context, queuePhysicalName);
+	    return JmsClients.createMultipleConsumerQueue(context, queuePhysicalName);
 	}
 
 	@Override
-	public <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(
+	public <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(
 		final String topicPhysicalName)
 		throws JMSException {
-	    return MyJMSFunctions.createMultipleTopicConsumer(context, topicPhysicalName);
+	    return JmsClients.createMultipleConsumerTopic(context, topicPhysicalName);
 	}
 
 	//
 
 	@Override
-	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(
+	public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(
 		final Destination destination, final Class<R> resultClazz) {
-	    return MyJMSFunctions.createFunction(context, destination, resultClazz);
+	    return JmsClients.createCallable(context, destination, resultClazz);
 	}
 
 	@Override
-	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(
+	public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(
 		final String queuePhysicalName, final Class<R> resultClazz) {
-	    return MyJMSFunctions.createQueueFunction(context, queuePhysicalName, resultClazz);
+	    return JmsClients.createCallableQueue(context, queuePhysicalName, resultClazz);
 	}
 
 	@Override
-	public <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(
+	public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(
 		final String topicPhysicalName, final Class<R> resultClazz) {
-	    return MyJMSFunctions.createTopicFunction(context, topicPhysicalName, resultClazz);
+	    return JmsClients.createCallableTopic(context, topicPhysicalName, resultClazz);
 	}
 
     }

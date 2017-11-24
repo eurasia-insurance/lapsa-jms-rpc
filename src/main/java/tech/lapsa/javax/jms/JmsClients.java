@@ -12,45 +12,45 @@ import javax.jms.Message;
 import javax.jms.TemporaryQueue;
 
 import tech.lapsa.java.commons.function.MyObjects;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSConsumer;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSMultipleConsumer;
+import tech.lapsa.javax.jms.JmsClient.JmsConsumer;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
+import tech.lapsa.javax.jms.JmsClient.JmsMultipleConsumer;
 
-public final class MyJMSFunctions {
+public final class JmsClients {
 
-    private MyJMSFunctions() {
+    private JmsClients() {
     }
 
     //
 
-    public static <E extends Serializable> MyJMSConsumer<E> createConsumer(final JMSContext context,
+    public static <E extends Serializable> JmsConsumer<E> createConsumer(final JMSContext context,
 	    final Destination destination) {
 	return new MyJMSConsumerImpl<>(context, destination);
     }
 
-    public static <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(final JMSContext context,
+    public static <E extends Serializable> JmsConsumer<E> createConsumerQueue(final JMSContext context,
 	    final String queuePhysicalName) {
 	return new MyJMSConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(final JMSContext context,
+    public static <E extends Serializable> JmsConsumer<E> createConsumerTopic(final JMSContext context,
 	    final String topicPhysicalName) {
 	return new MyJMSConsumerImpl<>(context, context.createTopic(topicPhysicalName));
     }
 
     //
 
-    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(final JMSContext context,
+    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(final JMSContext context,
 	    final Destination destination) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, destination);
     }
 
-    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(
+    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(
 	    final JMSContext context, final String queuePhysicalName) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(
+    public static <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(
 	    final JMSContext context,
 	    final String topicPhysicalName) throws JMSException {
 	return new MyJMSMultipleConsumerImpl<>(context, context.createTopic(topicPhysicalName));
@@ -58,17 +58,17 @@ public final class MyJMSFunctions {
 
     //
 
-    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(
+    public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(
 	    final JMSContext context, final Destination destination, final Class<R> resultClazz) {
 	return new MyJMSFunctionImpl<>(resultClazz, context, destination);
     }
 
-    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(
+    public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(
 	    final JMSContext context, final String queuePhysicalName, final Class<R> resultClazz) {
 	return new MyJMSFunctionImpl<>(resultClazz, context, context.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(
+    public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(
 	    final JMSContext context, final String topicPhysicalName, final Class<R> resultClazz) {
 	return new MyJMSFunctionImpl<>(resultClazz, context, context.createTopic(topicPhysicalName));
     }
@@ -162,7 +162,7 @@ public final class MyJMSFunctions {
     }
 
     static final class MyJMSMultipleConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
-	    implements MyJMSMultipleConsumer<E> {
+	    implements JmsMultipleConsumer<E> {
 
 	private MyJMSMultipleConsumerImpl(final JMSContext context, final Destination destination) throws JMSException {
 	    super(VoidResult.class, context, destination);
@@ -180,7 +180,7 @@ public final class MyJMSFunctions {
     }
 
     static final class MyJMSConsumerImpl<E extends Serializable> extends Base<E, VoidResult>
-	    implements MyJMSConsumer<E> {
+	    implements JmsConsumer<E> {
 
 	private MyJMSConsumerImpl(final JMSContext context, final Destination destination) {
 	    super(VoidResult.class, context, destination);
@@ -210,7 +210,7 @@ public final class MyJMSFunctions {
     }
 
     static final class MyJMSFunctionImpl<E extends Serializable, R extends Serializable> extends Base<E, R>
-	    implements MyJMSFunction<E, R> {
+	    implements JmsCallable<E, R> {
 
 	private MyJMSFunctionImpl(final Class<R> resultClazz, final JMSContext context, final Destination destination) {
 	    super(resultClazz, context, destination);

@@ -7,22 +7,22 @@ import org.junit.Test;
 import ejb.resources.function.runtimeException.FunctionRuntimeExceptionDestination;
 import ejb.resources.function.runtimeException.FunctionRuntimeExceptionEntity;
 import ejb.resources.function.runtimeException.FunctionRuntimeExceptionResult;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 import test.assertion.Assertions;
 
 public class FunctionRuntimeExceptionTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private FunctionRuntimeExceptionDestination destination;
 
     @Test
     public void nullPointerException() throws Exception {
-	final MyJMSFunction<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> service = jmsClient
-		.createFunction(
+	final JmsCallable<FunctionRuntimeExceptionEntity, FunctionRuntimeExceptionResult> service = jmsClient
+		.createCallable(
 			destination.getDestination(),
 			FunctionRuntimeExceptionResult.class);
 

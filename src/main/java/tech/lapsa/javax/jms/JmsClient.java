@@ -6,17 +6,17 @@ import java.util.Properties;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 
-public interface MyJMSClient {
+public interface JmsClient {
 
     //
 
-    <E extends Serializable> MyJMSConsumer<E> createConsumer(Destination destination);
+    <E extends Serializable> JmsConsumer<E> createConsumer(Destination destination);
 
-    <E extends Serializable> MyJMSConsumer<E> createQueueConsumer(String queuePhysicalName);
+    <E extends Serializable> JmsConsumer<E> createConsumerQueue(String queuePhysicalName);
 
-    <E extends Serializable> MyJMSConsumer<E> createTopicConsumer(String topicPhysicalName);
+    <E extends Serializable> JmsConsumer<E> createConsumerTopic(String topicPhysicalName);
 
-    public static interface MyJMSConsumer<E extends Serializable> {
+    public static interface JmsConsumer<E extends Serializable> {
 
 	void accept(E entity) throws JMSException;
 
@@ -29,17 +29,18 @@ public interface MyJMSClient {
 
     //
 
-    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleConsumer(Destination destination)
+    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumer(Destination destination)
 	    throws JMSException;
 
-    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleQueueConsumer(String queuePhysicalName)
+    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerQueue(String queuePhysicalName)
 	    throws JMSException;
 
-    <E extends Serializable> MyJMSMultipleConsumer<E> createMultipleTopicConsumer(String topicPhysicalName)
+    <E extends Serializable> JmsMultipleConsumer<E> createMultipleConsumerTopic(String topicPhysicalName)
 	    throws JMSException;
 
     @SuppressWarnings("unchecked")
-    public static interface MyJMSMultipleConsumer<E extends Serializable> extends AutoCloseable {
+    public static interface JmsMultipleConsumer<E extends Serializable> extends AutoCloseable {
+
 	void acceptNoWait(E... entities) throws JMSException;
 
 	@Override
@@ -48,16 +49,16 @@ public interface MyJMSClient {
 
     //
 
-    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createFunction(Destination destination,
+    <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(Destination destination,
 	    Class<R> resultClazz);
 
-    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createQueueFunction(String queuePhysicalName,
+    <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(String queuePhysicalName,
 	    Class<R> resultClazz);
 
-    <E extends Serializable, R extends Serializable> MyJMSFunction<E, R> createTopicFunction(String topicPhysicalName,
+    <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(String topicPhysicalName,
 	    Class<R> resultClazz);
 
-    public static interface MyJMSFunction<E extends Serializable, R extends Serializable> {
+    public static interface JmsCallable<E extends Serializable, R extends Serializable> {
 
 	R call(E entity) throws JMSException;
 

@@ -11,21 +11,21 @@ import org.junit.Test;
 import ejb.resources.function.nulls.FunctionNullsDestination;
 import ejb.resources.function.nulls.FunctionNullsEntity;
 import ejb.resources.function.nulls.FunctionNullsResult;
-import tech.lapsa.javax.jms.MyJMSClient;
-import tech.lapsa.javax.jms.MyJMSClient.MyJMSFunction;
+import tech.lapsa.javax.jms.JmsClient;
+import tech.lapsa.javax.jms.JmsClient.JmsCallable;
 
 public class FunctionNullsTest extends ArquillianBaseTestCase {
 
     @Inject
-    private MyJMSClient jmsClient;
+    private JmsClient jmsClient;
 
     @Inject
     private FunctionNullsDestination destination;
 
     @Test
     public void basic() throws JMSException {
-	final MyJMSFunction<FunctionNullsEntity, FunctionNullsResult> service = jmsClient
-		.createFunction(destination.getDestination(), FunctionNullsResult.class);
+	final JmsCallable<FunctionNullsEntity, FunctionNullsResult> service = jmsClient
+		.createCallable(destination.getDestination(), FunctionNullsResult.class);
 	{
 	    final FunctionNullsResult r = service.call(null);
 	    assertThat(r, nullValue());
