@@ -29,4 +29,14 @@
 		<property name="Name" value="test.function.runtimeException.queue" />
 	</admin-object-resource>
 
+	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/function/unexpectedType">
+		<property name="Name" value="test.function.unexpectedType.queue" />
+	</admin-object-resource>
+
+	<admin-object-resource res-adapter="jmsra"
+		res-type="javax.jms.Queue" jndi-name="test/function/unexpectedType_unexpectedResult">
+		<property name="Name" value="test.function.unexpectedType.unexpectedResult.queue" />
+	</admin-object-resource>
+
 </resources>
