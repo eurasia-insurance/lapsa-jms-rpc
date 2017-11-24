@@ -8,8 +8,11 @@ public class FunctionSimpleResult implements Serializable {
 
     public static final String PREFIX = "REPLY: ";
 
+    private final String message;
+    private String name;
+
     public FunctionSimpleResult(FunctionSimpleEntity functionSimpleEntity) {
-	this.message = PREFIX + functionSimpleEntity.message;
+	this.message = PREFIX + functionSimpleEntity.getMessage();
     }
 
     @Override
@@ -17,6 +20,15 @@ public class FunctionSimpleResult implements Serializable {
 	return message;
     }
 
-    public final String message;
+    public String getMessage() {
+	return String.format(message, name);
+    }
 
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

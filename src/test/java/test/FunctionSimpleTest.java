@@ -3,12 +3,15 @@ package test;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.Properties;
+
 import javax.inject.Inject;
 import javax.jms.JMSException;
 
 import org.junit.Test;
 
 import ejb.resources.function.simple.FunctionSimpleDestination;
+import ejb.resources.function.simple.FunctionSimpleDrivenBean;
 import ejb.resources.function.simple.FunctionSimpleEntity;
 import ejb.resources.function.simple.FunctionSimpleResult;
 import tech.lapsa.javax.jms.MyJMSClient;
@@ -23,16 +26,40 @@ public class FunctionSimpleTest extends ArquillianBaseTestCase {
     private FunctionSimpleDestination functionSimpleDestination;
 
     @Test
-    public void simple() throws JMSException {
+    public void basic() throws JMSException {
 	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> function = jmsClient.createFunction(
 		functionSimpleDestination.getDestination(),
 		FunctionSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello JMS world!";
+	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + MESSAGE;
+
 	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
 	    final FunctionSimpleResult r = function.apply(e);
 	    assertThat(r, not(nullValue()));
-	    assertThat(r.message, allOf(not(nullValue()), is(equalTo(FunctionSimpleResult.PREFIX + e.message))));
+	    assertThat(r.getMessage(),
+		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
+	}
+    }
+
+    @Test
+    public void withProperties() throws JMSException {
+	final MyJMSFunction<FunctionSimpleEntity, FunctionSimpleResult> function = jmsClient.createFunction(
+		functionSimpleDestination.getDestination(),
+		FunctionSimpleResult.class);
+	{
+	    final String MESSAGE = "Hello, %1$s!";
+	    final String NAME = "John Bull";
+	    final String EXPECTING_MESSAGE = FunctionSimpleResult.PREFIX + "Hello, " + NAME + "!";
+
+	    final Properties properties = new Properties();
+	    properties.setProperty(FunctionSimpleDrivenBean.PROPERTY_NAME, NAME);
+
+	    final FunctionSimpleEntity e = new FunctionSimpleEntity(MESSAGE);
+	    final FunctionSimpleResult r = function.apply(e, properties);
+	    assertThat(r, not(nullValue()));
+	    assertThat(r.getMessage(),
+		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
 	}
     }
 }
