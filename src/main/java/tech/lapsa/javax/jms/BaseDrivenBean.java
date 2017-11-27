@@ -65,7 +65,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	    if (entityTypeAnnotation.isAnnotationPresent(Valid.class)) {
 		final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
 		if (violations != null && violations.size() > 0) {
-		    throw new MyConstraintViolationExcetpion(violations);
+		    throw new MyConstraintViolationException(violations);
 		}
 	    }
 	}

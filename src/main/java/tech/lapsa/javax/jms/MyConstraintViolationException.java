@@ -8,11 +8,11 @@ import javax.validation.ConstraintViolationException;
 
 import tech.lapsa.java.commons.function.MyOptionals;
 
-public class MyConstraintViolationExcetpion extends ConstraintViolationException {
+public class MyConstraintViolationException extends ConstraintViolationException {
 
     private static final long serialVersionUID = 1L;
 
-    MyConstraintViolationExcetpion(Set<? extends ConstraintViolation<?>> constraintViolations) {
+    MyConstraintViolationException(Set<? extends ConstraintViolation<?>> constraintViolations) {
 	super(MyOptionals.of(constraintViolations) //
 		.map(x -> x.stream() //
 			.map(y -> String.format("%1$s '%2$s.%3$s' was %4$s",
