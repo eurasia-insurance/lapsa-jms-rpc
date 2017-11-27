@@ -17,7 +17,7 @@ public class CallableSimpleDrivenBean extends CallableServiceDrivenBean<Callable
     }
 
     @Override
-    protected CallableSimpleResult apply(CallableSimpleEntity callableSimpleEntity, Properties properties) {
+    public CallableSimpleResult calling(CallableSimpleEntity callableSimpleEntity, Properties properties) {
 	CallableSimpleResult result = new CallableSimpleResult(callableSimpleEntity);
 	if (properties != null) {
 	    final String name = properties.getProperty(PROPERTY_NAME);

@@ -15,7 +15,7 @@ public class CallableRuntimeExceptionDrivenBean
     }
 
     @Override
-    protected CallableRuntimeExceptionResult apply(CallableRuntimeExceptionEntity callableRuntimeExceptionEntity,
+    public CallableRuntimeExceptionResult calling(CallableRuntimeExceptionEntity callableRuntimeExceptionEntity,
 	    Properties properties) {
 	throw new IllegalStateException();
     }

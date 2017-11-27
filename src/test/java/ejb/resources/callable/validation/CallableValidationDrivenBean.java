@@ -14,7 +14,7 @@ public class CallableValidationDrivenBean extends CallableServiceDrivenBean<Call
     }
 
     @Override
-    protected CallableValidationResult apply(CallableValidationEntity callableValidationEntity, Properties properties) {
+    public CallableValidationResult calling(CallableValidationEntity callableValidationEntity, Properties properties) {
 	return new CallableValidationResult(callableValidationEntity);
     }
 
