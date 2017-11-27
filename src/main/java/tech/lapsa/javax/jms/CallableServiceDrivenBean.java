@@ -3,8 +3,6 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-import tech.lapsa.javax.jms.service.JmsCallableService;
-
 public abstract class CallableServiceDrivenBean<E extends Serializable, R extends Serializable>
 	extends BaseDrivenBean<E, R> implements JmsCallableService<E, R> {
 

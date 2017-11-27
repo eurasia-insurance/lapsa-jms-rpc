@@ -3,8 +3,6 @@ package tech.lapsa.javax.jms;
 import java.io.Serializable;
 import java.util.Properties;
 
-import tech.lapsa.javax.jms.service.JmsReceiverService;
-
 public abstract class ConsumerServiceDrivenBean<E extends Serializable>
 	extends BaseDrivenBean<E, VoidResult> implements JmsReceiverService<E> {
 
