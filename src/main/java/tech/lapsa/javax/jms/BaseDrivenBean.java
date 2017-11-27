@@ -42,7 +42,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 
     BaseDrivenBean(final Class<E> entityClazz) {
 	this.entityClazz = entityClazz;
-	this.validationRequired = this.getClass().isAnnotationPresent(JmsValidationRequired.class);
+	this.validationRequired = !this.getClass().isAnnotationPresent(JmsSkipValidation.class);
     }
 
     private E processedEntity(final Message entityM) throws JMSException {

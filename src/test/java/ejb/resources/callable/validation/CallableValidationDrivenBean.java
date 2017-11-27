@@ -5,10 +5,8 @@ import java.util.Properties;
 import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
-import tech.lapsa.javax.jms.JmsValidationRequired;
 
 @MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME)
-@JmsValidationRequired
 public class CallableValidationDrivenBean
 	extends CallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {
 
