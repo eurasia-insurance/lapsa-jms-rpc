@@ -15,6 +15,7 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.validation.ConstraintViolation;
+import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.function.MyObjects;
@@ -55,7 +56,9 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	if (entity != null && validationRequired) {
 	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
 	    if (violations != null && violations.size() > 0) {
-		throw new MyConstraintViolationException(violations);
+		final MyConstraintViolationException viol = new MyConstraintViolationException(violations);
+		logger.WARN.log("Entity validation FAILED with message '%1$s'", viol.getMessage());
+		throw viol;
 	    }
 	}
 	return entity;
@@ -87,14 +90,22 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 		else
 		    logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
 			    destinationName(resultM.getJMSDestination()));
+	    } catch (final ValidationException e) {
+		final Message validationExceptionM = reply(entityM, e);
+		if (MyObjects.isNull(validationExceptionM))
+		    logger.FINE.log("JMS validation exception was not sent due to it's null");
+		else
+		    logger.FINE.log("JMS validation exception was sent '%1$s' to '%2$s'",
+			    validationExceptionM.getJMSMessageID(),
+			    destinationName(validationExceptionM.getJMSDestination()));
 	    } catch (final RuntimeException e) {
 		// also catches ValidationException types
 		logger.WARN.log(e);
 		final Message runtimeExceptionM = reply(entityM, e);
 		if (MyObjects.isNull(runtimeExceptionM))
-		    logger.FINE.log("JMS RuntimeException was not sent due to it's null");
+		    logger.FINE.log("JMS exception was not sent due to it's null");
 		else
-		    logger.FINE.log("JMS RuntimeException was sent '%1$s' to '%2$s'",
+		    logger.FINE.log("JMS exception was sent '%1$s' to '%2$s'",
 			    runtimeExceptionM.getJMSMessageID(),
 			    destinationName(runtimeExceptionM.getJMSDestination()));
 	    }
