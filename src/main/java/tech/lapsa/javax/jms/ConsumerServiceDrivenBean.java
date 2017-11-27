@@ -4,17 +4,15 @@ import java.io.Serializable;
 import java.util.Properties;
 
 public abstract class ConsumerServiceDrivenBean<E extends Serializable>
-	extends BaseDrivenBean<E, VoidResult> {
+	extends BaseDrivenBean<E, VoidResult> implements JmsReceiverService<E> {
 
     protected ConsumerServiceDrivenBean(final Class<E> entityClazz) {
 	super(entityClazz);
     }
 
-    protected abstract void accept(E entity, Properties properties);
-
     @Override
     final VoidResult _apply(final E entity, final Properties properties) {
-	accept(entity, properties);
+	receiving(entity, properties);
 	return VoidResult.INSTANCE;
     }
 }

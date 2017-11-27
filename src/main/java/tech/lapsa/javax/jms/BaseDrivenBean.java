@@ -38,8 +38,11 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     @Inject
     private JMSContext context;
 
+    private final boolean validationRequired;
+
     BaseDrivenBean(final Class<E> entityClazz) {
 	this.entityClazz = entityClazz;
+	this.validationRequired = !this.getClass().isAnnotationPresent(JmsSkipValidation.class);
     }
 
     private E processedEntity(final Message entityM) throws JMSException {
@@ -49,10 +52,10 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 		throw new UnexpectedTypeRequestedException(entityClazz, wrongTypedObject.getClass());
 	}
 	final E entity = entityM.getBody(entityClazz);
-	if (entity != null) {
+	if (entity != null && validationRequired) {
 	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
 	    if (violations != null && violations.size() > 0) {
-		throw new MyConstraintViolationExcetpion(violations);
+		throw new MyConstraintViolationException(violations);
 	    }
 	}
 	return entity;

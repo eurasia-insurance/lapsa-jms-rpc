@@ -15,4 +15,13 @@ public class CallableValidationDestination {
     public Destination getDestination() {
 	return destination;
     }
+
+    public static final String JNDI_NAME_SKIP_VALIDATION = "test/callable/validation_skipValidation";
+
+    @Resource(name = JNDI_NAME_SKIP_VALIDATION)
+    private Destination destinationSkipValidation;
+
+    public Destination getDestinationSkipValidation() {
+	return destinationSkipValidation;
+    }
 }

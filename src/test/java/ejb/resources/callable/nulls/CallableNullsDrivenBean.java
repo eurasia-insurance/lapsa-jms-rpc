@@ -15,7 +15,7 @@ public class CallableNullsDrivenBean extends CallableServiceDrivenBean<CallableN
     }
 
     @Override
-    protected CallableNullsResult apply(CallableNullsEntity entity, Properties properties) {
+    public CallableNullsResult calling(CallableNullsEntity entity, Properties properties) {
 	MyObjects.requireNull(entity);
 	return null;
     }

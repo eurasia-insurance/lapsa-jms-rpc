@@ -19,7 +19,7 @@ public class ConsumerSimpleDrivenBean extends ConsumerServiceDrivenBean<Consumer
     }
 
     @Override
-    protected void accept(ConsumerSimpleEntity entity, Properties properties) {
+    public void receiving(ConsumerSimpleEntity entity, Properties properties) {
 	if (MyObjects.nonNull(properties)) {
 	    final String name = properties.getProperty(PROPERTY_NAME);
 	    if (MyStrings.nonEmpty(name))

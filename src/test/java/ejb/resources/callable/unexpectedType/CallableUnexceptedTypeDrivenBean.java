@@ -15,7 +15,7 @@ public class CallableUnexceptedTypeDrivenBean extends
     }
 
     @Override
-    protected CallableUnexceptedTypeResult apply(CallableUnexceptedTypeEntity callableUnexceptedTypeEntity,
+    public CallableUnexceptedTypeResult calling(CallableUnexceptedTypeEntity callableUnexceptedTypeEntity,
 	    Properties properties) {
 	return new CallableUnexceptedTypeResult(callableUnexceptedTypeEntity);
     }
