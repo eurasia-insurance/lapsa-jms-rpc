@@ -61,8 +61,9 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
 	    final String NULL_MESSAGE = null;
 	    final CallableValidationEntity e = new CallableValidationEntity(NULL_MESSAGE);
 	    final CallableValidationResult r = service.call(e);
-	    System.out.println(r);
-//	    Assertions.expectException(() -> service.call(e), ValidationException.class);
+	    assertThat(r, not(nullValue()));
+	    assertThat(r.getMessage(),
+		    allOf(not(nullValue()), is(equalTo(CallableSimpleResult.PREFIX + e.getMessage()))));
 	}
     }
 
