@@ -1,8 +1,6 @@
 package tech.lapsa.javax.jms;
 
 import java.io.Serializable;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.Set;
 
@@ -17,7 +15,6 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.function.MyObjects;
@@ -41,17 +38,11 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     @Inject
     private JMSContext context;
 
-    private final AnnotatedType entityTypeAnnotation;
+    private final boolean validationRequired;
 
     BaseDrivenBean(final Class<E> entityClazz) {
 	this.entityClazz = entityClazz;
-	AnnotatedType at = null;
-	try {
-	    final Method method = this.getClass().getMethod("calling", entityClazz, Properties.class);
-	    at = method.getParameters()[0].getAnnotatedType();
-	} catch (NoSuchMethodException e) {
-	}
-	this.entityTypeAnnotation = at;
+	this.validationRequired = this.getClass().isAnnotationPresent(JmsValidationRequired.class);
     }
 
     private E processedEntity(final Message entityM) throws JMSException {
@@ -61,12 +52,10 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 		throw new UnexpectedTypeRequestedException(entityClazz, wrongTypedObject.getClass());
 	}
 	final E entity = entityM.getBody(entityClazz);
-	if (entity != null) {
-	    if (entityTypeAnnotation.isAnnotationPresent(Valid.class)) {
-		final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
-		if (violations != null && violations.size() > 0) {
-		    throw new MyConstraintViolationException(violations);
-		}
+	if (entity != null && validationRequired) {
+	    final Set<ConstraintViolation<Object>> violations = validatorFactory.getValidator().validate(entity);
+	    if (violations != null && violations.size() > 0) {
+		throw new MyConstraintViolationException(violations);
 	    }
 	}
 	return entity;
