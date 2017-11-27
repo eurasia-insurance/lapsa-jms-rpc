@@ -51,4 +51,19 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
 	    Assertions.expectException(() -> service.call(e), ValidationException.class);
 	}
     }
+
+    @Test
+    public void validationNoFail() throws Exception {
+	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
+		= jmsClientFactory.createCallable(destination.getDestinationSkipValidation(), CallableValidationResult.class);
+
+	{
+	    final String NULL_MESSAGE = null;
+	    final CallableValidationEntity e = new CallableValidationEntity(NULL_MESSAGE);
+	    final CallableValidationResult r = service.call(e);
+	    System.out.println(r);
+//	    Assertions.expectException(() -> service.call(e), ValidationException.class);
+	}
+    }
+
 }
