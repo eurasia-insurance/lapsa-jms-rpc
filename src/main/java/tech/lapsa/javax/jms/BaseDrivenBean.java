@@ -20,6 +20,7 @@ import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.logging.MyLogger;
+import tech.lapsa.java.commons.reflect.MyAnnotations;
 
 abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
 
@@ -43,7 +44,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 
     BaseDrivenBean(final Class<E> entityClazz) {
 	this.entityClazz = entityClazz;
-	this.validationRequired = !this.getClass().isAnnotationPresent(JmsSkipValidation.class);
+	this.validationRequired = MyAnnotations.notAnnotatedSupers(this.getClass(), JmsSkipValidation.class);
     }
 
     private E processedEntity(final Message entityM) throws JMSException {
