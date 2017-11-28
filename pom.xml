@@ -20,6 +20,7 @@
 		<!-- tech -->
 		<java-commons.version>1.1-SNAPSHOT</java-commons.version>
 		<lapsa-arquillian-test.version>1.1-SNAPSHOT</lapsa-arquillian-test.version>
+		<glassfish.embedded.tmpdir>target</glassfish.embedded.tmpdir>
 	</properties>
 
 	<dependencyManagement>
@@ -106,6 +107,7 @@
 					<systemPropertyVariables>
 						<java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
 						<derby.stream.error.file>${project.build.directory}/derby.log</derby.stream.error.file>
+						<glassfish.embedded.tmpdir>${project.build.directory}</glassfish.embedded.tmpdir>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
