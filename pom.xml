@@ -19,6 +19,7 @@
 		<javax-javaee-bom.version>7.0</javax-javaee-bom.version>
 		<!-- tech -->
 		<java-commons.version>1.1-SNAPSHOT</java-commons.version>
+		<javax-cdi-commons.version>1.1-SNAPSHOT</javax-cdi-commons.version>
 		<lapsa-arquillian-test.version>1.1-SNAPSHOT</lapsa-arquillian-test.version>
 		<glassfish.embedded.tmpdir>target</glassfish.embedded.tmpdir>
 	</properties>
@@ -33,13 +34,18 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<!-- tech -->
 			<dependency>
 				<groupId>tech.lapsa.java</groupId>
 				<artifactId>java-commons-root</artifactId>
 				<version>${java-commons.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<!-- tech -->
+			<dependency>
+				<groupId>tech.lapsa.javax</groupId>
+				<artifactId>javax-cdi-commons</artifactId>
+				<version>${javax-cdi-commons.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>tech.lapsa.lapsa</groupId>
@@ -54,6 +60,12 @@
 		<dependency>
 			<groupId>tech.lapsa.java</groupId>
 			<artifactId>java-commons</artifactId>
+			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>tech.lapsa.javax</groupId>
+			<artifactId>javax-cdi-commons</artifactId>
 			<scope>compile</scope>
 			<optional>false</optional>
 		</dependency>
