@@ -15,7 +15,7 @@ import javax.jms.TemporaryQueue;
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsSender;
+import tech.lapsa.javax.jms.JmsClientFactory.JmsEventNotificator;
 
 public final class JmsClients {
 
@@ -47,17 +47,17 @@ public final class JmsClients {
 
     //
 
-    public static <E extends Serializable> JmsSender<E> createSender(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSender(final JMSContext context,
 	    final Destination destination) {
 	return new SenderClientImpl<>(context, destination);
     }
 
-    public static <E extends Serializable> JmsSender<E> createSenderQueue(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSenderQueue(final JMSContext context,
 	    final String queuePhysicalName) {
 	return new SenderClientImpl<>(context, context.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable> JmsSender<E> createSenderTopic(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSenderTopic(final JMSContext context,
 	    final String topicPhysicalName) {
 	return new SenderClientImpl<>(context, context.createTopic(topicPhysicalName));
     }
@@ -178,7 +178,7 @@ public final class JmsClients {
     }
 
     static final class SenderClientImpl<E extends Serializable> extends BaseClient<E, VoidResult>
-	    implements JmsSender<E> {
+	    implements JmsEventNotificator<E> {
 
 	private SenderClientImpl(final JMSContext context, final Destination destination) {
 	    super(VoidResult.class, context, destination);
@@ -187,12 +187,12 @@ public final class JmsClients {
 
 	@Override
 	@SafeVarargs
-	public final void send(final E... entities) {
+	public final void eventNotify(final E... entities) {
 	    _send(context, destination, null, entities);
 	}
 
 	@Override
-	public void send(E entity, Properties properties) {
+	public void eventNotify(E entity, Properties properties) {
 	    _send(context, destination, properties, entity);
 	}
     }

@@ -53,7 +53,7 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
     }
 
     @Produces
-    public <T extends Serializable> JmsSender<T> createSender(final InjectionPoint ip) {
+    public <T extends Serializable> JmsEventNotificator<T> produceEventNotificator(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestinationMappedName.class) //
 		.value(), Destination.class);
@@ -85,17 +85,17 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
     //
 
     @Override
-    public <E extends Serializable> JmsSender<E> createSender(final Destination destination) {
+    public <E extends Serializable> JmsEventNotificator<E> createEventNotificator(final Destination destination) {
 	return JmsClients.createSender(context, destination);
     }
 
     @Override
-    public <E extends Serializable> JmsSender<E> createSenderQueue(final String queuePhysicalName) {
+    public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorQueue(final String queuePhysicalName) {
 	return JmsClients.createSenderQueue(context, queuePhysicalName);
     }
 
     @Override
-    public <E extends Serializable> JmsSender<E> createSenderTopic(final String topicPhysicalName) {
+    public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorTopic(final String topicPhysicalName) {
 	return JmsClients.createSenderTopic(context, topicPhysicalName);
     }
 

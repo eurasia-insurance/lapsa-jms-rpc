@@ -24,22 +24,18 @@ public interface JmsClientFactory {
 
     //
 
-    //TODO REFACT : rename to createEventNotificator
-    <E extends Serializable> JmsSender<E> createSender(Destination destination);
+    <E extends Serializable> JmsEventNotificator<E> createEventNotificator(Destination destination);
 
-    <E extends Serializable> JmsSender<E> createSenderQueue(String queuePhysicalName);
+    <E extends Serializable> JmsEventNotificator<E> createEventNotificatorQueue(String queuePhysicalName);
 
-    <E extends Serializable> JmsSender<E> createSenderTopic(String topicPhysicalName);
+    <E extends Serializable> JmsEventNotificator<E> createEventNotificatorTopic(String topicPhysicalName);
 
-    //TODO REFACT : rename to JmsEventNotificator
-    public static interface JmsSender<E extends Serializable> {
+    public static interface JmsEventNotificator<E extends Serializable> {
 
-	// TODO REFACT : rename eventNotify
-	void send(E entity, Properties properties);
+	void eventNotify(E entity, Properties properties);
 
-	// TODO REFACT : rename eventNotify
 	@SuppressWarnings("unchecked")
-	void send(E... entities);
+	void eventNotify(E... entities);
     }
 
     //
