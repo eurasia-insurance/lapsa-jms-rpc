@@ -24,7 +24,7 @@ public interface JmsClientFactory {
 
     //
 
-    //TODO REFACT : rename to createNotificator
+    //TODO REFACT : rename to createEventNotificator
     <E extends Serializable> JmsSender<E> createSender(Destination destination);
 
     <E extends Serializable> JmsSender<E> createSenderQueue(String queuePhysicalName);
