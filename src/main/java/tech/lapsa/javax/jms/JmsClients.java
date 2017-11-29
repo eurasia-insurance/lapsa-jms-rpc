@@ -122,18 +122,20 @@ public final class JmsClients {
 
 	final R _send(final E entity, final Properties properties) {
 	    try {
-		final JMSProducer producer = context.createProducer();
 
 		Message resultM = null;
 
 		{
 		    TemporaryQueue replyToD = null;
 		    try {
-			replyToD = context.createTemporaryQueue();
+			final JMSProducer producer = context.createProducer();
 			final Message entityM = context.createObjectMessage(entity);
-			entityM.setJMSReplyTo(replyToD);
 			if (properties != null)
 			    MyMessages.propertiesToMessage(entityM, properties);
+			{
+			    replyToD = context.createTemporaryQueue();
+			    entityM.setJMSReplyTo(replyToD);
+			}
 			producer.send(destination, entityM);
 			final String jmsCorellationID = entityM.getJMSMessageID();
 			final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
