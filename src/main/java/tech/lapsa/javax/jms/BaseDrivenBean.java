@@ -85,30 +85,38 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 		    logger.FINER.log("Result is null");
 		else
 		    logger.FINER.log("Result '%1$s' processed '%2$s'", result.getClass(), result);
-		final Message resultM = reply(entityM, result);
-		if (MyObjects.isNull(resultM))
-		    logger.FINE.log("JMS Result was not sent due to it's null");
-		else
-		    logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
-			    destinationName(resultM.getJMSDestination()));
+
+		if (isReplyRequired(entityM)) {
+		    final Message resultM = reply(entityM, result);
+		    if (MyObjects.isNull(resultM))
+			logger.FINE.log("JMS Result was not sent due to it's null");
+		    else
+			logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
+				destinationName(resultM.getJMSDestination()));
+		}
+
 	    } catch (final ValidationException e) {
-		final Message validationExceptionM = reply(entityM, e);
-		if (MyObjects.isNull(validationExceptionM))
-		    logger.FINE.log("JMS validation exception was not sent due to it's null");
-		else
-		    logger.FINE.log("JMS validation exception was sent '%1$s' to '%2$s'",
-			    validationExceptionM.getJMSMessageID(),
-			    destinationName(validationExceptionM.getJMSDestination()));
-	    } catch (final RuntimeException e) {
-		// also catches ValidationException types
 		logger.WARN.log(e);
-		final Message runtimeExceptionM = reply(entityM, e);
-		if (MyObjects.isNull(runtimeExceptionM))
-		    logger.FINE.log("JMS exception was not sent due to it's null");
-		else
-		    logger.FINE.log("JMS exception was sent '%1$s' to '%2$s'",
-			    runtimeExceptionM.getJMSMessageID(),
-			    destinationName(runtimeExceptionM.getJMSDestination()));
+		if (isReplyRequired(entityM)) {
+		    final Message validationExceptionM = reply(entityM, e);
+		    if (MyObjects.isNull(validationExceptionM))
+			logger.FINE.log("JMS validation exception was not sent due to it's null");
+		    else
+			logger.FINE.log("JMS validation exception was sent '%1$s' to '%2$s'",
+				validationExceptionM.getJMSMessageID(),
+				destinationName(validationExceptionM.getJMSDestination()));
+		}
+	    } catch (final RuntimeException e) {
+		logger.SEVERE.log(e);
+		if (isReplyRequired(entityM)) {
+		    final Message runtimeExceptionM = reply(entityM, e);
+		    if (MyObjects.isNull(runtimeExceptionM))
+			logger.FINE.log("JMS exception was not sent due to it's null");
+		    else
+			logger.FINE.log("JMS exception was sent '%1$s' to '%2$s'",
+				runtimeExceptionM.getJMSMessageID(),
+				destinationName(runtimeExceptionM.getJMSDestination()));
+		}
 	    }
 	} catch (final JMSException e) {
 	    logger.SEVERE.log(e);
@@ -140,10 +148,15 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 			.orElse(null));
     }
 
+    private boolean isReplyRequired(final Message entityM) throws JMSException {
+	final boolean required = entityM.getJMSReplyTo() != null;
+	if (!required)
+	    logger.FINE.log("JMS reply is not required");
+	return required;
+    }
+
     private Message reply(final Message entityM, final Serializable serializable) throws JMSException {
 	final Destination replyToD = entityM.getJMSReplyTo();
-	if (replyToD == null) // for noWait senders support
-	    return null;
 	final Message resultM = context.createObjectMessage(serializable);
 	resultM.setJMSCorrelationID(entityM.getJMSMessageID());
 	context.createProducer()
