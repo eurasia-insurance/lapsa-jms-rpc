@@ -9,14 +9,16 @@ import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSContext;
 
+import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
 import tech.lapsa.javax.cdi.utility.MyAnnotated;
 
 @Dependent
 public class JmsClientFactoryCDIBean implements JmsClientFactory {
 
+    @SuppressWarnings("unchecked")
     @Produces
-    public JmsCallable<? extends Serializable, ? extends Serializable> produceCalable(final InjectionPoint ip) {
+    public <T extends Serializable, R extends Serializable> JmsCallable<T, R> produceCalable(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestinationMappedName.class) //
 		.value(), Destination.class);
@@ -24,14 +26,22 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 	final Class<? extends Serializable> entityClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
 			.value();
-	final Class<? extends Serializable> resultClazz //
+	final Class<? extends Serializable> wildcartResultClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsCallableResultType.class) //
 			.value();
+
+	final Class<R> resultClazz;
+	try {
+	    resultClazz = (Class<R>) wildcartResultClazz;
+	} catch (ClassCastException e) {
+	    throw MyExceptions.illegalStateFormat("Types not safe");
+	}
+
 	return JmsClients.createCallable(context, destination, resultClazz);
     }
 
     @Produces
-    public JmsConsumer<? extends Serializable> produceConsumer(final InjectionPoint ip) {
+    public <T extends Serializable> JmsConsumer<T> produceConsumer(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestinationMappedName.class) //
 		.value(), Destination.class);
@@ -43,7 +53,7 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
     }
 
     @Produces
-    public JmsSender<? extends Serializable> createSender(final InjectionPoint ip) {
+    public <T extends Serializable> JmsSender<T> createSender(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestinationMappedName.class) //
 		.value(), Destination.class);
