@@ -97,37 +97,33 @@ public final class JmsClients {
 	}
 
 	@SafeVarargs
-	final void _send(final E... entities) {
-	    _send(null, entities);
+	final void _sendNoWait(final E... entities) {
+	    _sendNoWait(null, entities);
 	}
 
 	@SafeVarargs
-	final void _send(final Properties properties, final E... entities) {
-	    _send(context, destination, properties, entities);
-	}
-
-	@SafeVarargs
-	final static <E extends Serializable> void _send(final JMSContext context, final Destination destination,
-		final Properties properties, final E... entities) {
-	    final JMSProducer producer = context.createProducer();
-	    _send(producer, destination, properties, entities);
-	}
-
-	@SafeVarargs
-	final static <E extends Serializable> void _send(final JMSProducer producer, final Destination destination,
-		final Properties properties, final E... entities) {
-	    if (properties != null)
-		MyMessages.propertiesToJMSProducer(producer, properties);
-	    for (final E entity : entities)
-		producer.send(destination, entity);
-	}
-
-	final R _request(final E entity) {
-	    return _request(entity, null);
-	}
-
-	final R _request(final E entity, final Properties properties) {
+	final void _sendNoWait(final Properties properties, final E... entities) {
 	    try {
+		final JMSProducer producer = context.createProducer();
+		for (E entity : entities) {
+		    final Message entityM = context.createObjectMessage(entity);
+		    if (properties != null)
+			MyMessages.propertiesToMessage(entityM, properties);
+		    producer.send(destination, entityM);
+		}
+	    } catch (JMSException e) {
+		throw uchedked(e);
+	    }
+	}
+
+	final R _send(final E entity) {
+	    return _send(entity, null);
+	}
+
+	final R _send(final E entity, final Properties properties) {
+	    try {
+		final JMSProducer producer = context.createProducer();
+
 		Message resultM = null;
 
 		{
@@ -138,7 +134,7 @@ public final class JmsClients {
 			entityM.setJMSReplyTo(replyToD);
 			if (properties != null)
 			    MyMessages.propertiesToMessage(entityM, properties);
-			context.createProducer().send(destination, entityM);
+			producer.send(destination, entityM);
 			final String jmsCorellationID = entityM.getJMSMessageID();
 			final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
 			try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
@@ -188,12 +184,12 @@ public final class JmsClients {
 	@Override
 	@SafeVarargs
 	public final void eventNotify(final E... entities) {
-	    _send(context, destination, null, entities);
+	    _sendNoWait(null, entities);
 	}
 
 	@Override
 	public void eventNotify(E entity, Properties properties) {
-	    _send(context, destination, properties, entity);
+	    _sendNoWait(properties, entity);
 	}
     }
 
@@ -206,7 +202,7 @@ public final class JmsClients {
 
 	@Override
 	public void accept(final E entity, final Properties properties) {
-	    final VoidResult outO = _request(entity, properties);
+	    final VoidResult outO = _send(entity, properties);
 	    if (outO == null)
 		throw new RuntimeException(VoidResult.class.getName() + " expected");
 	}
@@ -227,7 +223,7 @@ public final class JmsClients {
 
 	@Override
 	public R call(final E entity, final Properties properties) {
-	    return _request(entity, properties);
+	    return _send(entity, properties);
 	}
 
 	@Override
