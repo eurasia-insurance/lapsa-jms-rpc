@@ -25,7 +25,7 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
 			.value();
 	final Class<? extends Serializable> resultClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceReturnType.class) //
+		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsCallableResultType.class) //
 			.value();
 	return JmsClients.createCallable(context, destination, resultClazz);
     }

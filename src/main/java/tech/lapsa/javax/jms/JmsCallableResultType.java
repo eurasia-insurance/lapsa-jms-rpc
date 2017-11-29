@@ -2,6 +2,6 @@ package tech.lapsa.javax.jms;
 
 import java.io.Serializable;
 
-public @interface JmsServiceReturnType {
+public @interface JmsCallableResultType {
     Class<? extends Serializable> value();
 }
