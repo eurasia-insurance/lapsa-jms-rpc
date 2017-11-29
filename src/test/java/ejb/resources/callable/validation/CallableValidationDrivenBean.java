@@ -6,7 +6,7 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME)
+@MessageDriven(mappedName = CallableValidationDestination.WITH_VALIDATION)
 public class CallableValidationDrivenBean
 	extends CallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {
 

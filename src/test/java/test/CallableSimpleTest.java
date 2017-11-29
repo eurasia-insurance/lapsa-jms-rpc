@@ -14,21 +14,21 @@ import ejb.resources.callable.simple.CallableSimpleDestination;
 import ejb.resources.callable.simple.CallableSimpleDrivenBean;
 import ejb.resources.callable.simple.CallableSimpleEntity;
 import ejb.resources.callable.simple.CallableSimpleResult;
-import tech.lapsa.javax.jms.JmsClientFactory;
+import tech.lapsa.javax.jms.JmsCallableResultType;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
+import tech.lapsa.javax.jms.JmsDestinationMappedName;
+import tech.lapsa.javax.jms.JmsServiceEntityType;
 
 public class CallableSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClientFactory jmsClientFactory;
-
-    @Inject
-    private CallableSimpleDestination destination;
+    @JmsDestinationMappedName(CallableSimpleDestination.GENERAL)
+    @JmsServiceEntityType(CallableSimpleEntity.class)
+    @JmsCallableResultType(CallableSimpleResult.class)
+    private JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable;
 
     @Test
     public void basic() throws JMSException {
-	final JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable //
-		= jmsClientFactory.createCallable(destination.getDestination(), CallableSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello JMS world!";
 	    final String EXPECTING_MESSAGE = CallableSimpleResult.PREFIX + MESSAGE;
@@ -43,8 +43,6 @@ public class CallableSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable //
-		= jmsClientFactory.createCallable(destination.getDestination(), CallableSimpleResult.class);
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";

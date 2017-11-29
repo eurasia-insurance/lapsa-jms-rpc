@@ -7,7 +7,7 @@ import javax.ejb.MessageDriven;
 import tech.lapsa.java.commons.function.MyStrings;
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableSimpleDestination.JNDI_NAME)
+@MessageDriven(mappedName = CallableSimpleDestination.GENERAL)
 public class CallableSimpleDrivenBean extends CallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";

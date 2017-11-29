@@ -13,23 +13,21 @@ import org.junit.Test;
 import ejb.resources.consumer.simple.ConsumerSimpleDestination;
 import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
-import tech.lapsa.javax.jms.JmsClientFactory;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
+import tech.lapsa.javax.jms.JmsDestinationMappedName;
+import tech.lapsa.javax.jms.JmsServiceEntityType;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClientFactory jmsClientFactory;
-
-    @Inject
-    private ConsumerSimpleDestination destination;
+    @JmsDestinationMappedName(ConsumerSimpleDestination.JNDI_NAME)
+    @JmsServiceEntityType(ConsumerSimpleEntity.class)
+    private JmsConsumer<ConsumerSimpleEntity> consumer;
 
     public static ConsumerSimpleEntity BASIC_EXPECTED = null;
 
     @Test
     public void basic() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> consumer //
-		= jmsClientFactory.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
 
@@ -43,8 +41,6 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> consumer //
-		= jmsClientFactory.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";

@@ -7,7 +7,7 @@ import javax.ejb.MessageDriven;
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 import tech.lapsa.javax.jms.JmsSkipValidation;
 
-@MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME_SKIP_VALIDATION)
+@MessageDriven(mappedName = CallableValidationDestination.SKIPPED_VALIDATION)
 @JmsSkipValidation
 public class CallableValidationDrivenBean_SkipValidation
 	extends CallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {

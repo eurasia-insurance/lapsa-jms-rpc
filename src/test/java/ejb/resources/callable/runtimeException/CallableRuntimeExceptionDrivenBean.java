@@ -6,7 +6,7 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableRuntimeExceptionDestination.JNDI_NAME)
+@MessageDriven(mappedName = CallableRuntimeExceptionDestination.GENERAL)
 public class CallableRuntimeExceptionDrivenBean
 	extends CallableServiceDrivenBean<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> {
 

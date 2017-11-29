@@ -6,11 +6,11 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableUnexceptedTypeDestination.JNDI_NAME)
-public class CallableUnexceptedTypeDrivenBean extends
+@MessageDriven(mappedName = CallableUnexceptedTypeDestination.UNEXPECTED_ENTITY)
+public class CallableUnexceptedTypeDrivenBean_UnexpectedEntity extends
 	CallableServiceDrivenBean<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> {
 
-    public CallableUnexceptedTypeDrivenBean() {
+    public CallableUnexceptedTypeDrivenBean_UnexpectedEntity() {
 	super(CallableUnexceptedTypeEntity.class);
     }
 
