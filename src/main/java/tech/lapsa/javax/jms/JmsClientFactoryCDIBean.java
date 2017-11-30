@@ -7,14 +7,17 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.jms.Destination;
-import javax.jms.JMSContext;
 
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
 import tech.lapsa.javax.cdi.utility.MyAnnotated;
+import tech.lapsa.javax.jms.internal.JmsInternalClient;
 
 @Dependent
 public class JmsClientFactoryCDIBean implements JmsClientFactory {
+
+    @Inject
+    private JmsInternalClient client;
 
     @SuppressWarnings("unchecked")
     @Produces
@@ -37,7 +40,7 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 	    throw MyExceptions.illegalStateFormat("Types not safe");
 	}
 
-	return JmsClients.createCallable(context, destination, resultClazz);
+	return JmsClients.createCallable(client, destination, resultClazz);
     }
 
     @Produces
@@ -49,7 +52,7 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 	final Class<? extends Serializable> entityClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
 			.value();
-	return JmsClients.createConsumer(context, destination);
+	return JmsClients.createConsumer(client, destination);
     }
 
     @Produces
@@ -61,42 +64,39 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 	final Class<? extends Serializable> entityClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
 			.value();
-	return JmsClients.createSender(context, destination);
+	return JmsClients.createSender(client, destination);
     }
-
-    @Inject
-    private JMSContext context;
 
     @Override
     public <E extends Serializable> JmsConsumer<E> createConsumer(final Destination destination) {
-	return JmsClients.createConsumer(context, destination);
+	return JmsClients.createConsumer(client, destination);
     }
 
     @Override
     public <E extends Serializable> JmsConsumer<E> createConsumerQueue(final String queuePhysicalName) {
-	return JmsClients.createConsumerQueue(context, queuePhysicalName);
+	return JmsClients.createConsumerQueue(client, queuePhysicalName);
     }
 
     @Override
     public <E extends Serializable> JmsConsumer<E> createConsumerTopic(final String topicPhysicalName) {
-	return JmsClients.createConsumerTopic(context, topicPhysicalName);
+	return JmsClients.createConsumerTopic(client, topicPhysicalName);
     }
 
     //
 
     @Override
     public <E extends Serializable> JmsEventNotificator<E> createEventNotificator(final Destination destination) {
-	return JmsClients.createSender(context, destination);
+	return JmsClients.createSender(client, destination);
     }
 
     @Override
     public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorQueue(final String queuePhysicalName) {
-	return JmsClients.createSenderQueue(context, queuePhysicalName);
+	return JmsClients.createSenderQueue(client, queuePhysicalName);
     }
 
     @Override
     public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorTopic(final String topicPhysicalName) {
-	return JmsClients.createSenderTopic(context, topicPhysicalName);
+	return JmsClients.createSenderTopic(client, topicPhysicalName);
     }
 
     //
@@ -104,18 +104,18 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
     @Override
     public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(
 	    final Destination destination, final Class<R> resultClazz) {
-	return JmsClients.createCallable(context, destination, resultClazz);
+	return JmsClients.createCallable(client, destination, resultClazz);
     }
 
     @Override
     public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(
 	    final String queuePhysicalName, final Class<R> resultClazz) {
-	return JmsClients.createCallableQueue(context, queuePhysicalName, resultClazz);
+	return JmsClients.createCallableQueue(client, queuePhysicalName, resultClazz);
     }
 
     @Override
     public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(
 	    final String topicPhysicalName, final Class<R> resultClazz) {
-	return JmsClients.createCallableTopic(context, topicPhysicalName, resultClazz);
+	return JmsClients.createCallableTopic(client, topicPhysicalName, resultClazz);
     }
 }

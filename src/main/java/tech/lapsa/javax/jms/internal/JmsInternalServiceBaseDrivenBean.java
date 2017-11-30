@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.internal;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -12,22 +12,28 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.Queue;
-import javax.jms.Topic;
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.logging.MyLogger;
+import tech.lapsa.java.commons.logging.MyLogger.MyLevel;
 import tech.lapsa.java.commons.reflect.MyAnnotations;
+import tech.lapsa.javax.jms.JmsSkipValidation;
+import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 
-abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
+public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
-	    .withNameOf(this.getClass()) //
-	    .addLoggerNameAsPrefix() //
+	    .withNameOf(JmsInternalClient.class) //
+	    .addInstantPrefix() //
+	    .addPrefix("JMS-Service") //
 	    .build();
+
+    private final MyLevel debugLevel = logger.FINE;
+    private final MyLevel traceLevel = logger.FINER;
+    private final MyLevel superTraceLevel = logger.FINEST;
 
     private final Class<E> entityClazz;
 
@@ -42,7 +48,7 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 
     private final boolean validationRequired;
 
-    BaseDrivenBean(final Class<E> entityClazz) {
+    protected JmsInternalServiceBaseDrivenBean(final Class<E> entityClazz) {
 	this.entityClazz = entityClazz;
 	this.validationRequired = MyAnnotations.notAnnotatedSupers(this.getClass(), JmsSkipValidation.class);
     }
@@ -68,59 +74,79 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
     @Override
     public void onMessage(final Message entityM) {
 	try {
+	    debugLevel.log("JMS Message received from %1$s", MyMessages.getNameOf(entityM.getJMSDestination()));
+	    superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(entityM));
+	    traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(entityM));
+
+	    final Properties properties = MyMessages.propertiesFromMessage(entityM);
+	    if (MyObjects.nonNull(properties))
+		traceLevel.log("... with properties '%1$s'", properties);
+
+	    debugLevel.log("Processing entity...");
+	    final E entity;
 	    try {
-		logger.FINE.log("JMS Message received '%1$s' from '%2$s'", entityM.getJMSMessageID(),
-			destinationName(entityM.getJMSDestination()));
-		final Properties properties = MyMessages.propertiesFromMessage(entityM);
-		if (MyObjects.nonNull(properties))
-		    logger.FINER.log("With properties '%1$s'", properties);
-		final E entity = processedEntity(entityM);
-		logger.FINER.log( //
-			MyObjects.isNull(entity) //
-				? "Entity '%1$s' is null" //
-				: "Entity '%1$s' processed '%2$s'",
-			entityClazz, entity);
-		final R result = _apply(entity, properties);
-		if (MyObjects.isNull(result))
-		    logger.FINER.log("Result is null");
-		else
-		    logger.FINER.log("Result '%1$s' processed '%2$s'", result.getClass(), result);
-
-		if (isReplyRequired(entityM)) {
-		    final Message resultM = reply(entityM, result);
-		    if (MyObjects.isNull(resultM))
-			logger.FINE.log("JMS Result was not sent due to it's null");
-		    else
-			logger.FINE.log("JMS Result was sent '%1$s' to '%2$s'", resultM.getJMSMessageID(),
-				destinationName(resultM.getJMSDestination()));
+		entity = processedEntity(entityM);
+		debugLevel.log("Entity processed sucessfuly");
+		if (MyObjects.isNull(entity))
+		    traceLevel.log("... with null entity");
+		else {
+		    traceLevel.log("... with entity of type '%1$s'", entityClazz);
+		    superTraceLevel.log("... with entity's toString() '%1$s'", entity);
 		}
-
-	    } catch (final ValidationException e) {
+	    } catch (final ValidationException | UnexpectedTypeRequestedException e) {
+		debugLevel.log("Processing entity failed with %$1$s occured", e);
 		logger.WARN.log(e);
-		if (isReplyRequired(entityM)) {
-		    final Message validationExceptionM = reply(entityM, e);
-		    if (MyObjects.isNull(validationExceptionM))
-			logger.FINE.log("JMS validation exception was not sent due to it's null");
-		    else
-			logger.FINE.log("JMS validation exception was sent '%1$s' to '%2$s'",
-				validationExceptionM.getJMSMessageID(),
-				destinationName(validationExceptionM.getJMSDestination()));
-		}
-	    } catch (final RuntimeException e) {
-		logger.SEVERE.log(e);
-		if (isReplyRequired(entityM)) {
-		    final Message runtimeExceptionM = reply(entityM, e);
-		    if (MyObjects.isNull(runtimeExceptionM))
-			logger.FINE.log("JMS exception was not sent due to it's null");
-		    else
-			logger.FINE.log("JMS exception was sent '%1$s' to '%2$s'",
-				runtimeExceptionM.getJMSMessageID(),
-				destinationName(runtimeExceptionM.getJMSDestination()));
-		}
+		replyException(entityM, e);
+		return;
 	    }
-	} catch (final JMSException e) {
+
+	    debugLevel.log("Calling delegate...");
+	    final R result;
+	    try {
+		result = _apply(entity, properties);
+		debugLevel.log("Delegate called sucessfuly");
+		if (MyObjects.isNull(result))
+		    traceLevel.log("... with null result");
+		else {
+		    traceLevel.log("... with result of type '%1$s'", result.getClass());
+		    superTraceLevel.log("... with result's toString() '%1$s'", result);
+		}
+		replyResult(entityM, result);
+	    } catch (final RuntimeException e) {
+		debugLevel.log("Delegate call failed with %1$s occured", e);
+		logger.SEVERE.log(e);
+		replyException(entityM, e);
+		return;
+	    }
+	} catch (final JMSException | RuntimeException e) {
 	    logger.SEVERE.log(e);
 	    mdc.setRollbackOnly();
+	}
+    }
+
+    private void replyResult(final Message entityM, final R result) throws JMSException {
+	if (isReplyRequired(entityM)) {
+	    final Message replyM = reply(entityM, result);
+	    if (MyObjects.isNull(replyM))
+		debugLevel.log("JMS-Reply Message was not sent due to it's null");
+	    else {
+		debugLevel.log("JMS-Reply Message was sent '%1$s'", MyMessages.getJMSDestination(replyM));
+		superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(replyM));
+		traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(replyM));
+	    }
+	}
+    }
+
+    private void replyException(final Message entityM, final RuntimeException e) throws JMSException {
+	if (isReplyRequired(entityM)) {
+	    final Message replyM = reply(entityM, e);
+	    if (MyObjects.isNull(replyM))
+		debugLevel.log("JMS-Reply Exception was not sent due to it's null");
+	    else {
+		debugLevel.log("JMS-Reply Exception was sent %1$s", MyMessages.getJMSDestination(replyM));
+		superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(replyM));
+		traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(replyM));
+	    }
 	}
     }
 
@@ -128,42 +154,22 @@ abstract class BaseDrivenBean<E extends Serializable, R extends Serializable> im
 	return logger;
     }
 
-    private static String destinationName(final Destination d) {
-	return MyObjects.optionalA(d, Queue.class) //
-		.map(x -> {
-		    try {
-			return x.getQueueName();
-		    } catch (JMSException e) {
-			return null;
-		    }
-		}) //
-		.orElseGet(() -> MyObjects.optionalA(d, Topic.class) //
-			.map(x -> {
-			    try {
-				return x.getTopicName();
-			    } catch (JMSException e) {
-				return null;
-			    }
-			}) //
-			.orElse(null));
-    }
-
     private boolean isReplyRequired(final Message entityM) throws JMSException {
 	final boolean required = entityM.getJMSReplyTo() != null;
 	if (!required)
-	    logger.FINE.log("JMS reply is not required");
+	    debugLevel.log("JMS-Reply is not required");
 	return required;
     }
 
     private Message reply(final Message entityM, final Serializable serializable) throws JMSException {
 	final Destination replyToD = entityM.getJMSReplyTo();
 	final Message resultM = context.createObjectMessage(serializable);
-	resultM.setJMSCorrelationID(entityM.getJMSMessageID());
+	resultM.setJMSCorrelationID(entityM.getJMSCorrelationID());
 	context.createProducer()
 		.send(replyToD, resultM);
 	return resultM;
     }
 
-    abstract R _apply(E entity, Properties properties);
+    protected abstract R _apply(E entity, Properties properties);
 
 }

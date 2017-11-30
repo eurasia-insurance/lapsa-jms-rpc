@@ -3,11 +3,14 @@ package ejb.resources.callable.simple;
 import java.util.Properties;
 
 import javax.ejb.MessageDriven;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 
 import tech.lapsa.java.commons.function.MyStrings;
 import tech.lapsa.javax.jms.CallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableSimpleDestination.GENERAL)
+@TransactionManagement(TransactionManagementType.BEAN)
 public class CallableSimpleDrivenBean extends CallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";

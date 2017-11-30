@@ -4,18 +4,17 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.Destination;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.JMSProducer;
-import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
-import javax.jms.TemporaryQueue;
 
 import tech.lapsa.java.commons.function.MyObjects;
+import tech.lapsa.java.commons.function.MyStreams;
+import tech.lapsa.javax.jms.ConsumerServiceDrivenBean.VoidResult;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
 import tech.lapsa.javax.jms.JmsClientFactory.JmsEventNotificator;
+import tech.lapsa.javax.jms.internal.JmsInternalClient;
+import tech.lapsa.javax.jms.internal.MyMessages;
 
 public final class JmsClients {
 
@@ -24,59 +23,53 @@ public final class JmsClients {
 
     //
 
-    public static JMSRuntimeException uchedked(JMSException e) {
-	return new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e.getCause());
+    public static <E extends Serializable> JmsConsumer<E> createConsumer(final JmsInternalClient client,
+	    final Destination destination) {
+	return new ConsumerClientImpl<>(client, destination);
+    }
+
+    public static <E extends Serializable> JmsConsumer<E> createConsumerQueue(final JmsInternalClient client,
+	    final String queuePhysicalName) {
+	return new ConsumerClientImpl<>(client, client.createQueue(queuePhysicalName));
+    }
+
+    public static <E extends Serializable> JmsConsumer<E> createConsumerTopic(final JmsInternalClient client,
+	    final String topicPhysicalName) {
+	return new ConsumerClientImpl<>(client, client.createTopic(topicPhysicalName));
     }
 
     //
 
-    public static <E extends Serializable> JmsConsumer<E> createConsumer(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSender(final JmsInternalClient client,
 	    final Destination destination) {
-	return new ConsumerClientImpl<>(context, destination);
+	return new SenderClientImpl<>(client, destination);
     }
 
-    public static <E extends Serializable> JmsConsumer<E> createConsumerQueue(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSenderQueue(final JmsInternalClient client,
 	    final String queuePhysicalName) {
-	return new ConsumerClientImpl<>(context, context.createQueue(queuePhysicalName));
+	return new SenderClientImpl<>(client, client.createQueue(queuePhysicalName));
     }
 
-    public static <E extends Serializable> JmsConsumer<E> createConsumerTopic(final JMSContext context,
+    public static <E extends Serializable> JmsEventNotificator<E> createSenderTopic(final JmsInternalClient client,
 	    final String topicPhysicalName) {
-	return new ConsumerClientImpl<>(context, context.createTopic(topicPhysicalName));
-    }
-
-    //
-
-    public static <E extends Serializable> JmsEventNotificator<E> createSender(final JMSContext context,
-	    final Destination destination) {
-	return new SenderClientImpl<>(context, destination);
-    }
-
-    public static <E extends Serializable> JmsEventNotificator<E> createSenderQueue(final JMSContext context,
-	    final String queuePhysicalName) {
-	return new SenderClientImpl<>(context, context.createQueue(queuePhysicalName));
-    }
-
-    public static <E extends Serializable> JmsEventNotificator<E> createSenderTopic(final JMSContext context,
-	    final String topicPhysicalName) {
-	return new SenderClientImpl<>(context, context.createTopic(topicPhysicalName));
+	return new SenderClientImpl<>(client, client.createTopic(topicPhysicalName));
     }
 
     //
 
     public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(
-	    final JMSContext context, final Destination destination, final Class<R> resultClazz) {
-	return new CallableClientImpl<>(resultClazz, context, destination);
+	    final JmsInternalClient client, final Destination destination, final Class<R> resultClazz) {
+	return new CallableClientImpl<>(resultClazz, client, destination);
     }
 
     public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(
-	    final JMSContext context, final String queuePhysicalName, final Class<R> resultClazz) {
-	return new CallableClientImpl<>(resultClazz, context, context.createQueue(queuePhysicalName));
+	    final JmsInternalClient client, final String queuePhysicalName, final Class<R> resultClazz) {
+	return new CallableClientImpl<>(resultClazz, client, client.createQueue(queuePhysicalName));
     }
 
     public static <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(
-	    final JMSContext context, final String topicPhysicalName, final Class<R> resultClazz) {
-	return new CallableClientImpl<>(resultClazz, context, context.createTopic(topicPhysicalName));
+	    final JmsInternalClient client, final String topicPhysicalName, final Class<R> resultClazz) {
+	return new CallableClientImpl<>(resultClazz, client, client.createTopic(topicPhysicalName));
     }
 
     //
@@ -85,15 +78,15 @@ public final class JmsClients {
 
 	private static final int DEFAULT_TIMEOUT = 20 * 1000; // 20 seconds
 
-	final JMSContext context;
 	final Destination destination;
 	final Class<R> resultClazz;
+	final JmsInternalClient client;
 
-	private BaseClient(final Class<R> resultClazz, final JMSContext context,
+	private BaseClient(final Class<R> resultClazz, final JmsInternalClient client,
 		final Destination destination) {
 	    this.resultClazz = MyObjects.requireNonNull(resultClazz, "resultClazz");
-	    this.context = MyObjects.requireNonNull(context, "context");
 	    this.destination = MyObjects.requireNonNull(destination, "destination");
+	    this.client = MyObjects.requireNonNull(client, "client");
 	}
 
 	@SafeVarargs
@@ -104,15 +97,12 @@ public final class JmsClients {
 	@SafeVarargs
 	final void _sendNoWait(final Properties properties, final E... entities) {
 	    try {
-		final JMSProducer producer = context.createProducer();
-		for (E entity : entities) {
-		    final Message entityM = context.createObjectMessage(entity);
-		    if (properties != null)
-			MyMessages.propertiesToMessage(entityM, properties);
-		    producer.send(destination, entityM);
-		}
+		Message[] messages = MyStreams.orEmptyOf(entities) //
+			.map(e -> client.createMessage(e, properties)) //
+			.toArray(Message[]::new);
+		client.send(destination, messages);
 	    } catch (JMSException e) {
-		throw uchedked(e);
+		throw MyMessages.uchedked(e);
 	    }
 	}
 
@@ -123,46 +113,21 @@ public final class JmsClients {
 	final R _send(final E entity, final Properties properties) {
 	    try {
 
-		Message resultM = null;
+		final Message message = client.createMessage(entity, properties);
+		client.sendWithReplyTo(destination, message);
+		final Message reply = client.receiveReplyOn(message, DEFAULT_TIMEOUT);
 
-		{
-		    TemporaryQueue replyToD = null;
-		    try {
-			final JMSProducer producer = context.createProducer();
-			final Message entityM = context.createObjectMessage(entity);
-			if (properties != null)
-			    MyMessages.propertiesToMessage(entityM, properties);
-			{
-			    replyToD = context.createTemporaryQueue();
-			    entityM.setJMSReplyTo(replyToD);
-			}
-			producer.send(destination, entityM);
-			final String jmsCorellationID = entityM.getJMSMessageID();
-			final String messageSelector = String.format("JMSCorrelationID = '%1$s'", jmsCorellationID);
-			try (final JMSConsumer consumer = context.createConsumer(replyToD, messageSelector)) {
-			    resultM = consumer.receive(DEFAULT_TIMEOUT);
-			}
-
-		    } finally {
-			try {
-			    if (replyToD != null)
-				replyToD.delete();
-			} catch (final JMSException ignored) {
-			}
-		    }
-		}
-
-		if (resultM == null)
+		if (reply == null)
 		    throw new ResponseNotReceivedException();
 
-		if (resultM.isBodyAssignableTo(resultClazz))
-		    return resultM.getBody(resultClazz);
+		if (reply.isBodyAssignableTo(resultClazz))
+		    return reply.getBody(resultClazz);
 
-		if (resultM.isBodyAssignableTo(RuntimeException.class))
-		    throw resultM.getBody(RuntimeException.class);
+		if (reply.isBodyAssignableTo(RuntimeException.class))
+		    throw reply.getBody(RuntimeException.class);
 
-		if (resultM.isBodyAssignableTo(Serializable.class)) {
-		    final Object wrongTypedObject = resultM.getBody(Object.class);
+		if (reply.isBodyAssignableTo(Serializable.class)) {
+		    final Object wrongTypedObject = reply.getBody(Object.class);
 		    if (wrongTypedObject != null)
 			throw new UnexpectedResponseTypeException(resultClazz, wrongTypedObject.getClass());
 		}
@@ -170,7 +135,7 @@ public final class JmsClients {
 		throw new UnexpectedResponseTypeException("Unknown response type");
 
 	    } catch (JMSException e) {
-		throw uchedked(e);
+		throw MyMessages.uchedked(e);
 	    }
 	}
     }
@@ -178,8 +143,8 @@ public final class JmsClients {
     static final class SenderClientImpl<E extends Serializable> extends BaseClient<E, VoidResult>
 	    implements JmsEventNotificator<E> {
 
-	private SenderClientImpl(final JMSContext context, final Destination destination) {
-	    super(VoidResult.class, context, destination);
+	private SenderClientImpl(final JmsInternalClient client, final Destination destination) {
+	    super(VoidResult.class, client, destination);
 
 	}
 
@@ -198,8 +163,8 @@ public final class JmsClients {
     static final class ConsumerClientImpl<E extends Serializable> extends BaseClient<E, VoidResult>
 	    implements JmsConsumer<E> {
 
-	private ConsumerClientImpl(final JMSContext context, final Destination destination) {
-	    super(VoidResult.class, context, destination);
+	private ConsumerClientImpl(final JmsInternalClient client, final Destination destination) {
+	    super(VoidResult.class, client, destination);
 	}
 
 	@Override
@@ -218,9 +183,9 @@ public final class JmsClients {
     static final class CallableClientImpl<E extends Serializable, R extends Serializable> extends BaseClient<E, R>
 	    implements JmsCallable<E, R> {
 
-	private CallableClientImpl(final Class<R> resultClazz, final JMSContext context,
+	private CallableClientImpl(final Class<R> resultClazz, final JmsInternalClient client,
 		final Destination destination) {
-	    super(resultClazz, context, destination);
+	    super(resultClazz, client, destination);
 	}
 
 	@Override

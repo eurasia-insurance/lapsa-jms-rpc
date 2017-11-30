@@ -10,7 +10,7 @@
 	<groupId>tech.lapsa.javax</groupId>
 	<artifactId>javax-jms-commons</artifactId>
 	<version>2.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>ejb</packaging>
 
 	<name>Jave EE Lib : JMS commons</name>
 
