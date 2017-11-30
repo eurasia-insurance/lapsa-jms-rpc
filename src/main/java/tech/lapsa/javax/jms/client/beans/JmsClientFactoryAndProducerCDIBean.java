@@ -64,7 +64,7 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	    throw MyExceptions.illegalStateFormat("Types not safe");
 	}
 
-	return new JmsCallableImpl<>(resultClazz, internalClient, destination);
+	return createCallable(resultClazz, destination);
     }
 
     @Produces
@@ -76,7 +76,7 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Class<? extends Serializable> entityClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
 			.value();
-	return new JmsConsumerImpl<>(internalClient, destination);
+	return createConsumer(destination);
     }
 
     @Produces
@@ -88,6 +88,6 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Class<? extends Serializable> entityClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
 			.value();
-	return new JmsEventNotificatorImpl<>(internalClient, destination);
+	return createEventNotificator(destination);
     }
 }
