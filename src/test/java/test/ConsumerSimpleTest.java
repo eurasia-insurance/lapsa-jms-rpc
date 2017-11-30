@@ -13,16 +13,16 @@ import org.junit.Test;
 import ejb.resources.consumer.simple.ConsumerSimpleDestination;
 import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
-import tech.lapsa.javax.jms.JmsDestinationMappedName;
-import tech.lapsa.javax.jms.JmsServiceEntityType;
+import tech.lapsa.javax.jms.client.JmsConsumerClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.javax.jms.client.JmsEntityType;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    @JmsDestinationMappedName(ConsumerSimpleDestination.JNDI_NAME)
-    @JmsServiceEntityType(ConsumerSimpleEntity.class)
-    private JmsConsumer<ConsumerSimpleEntity> consumer;
+    @JmsDestination(ConsumerSimpleDestination.JNDI_NAME)
+    @JmsEntityType(ConsumerSimpleEntity.class)
+    private JmsConsumerClient<ConsumerSimpleEntity> consumerClient;
 
     public static ConsumerSimpleEntity BASIC_EXPECTED = null;
 
@@ -32,7 +32,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 	    final String MESSAGE = "Hello JMS world!";
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e);
+	    consumerClient.accept(e);
 	    assertThat(BASIC_EXPECTED, allOf(not(nullValue()), is(equalTo(e))));
 	}
     }
@@ -49,7 +49,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(ConsumerSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e, properties);
+	    consumerClient.accept(e, properties);
 	    assertThat(WITH_PROPERTIES_EXPECTED, allOf(not(nullValue()), is(equalTo(NAME))));
 
 	}

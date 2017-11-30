@@ -1,15 +1,15 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.service;
 
 import java.io.Serializable;
 import java.util.Properties;
 
-import tech.lapsa.javax.jms.ConsumerServiceDrivenBean.VoidResult;
-import tech.lapsa.javax.jms.internal.JmsInternalServiceBaseDrivenBean;
+import tech.lapsa.javax.jms.VoidResult;
+import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalServiceBaseDrivenBean;
 
-public abstract class ConsumerServiceDrivenBean<E extends Serializable>
+public abstract class JmsReceiverServiceDrivenBean<E extends Serializable>
 	extends JmsInternalServiceBaseDrivenBean<E, VoidResult> implements JmsReceiverService<E> {
 
-    protected ConsumerServiceDrivenBean(final Class<E> entityClazz) {
+    protected JmsReceiverServiceDrivenBean(final Class<E> entityClazz) {
 	super(entityClazz);
     }
 
@@ -17,29 +17,5 @@ public abstract class ConsumerServiceDrivenBean<E extends Serializable>
     protected final VoidResult _apply(final E entity, final Properties properties) {
 	receiving(entity, properties);
 	return VoidResult.INSTANCE;
-    }
-
-    static final class VoidResult implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	private VoidResult() {
-	}
-
-	public static VoidResult INSTANCE = new VoidResult();
-
-	@Override
-	public String toString() {
-	    return "VOID";
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-	    return obj == this || (obj != null && obj instanceof VoidResult);
-	}
-
-	@Override
-	public int hashCode() {
-	    return 1;
-	}
     }
 }

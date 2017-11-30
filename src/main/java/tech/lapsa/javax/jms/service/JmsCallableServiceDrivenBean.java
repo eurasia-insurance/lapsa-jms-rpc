@@ -1,14 +1,14 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.service;
 
 import java.io.Serializable;
 import java.util.Properties;
 
-import tech.lapsa.javax.jms.internal.JmsInternalServiceBaseDrivenBean;
+import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalServiceBaseDrivenBean;
 
-public abstract class CallableServiceDrivenBean<E extends Serializable, R extends Serializable>
+public abstract class JmsCallableServiceDrivenBean<E extends Serializable, R extends Serializable>
 	extends JmsInternalServiceBaseDrivenBean<E, R> implements JmsCallableService<E, R> {
 
-    protected CallableServiceDrivenBean(final Class<E> entityClazz) {
+    protected JmsCallableServiceDrivenBean(final Class<E> entityClazz) {
 	super(entityClazz);
     }
 

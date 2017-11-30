@@ -11,23 +11,23 @@ import org.junit.Test;
 import ejb.resources.callable.nulls.CallableNullsDestination;
 import ejb.resources.callable.nulls.CallableNullsEntity;
 import ejb.resources.callable.nulls.CallableNullsResult;
-import tech.lapsa.javax.jms.JmsCallableResultType;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
-import tech.lapsa.javax.jms.JmsDestinationMappedName;
-import tech.lapsa.javax.jms.JmsServiceEntityType;
+import tech.lapsa.javax.jms.client.JmsCallableClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.javax.jms.client.JmsEntityType;
+import tech.lapsa.javax.jms.client.JmsResultType;
 
 public class CallableNullsTest extends ArquillianBaseTestCase {
 
     @Inject
-    @JmsDestinationMappedName(CallableNullsDestination.GENERAL)
-    @JmsServiceEntityType(CallableNullsEntity.class)
-    @JmsCallableResultType(CallableNullsResult.class)
-    private JmsCallable<CallableNullsEntity, CallableNullsResult> callable;
+    @JmsDestination(CallableNullsDestination.GENERAL)
+    @JmsEntityType(CallableNullsEntity.class)
+    @JmsResultType(CallableNullsResult.class)
+    private JmsCallableClient<CallableNullsEntity, CallableNullsResult> callableClient;
 
     @Test
     public void basic() throws JMSException {
 	{
-	    final CallableNullsResult r = callable.call(null);
+	    final CallableNullsResult r = callableClient.call(null);
 	    assertThat(r, nullValue());
 	}
     }

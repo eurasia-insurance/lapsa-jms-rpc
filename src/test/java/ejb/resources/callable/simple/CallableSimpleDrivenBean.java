@@ -7,11 +7,11 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 
 import tech.lapsa.java.commons.function.MyStrings;
-import tech.lapsa.javax.jms.CallableServiceDrivenBean;
+import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableSimpleDestination.GENERAL)
 @TransactionManagement(TransactionManagementType.BEAN)
-public class CallableSimpleDrivenBean extends CallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
+public class CallableSimpleDrivenBean extends JmsCallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";
     

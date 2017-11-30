@@ -1,86 +1,44 @@
-package tech.lapsa.javax.jms.internal;
+package tech.lapsa.javax.jms.commons;
 
-import java.util.Enumeration;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.JMSProducer;
 import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
-import javax.jms.MessageFormatException;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
+import tech.lapsa.java.commons.function.MyExceptions.CheckedExceptionThrowingCallable;
+import tech.lapsa.java.commons.function.MyExceptions.CheckedExceptionThrowingSupplier;
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.function.MyOptionals;
-import tech.lapsa.java.commons.function.MyStrings;
 
-public final class MyMessages {
+public final class MyJMSs {
 
-    private MyMessages() {
-    }
-
-    private static final String PROPERTY_PREFIX = "MyMessages_";
-
-    public static Properties propertiesFromMessage(final Message message) throws JMSException {
-	final Properties p = new Properties();
-	final Enumeration<?> en = message.getPropertyNames();
-	while (en.hasMoreElements()) {
-	    final Object e = en.nextElement();
-	    if (MyObjects.isNotA(e, String.class))
-		continue;
-	    final String k = (String) e;
-	    if (!k.startsWith(PROPERTY_PREFIX))
-		continue;
-	    try {
-		final String v = message.getStringProperty(k);
-		final String mk = k.substring(PROPERTY_PREFIX.length());
-		p.setProperty(mk, v);
-	    } catch (final MessageFormatException ignored) {
-	    }
-	}
-	if (p.isEmpty())
-	    return null;
-	return p;
-    }
-
-    static void propertiesToJMSProducer(final JMSProducer producer, final Properties properties) {
-	final Map<String, String> map = propertiesToMap(properties);
-	if (MyObjects.isNull(map))
-	    return;
-	for (final Map.Entry<String, String> e : map.entrySet())
-	    producer.setProperty(e.getKey(), e.getValue());
-    }
-
-    public static void propertiesToMessage(final Message message, final Properties properties)
-	    throws JMSRuntimeException {
-	final Map<String, String> map = propertiesToMap(properties);
-	if (MyObjects.isNull(map))
-	    return;
-	for (final Map.Entry<String, String> entry : map.entrySet())
-	    try {
-		message.setStringProperty(entry.getKey(), entry.getValue());
-	    } catch (JMSException e) {
-		throw uchedked(e);
-	    }
-    }
-
-    private static Map<String, String> propertiesToMap(final Properties properties) {
-	if (MyObjects.isNull(properties))
-	    return null;
-	return properties.keySet().stream() //
-		.filter(x -> MyObjects.isA(x, String.class))
-		.map(Object::toString) //
-		.filter(MyStrings::nonEmpty) //
-		.collect(Collectors.toMap(x -> PROPERTY_PREFIX + x, x -> properties.getProperty(x)));
+    private MyJMSs() {
     }
 
     public static JMSRuntimeException uchedked(JMSException e) {
 	return new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e.getCause());
+    }
+
+    public static <T, E extends JMSException> T reThrowAsUnchecked(
+	    final CheckedExceptionThrowingSupplier<T, E> supplier) throws JMSRuntimeException {
+	try {
+	    return supplier.get();
+	} catch (final JMSException e) {
+	    throw uchedked(e);
+	}
+    }
+
+    public static <E extends JMSException> void reThrowAsUnchecked(final CheckedExceptionThrowingCallable<E> callable)
+	    throws JMSRuntimeException {
+	try {
+	    callable.call();
+	} catch (final JMSException e) {
+	    throw new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e.getCause());
+	}
     }
 
     public static Optional<String> optJMSMessageIDOf(final Message m) {
@@ -114,7 +72,7 @@ public final class MyMessages {
 			return null;
 		    }
 		}) //
-		.flatMap(MyMessages::optNameOf);
+		.flatMap(MyJMSs::optNameOf);
     }
 
     public static String getJMSDestination(final Message m) {

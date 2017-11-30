@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.internal;
+package tech.lapsa.javax.jms.service.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -10,7 +10,7 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import tech.lapsa.javax.jms.ResponseNotReceivedException;
+import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
 
 @Local
 public interface JmsInternalClient {

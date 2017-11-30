@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.client;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target({ FIELD, TYPE, METHOD })
-public @interface JmsDestinationMappedName {
+public @interface JmsDestination {
     String value();
 }

@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.internal;
+package tech.lapsa.javax.jms.service.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -23,7 +23,9 @@ import javax.jms.Topic;
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.logging.MyLogger;
 import tech.lapsa.java.commons.logging.MyLogger.MyLevel;
-import tech.lapsa.javax.jms.ResponseNotReceivedException;
+import tech.lapsa.javax.jms.Messages;
+import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
+import tech.lapsa.javax.jms.commons.MyJMSs;
 
 @Stateless
 public class JmsInternalClientBean implements JmsInternalClient {
@@ -51,12 +53,12 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    message.setJMSReplyTo(replyToDestination);
 	    message.setJMSCorrelationID(corellationID);
 	    producer.send(destination, message);
-	    debugLevel.log("JMS-Message was sent to %1$s", MyMessages.getNameOf(destination));
-	    superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(message));
-	    traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(message));
-	    traceLevel.log("... with JMSReplyTo %1$s", MyMessages.getNameOf(replyToDestination));
+	    debugLevel.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
+	    superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
+	    traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(message));
+	    traceLevel.log("... with JMSReplyTo %1$s", MyJMSs.getNameOf(replyToDestination));
 	} catch (JMSException e) {
-	    throw MyMessages.uchedked(e);
+	    throw MyJMSs.uchedked(e);
 	}
     }
 
@@ -66,8 +68,8 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	final JMSProducer producer = context.createProducer();
 	for (Message message : messages) {
 	    producer.send(destination, message);
-	    debugLevel.log("JMS-Message was sent to %1$s", MyMessages.getNameOf(destination));
-	    superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(message));
+	    debugLevel.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
+	    superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
 	}
     }
 
@@ -78,14 +80,14 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	try {
 	    replyToDestination = message.getJMSReplyTo();
 	} catch (JMSException e) {
-	    throw MyMessages.uchedked(e);
+	    throw MyJMSs.uchedked(e);
 	}
 	if (replyToDestination == null)
 	    throw MyExceptions.illegalArgumentFormat(
 		    "JMS-Message %1$ is not configured as ReplyTo message. JMSReplyTo property is null",
-		    MyMessages.getJMSMessageIDOf(message));
-	debugLevel.log("JMS-Reply started receiving from %1$s", MyMessages.getNameOf(replyToDestination));
-	final Optional<String> corellationID = MyMessages.optJMSCorellationIDOf(message);
+		    MyJMSs.getJMSMessageIDOf(message));
+	debugLevel.log("JMS-Reply started receiving from %1$s", MyJMSs.getNameOf(replyToDestination));
+	final Optional<String> corellationID = MyJMSs.optJMSCorellationIDOf(message);
 	if (!corellationID.isPresent())
 	    throw MyExceptions.illegalArgumentFormat(
 		    "JMS-Message %1$ has no JMSMessageID property. This may be due to it's not sent.", message);
@@ -95,9 +97,9 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    traceLevel.log("... with message selector \"%1$s\"", messageSelector);
 	    final Message reply = consumer.receive(timeout);
 	    if (reply != null) {
-		debugLevel.log("JMS-Reply received from %1$s", MyMessages.getJMSDestination(reply));
-		superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(reply));
-		traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(reply));
+		debugLevel.log("JMS-Reply received from %1$s", MyJMSs.getJMSDestination(reply));
+		superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(reply));
+		traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(reply));
 		return reply;
 	    } else
 		debugLevel.log("JMS-Reply NOT received in %1$s ms.", timeout);
@@ -105,13 +107,13 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    throw MyExceptions.runtimeExceptionFormat(ResponseNotReceivedException::new,
 		    "Error receiving JMS-Reply on message '%1$s' from %2$s with %3$s",
 		    message, // 1
-		    MyMessages.getNameOf(replyToDestination), // 2
+		    MyJMSs.getNameOf(replyToDestination), // 2
 		    messageSelector // 3
 	    );
 	} finally {
 	    if (replyToDestination instanceof TemporaryQueue) {
 		try {
-		    debugLevel.log("Dropping temporary queue %1$s", MyMessages.getNameOf(replyToDestination));
+		    debugLevel.log("Dropping temporary queue %1$s", MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryQueue) replyToDestination).delete();
 		    traceLevel.log("... dropped");
 		} catch (JMSException ignored) {
@@ -120,7 +122,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    }
 	    if (replyToDestination instanceof TemporaryTopic) {
 		try {
-		    debugLevel.log("Dropping temporary topic %1$s", MyMessages.getNameOf(replyToDestination));
+		    debugLevel.log("Dropping temporary topic %1$s", MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryTopic) replyToDestination).delete();
 		    traceLevel.log("... dropped.");
 		} catch (JMSException ignored) {
@@ -139,7 +141,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
     public Message createMessage(final Serializable entity, final Properties properties) {
 	final Message message = context.createObjectMessage(entity);
 	if (properties != null)
-	    MyMessages.propertiesToMessage(message, properties);
+	    Messages.propertiesToMessage(message, properties);
 	return message;
     }
 

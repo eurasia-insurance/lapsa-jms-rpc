@@ -14,18 +14,18 @@ import ejb.resources.callable.simple.CallableSimpleDestination;
 import ejb.resources.callable.simple.CallableSimpleDrivenBean;
 import ejb.resources.callable.simple.CallableSimpleEntity;
 import ejb.resources.callable.simple.CallableSimpleResult;
-import tech.lapsa.javax.jms.JmsCallableResultType;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
-import tech.lapsa.javax.jms.JmsDestinationMappedName;
-import tech.lapsa.javax.jms.JmsServiceEntityType;
+import tech.lapsa.javax.jms.client.JmsCallableClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.javax.jms.client.JmsEntityType;
+import tech.lapsa.javax.jms.client.JmsResultType;
 
 public class CallableSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    @JmsDestinationMappedName(CallableSimpleDestination.GENERAL)
-    @JmsServiceEntityType(CallableSimpleEntity.class)
-    @JmsCallableResultType(CallableSimpleResult.class)
-    private JmsCallable<CallableSimpleEntity, CallableSimpleResult> callable;
+    @JmsDestination(CallableSimpleDestination.GENERAL)
+    @JmsEntityType(CallableSimpleEntity.class)
+    @JmsResultType(CallableSimpleResult.class)
+    private JmsCallableClient<CallableSimpleEntity, CallableSimpleResult> callableClient;
 
     @Test
     public void basic() throws JMSException {
@@ -34,7 +34,7 @@ public class CallableSimpleTest extends ArquillianBaseTestCase {
 	    final String EXPECTING_MESSAGE = CallableSimpleResult.PREFIX + MESSAGE;
 
 	    final CallableSimpleEntity e = new CallableSimpleEntity(MESSAGE);
-	    final CallableSimpleResult r = callable.call(e);
+	    final CallableSimpleResult r = callableClient.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));
@@ -52,7 +52,7 @@ public class CallableSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(CallableSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final CallableSimpleEntity e = new CallableSimpleEntity(MESSAGE);
-	    final CallableSimpleResult r = callable.call(e, properties);
+	    final CallableSimpleResult r = callableClient.call(e, properties);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(EXPECTING_MESSAGE))));

@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.internal;
+package tech.lapsa.javax.jms.service.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -20,10 +20,13 @@ import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.logging.MyLogger;
 import tech.lapsa.java.commons.logging.MyLogger.MyLevel;
 import tech.lapsa.java.commons.reflect.MyAnnotations;
-import tech.lapsa.javax.jms.JmsSkipValidation;
+import tech.lapsa.javax.jms.Messages;
 import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
+import tech.lapsa.javax.jms.commons.MyJMSs;
+import tech.lapsa.javax.jms.service.JmsSkipValidation;
 
-public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R extends Serializable> implements MessageListener {
+public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R extends Serializable>
+	implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
 	    .withNameOf(JmsInternalClient.class) //
@@ -74,11 +77,11 @@ public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R
     @Override
     public void onMessage(final Message entityM) {
 	try {
-	    debugLevel.log("JMS Message received from %1$s", MyMessages.getNameOf(entityM.getJMSDestination()));
-	    superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(entityM));
-	    traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(entityM));
+	    debugLevel.log("JMS Message received from %1$s", MyJMSs.getNameOf(entityM.getJMSDestination()));
+	    superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(entityM));
+	    traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(entityM));
 
-	    final Properties properties = MyMessages.propertiesFromMessage(entityM);
+	    final Properties properties = Messages.propertiesFromMessage(entityM);
 	    if (MyObjects.nonNull(properties))
 		traceLevel.log("... with properties '%1$s'", properties);
 
@@ -130,9 +133,9 @@ public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R
 	    if (MyObjects.isNull(replyM))
 		debugLevel.log("JMS-Reply Message was not sent due to it's null");
 	    else {
-		debugLevel.log("JMS-Reply Message was sent '%1$s'", MyMessages.getJMSDestination(replyM));
-		superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(replyM));
-		traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(replyM));
+		debugLevel.log("JMS-Reply Message was sent '%1$s'", MyJMSs.getJMSDestination(replyM));
+		superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(replyM));
+		traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(replyM));
 	    }
 	}
     }
@@ -143,9 +146,9 @@ public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R
 	    if (MyObjects.isNull(replyM))
 		debugLevel.log("JMS-Reply Exception was not sent due to it's null");
 	    else {
-		debugLevel.log("JMS-Reply Exception was sent %1$s", MyMessages.getJMSDestination(replyM));
-		superTraceLevel.log("... with JMSMessageID %1$s", MyMessages.getJMSMessageIDOf(replyM));
-		traceLevel.log("... with JMSCorrellationID %1$s", MyMessages.getJMSCorellationIDOf(replyM));
+		debugLevel.log("JMS-Reply Exception was sent %1$s", MyJMSs.getJMSDestination(replyM));
+		superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(replyM));
+		traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(replyM));
 	    }
 	}
     }

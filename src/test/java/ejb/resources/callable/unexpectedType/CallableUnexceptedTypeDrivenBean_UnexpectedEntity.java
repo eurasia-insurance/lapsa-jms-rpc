@@ -4,11 +4,11 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.CallableServiceDrivenBean;
+import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableUnexceptedTypeDestination.UNEXPECTED_ENTITY)
 public class CallableUnexceptedTypeDrivenBean_UnexpectedEntity extends
-	CallableServiceDrivenBean<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> {
+	JmsCallableServiceDrivenBean<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> {
 
     public CallableUnexceptedTypeDrivenBean_UnexpectedEntity() {
 	super(CallableUnexceptedTypeEntity.class);

@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.client.beans;
 
 import java.io.Serializable;
 
@@ -11,26 +11,32 @@ import javax.jms.Destination;
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
 import tech.lapsa.javax.cdi.utility.MyAnnotated;
-import tech.lapsa.javax.jms.internal.JmsInternalClient;
+import tech.lapsa.javax.jms.client.JmsCallableClient;
+import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
+import tech.lapsa.javax.jms.client.JmsConsumerClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
+import tech.lapsa.javax.jms.client.JmsEntityType;
 
 @Dependent
-public class JmsClientFactoryCDIBean implements JmsClientFactory {
+public class JmsClientProducerCDIBean {
 
     @Inject
-    private JmsInternalClient client;
+    private JmsInternalClient internalClient;
 
     @SuppressWarnings("unchecked")
     @Produces
-    public <T extends Serializable, R extends Serializable> JmsCallable<T, R> produceCalable(final InjectionPoint ip) {
+    public <T extends Serializable, R extends Serializable> JmsCallableClient<T, R> produceCalable(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
-		.getAnnotation(JmsDestinationMappedName.class) //
+		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
 	@SuppressWarnings("unused")
 	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
+		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
 			.value();
 	final Class<? extends Serializable> wildcartResultClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsCallableResultType.class) //
+		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsResultType.class) //
 			.value();
 
 	final Class<R> resultClazz;
@@ -40,82 +46,30 @@ public class JmsClientFactoryCDIBean implements JmsClientFactory {
 	    throw MyExceptions.illegalStateFormat("Types not safe");
 	}
 
-	return JmsClients.createCallable(client, destination, resultClazz);
+	return new JmsCallableImpl<>(resultClazz, internalClient, destination);
     }
 
     @Produces
-    public <T extends Serializable> JmsConsumer<T> produceConsumer(final InjectionPoint ip) {
+    public <T extends Serializable> JmsConsumerClient<T> produceConsumer(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
-		.getAnnotation(JmsDestinationMappedName.class) //
+		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
 	@SuppressWarnings("unused")
 	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
+		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
 			.value();
-	return JmsClients.createConsumer(client, destination);
+	return new JmsConsumerImpl<>(internalClient, destination);
     }
 
     @Produces
-    public <T extends Serializable> JmsEventNotificator<T> produceEventNotificator(final InjectionPoint ip) {
+    public <T extends Serializable> JmsEventNotificatorClient<T> produceEventNotificator(final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
-		.getAnnotation(JmsDestinationMappedName.class) //
+		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
 	@SuppressWarnings("unused")
 	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsServiceEntityType.class) //
+		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
 			.value();
-	return JmsClients.createSender(client, destination);
-    }
-
-    @Override
-    public <E extends Serializable> JmsConsumer<E> createConsumer(final Destination destination) {
-	return JmsClients.createConsumer(client, destination);
-    }
-
-    @Override
-    public <E extends Serializable> JmsConsumer<E> createConsumerQueue(final String queuePhysicalName) {
-	return JmsClients.createConsumerQueue(client, queuePhysicalName);
-    }
-
-    @Override
-    public <E extends Serializable> JmsConsumer<E> createConsumerTopic(final String topicPhysicalName) {
-	return JmsClients.createConsumerTopic(client, topicPhysicalName);
-    }
-
-    //
-
-    @Override
-    public <E extends Serializable> JmsEventNotificator<E> createEventNotificator(final Destination destination) {
-	return JmsClients.createSender(client, destination);
-    }
-
-    @Override
-    public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorQueue(final String queuePhysicalName) {
-	return JmsClients.createSenderQueue(client, queuePhysicalName);
-    }
-
-    @Override
-    public <E extends Serializable> JmsEventNotificator<E> createEventNotificatorTopic(final String topicPhysicalName) {
-	return JmsClients.createSenderTopic(client, topicPhysicalName);
-    }
-
-    //
-
-    @Override
-    public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallable(
-	    final Destination destination, final Class<R> resultClazz) {
-	return JmsClients.createCallable(client, destination, resultClazz);
-    }
-
-    @Override
-    public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableQueue(
-	    final String queuePhysicalName, final Class<R> resultClazz) {
-	return JmsClients.createCallableQueue(client, queuePhysicalName, resultClazz);
-    }
-
-    @Override
-    public <E extends Serializable, R extends Serializable> JmsCallable<E, R> createCallableTopic(
-	    final String topicPhysicalName, final Class<R> resultClazz) {
-	return JmsClients.createCallableTopic(client, topicPhysicalName, resultClazz);
+	return new JmsEventNotificatorImpl<>(internalClient, destination);
     }
 }
