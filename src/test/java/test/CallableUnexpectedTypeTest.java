@@ -12,7 +12,6 @@ import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
 import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsResultType;
 import test.assertion.Assertions;
 
@@ -20,7 +19,6 @@ public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableUnexceptedTypeDestination.UNEXPECTED_RESULT)
-    @JmsEntityType(CallableUnexceptedTypeEntity.class)
     @JmsResultType(CallableUnexceptedTypeResult.class)
     private JmsCallableClient<CallableUnexceptedTypeEntity, CallableUnexceptedTypeResult> callableClient1;
 
@@ -35,7 +33,6 @@ public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableUnexceptedTypeDestination.UNEXPECTED_ENTITY)
-    @JmsEntityType(CallableUnexceptedTypeEntity_Unexpected.class)
     @JmsResultType(CallableUnexceptedTypeResult.class)
     private JmsCallableClient<CallableUnexceptedTypeEntity_Unexpected, CallableUnexceptedTypeResult> callableClient2;
 

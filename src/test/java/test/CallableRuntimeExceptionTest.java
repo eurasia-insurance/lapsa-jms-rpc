@@ -9,7 +9,6 @@ import ejb.resources.callable.runtimeException.CallableRuntimeExceptionEntity;
 import ejb.resources.callable.runtimeException.CallableRuntimeExceptionResult;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsResultType;
 import test.assertion.Assertions;
 
@@ -17,7 +16,6 @@ public class CallableRuntimeExceptionTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableRuntimeExceptionDestination.GENERAL)
-    @JmsEntityType(CallableRuntimeExceptionEntity.class)
     @JmsResultType(CallableRuntimeExceptionResult.class)
     private JmsCallableClient<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> callableClient;
 

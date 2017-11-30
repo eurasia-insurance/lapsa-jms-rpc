@@ -15,13 +15,11 @@ import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
 import tech.lapsa.javax.jms.client.JmsConsumerClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(ConsumerSimpleDestination.JNDI_NAME)
-    @JmsEntityType(ConsumerSimpleEntity.class)
     private JmsConsumerClient<ConsumerSimpleEntity> consumerClient;
 
     public static ConsumerSimpleEntity BASIC_EXPECTED = null;

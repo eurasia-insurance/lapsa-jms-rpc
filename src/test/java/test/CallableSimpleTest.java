@@ -16,14 +16,12 @@ import ejb.resources.callable.simple.CallableSimpleEntity;
 import ejb.resources.callable.simple.CallableSimpleResult;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsResultType;
 
 public class CallableSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableSimpleDestination.GENERAL)
-    @JmsEntityType(CallableSimpleEntity.class)
     @JmsResultType(CallableSimpleResult.class)
     private JmsCallableClient<CallableSimpleEntity, CallableSimpleResult> callableClient;
 

@@ -15,7 +15,6 @@ import ejb.resources.callable.validation.CallableValidationEntity;
 import ejb.resources.callable.validation.CallableValidationResult;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsResultType;
 import test.assertion.Assertions;
 
@@ -23,7 +22,6 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableValidationDestination.WITH_VALIDATION)
-    @JmsEntityType(CallableValidationEntity.class)
     @JmsResultType(CallableValidationResult.class)
     private JmsCallableClient<CallableValidationEntity, CallableValidationResult> callableClient;
 
@@ -50,7 +48,6 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableValidationDestination.SKIPPED_VALIDATION)
-    @JmsEntityType(CallableValidationEntity.class)
     @JmsResultType(CallableValidationResult.class)
     private JmsCallableClient<CallableValidationEntity, CallableValidationResult> callable2;
 

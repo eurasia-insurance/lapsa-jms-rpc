@@ -13,14 +13,12 @@ import ejb.resources.callable.nulls.CallableNullsEntity;
 import ejb.resources.callable.nulls.CallableNullsResult;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsResultType;
 
 public class CallableNullsTest extends ArquillianBaseTestCase {
 
     @Inject
     @JmsDestination(CallableNullsDestination.GENERAL)
-    @JmsEntityType(CallableNullsEntity.class)
     @JmsResultType(CallableNullsResult.class)
     private JmsCallableClient<CallableNullsEntity, CallableNullsResult> callableClient;
 
