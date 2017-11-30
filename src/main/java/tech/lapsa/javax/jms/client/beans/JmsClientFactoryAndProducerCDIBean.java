@@ -12,22 +12,40 @@ import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
 import tech.lapsa.javax.cdi.utility.MyAnnotated;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsResultType;
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
+import tech.lapsa.javax.jms.client.JmsClientFactory;
 import tech.lapsa.javax.jms.client.JmsConsumerClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
 import tech.lapsa.javax.jms.client.JmsEntityType;
+import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
+import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
 
 @Dependent
-public class JmsClientProducerCDIBean {
+public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 
     @Inject
     private JmsInternalClient internalClient;
 
+    @Override
+    public <T extends Serializable> JmsEventNotificatorClient<T> createEventNotificator(Destination destination) {
+	return new JmsEventNotificatorImpl<>(internalClient, destination);
+    }
+
+    @Override
+    public <T extends Serializable> JmsConsumerClient<T> createConsumer(Destination destination) {
+	return new JmsConsumerImpl<>(internalClient, destination);
+    }
+
+    @Override
+    public <T extends Serializable, R extends Serializable> JmsCallableClient<T, R> createCallable(
+	    final Class<R> resultClazz, Destination destination) {
+	return new JmsCallableImpl<>(resultClazz, internalClient, destination);
+    }
+
     @SuppressWarnings("unchecked")
     @Produces
-    public <T extends Serializable, R extends Serializable> JmsCallableClient<T, R> produceCalable(final InjectionPoint ip) {
+    public <T extends Serializable, R extends Serializable> JmsCallableClient<T, R> produceCalable(
+	    final InjectionPoint ip) {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
