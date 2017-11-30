@@ -13,28 +13,24 @@ import org.junit.Test;
 import ejb.resources.consumer.simple.ConsumerSimpleDestination;
 import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
-import tech.lapsa.javax.jms.JmsClientFactory;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsConsumer;
+import tech.lapsa.javax.jms.client.JmsConsumerClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClientFactory jmsClientFactory;
-
-    @Inject
-    private ConsumerSimpleDestination destination;
+    @JmsDestination(ConsumerSimpleDestination.JNDI_NAME)
+    private JmsConsumerClient<ConsumerSimpleEntity> consumerClient;
 
     public static ConsumerSimpleEntity BASIC_EXPECTED = null;
 
     @Test
     public void basic() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> consumer //
-		= jmsClientFactory.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello JMS world!";
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e);
+	    consumerClient.accept(e);
 	    assertThat(BASIC_EXPECTED, allOf(not(nullValue()), is(equalTo(e))));
 	}
     }
@@ -43,8 +39,6 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 
     @Test
     public void withProperties() throws JMSException {
-	final JmsConsumer<ConsumerSimpleEntity> consumer //
-		= jmsClientFactory.createConsumer(destination.getDestination());
 	{
 	    final String MESSAGE = "Hello, %1$s!";
 	    final String NAME = "John Bull";
@@ -53,7 +47,7 @@ public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 	    properties.setProperty(ConsumerSimpleDrivenBean.PROPERTY_NAME, NAME);
 
 	    final ConsumerSimpleEntity e = new ConsumerSimpleEntity(MESSAGE);
-	    consumer.accept(e, properties);
+	    consumerClient.accept(e, properties);
 	    assertThat(WITH_PROPERTIES_EXPECTED, allOf(not(nullValue()), is(equalTo(NAME))));
 
 	}

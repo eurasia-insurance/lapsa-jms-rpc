@@ -5,10 +5,10 @@ import java.util.Properties;
 import javax.ejb.MessageDriven;
 
 import tech.lapsa.java.commons.function.MyObjects;
-import tech.lapsa.javax.jms.CallableServiceDrivenBean;
+import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableNullsDestination.JNDI_NAME)
-public class CallableNullsDrivenBean extends CallableServiceDrivenBean<CallableNullsEntity, CallableNullsResult> {
+@MessageDriven(mappedName = CallableNullsDestination.GENERAL)
+public class CallableNullsDrivenBean extends JmsCallableServiceDrivenBean<CallableNullsEntity, CallableNullsResult> {
 
     public CallableNullsDrivenBean() {
 	super(CallableNullsEntity.class);

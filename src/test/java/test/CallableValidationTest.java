@@ -13,27 +13,24 @@ import ejb.resources.callable.simple.CallableSimpleResult;
 import ejb.resources.callable.validation.CallableValidationDestination;
 import ejb.resources.callable.validation.CallableValidationEntity;
 import ejb.resources.callable.validation.CallableValidationResult;
-import tech.lapsa.javax.jms.JmsClientFactory;
-import tech.lapsa.javax.jms.JmsClientFactory.JmsCallable;
+import tech.lapsa.javax.jms.client.JmsCallableClient;
+import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.javax.jms.client.JmsResultType;
 import test.assertion.Assertions;
 
 public class CallableValidationTest extends ArquillianBaseTestCase {
 
     @Inject
-    private JmsClientFactory jmsClientFactory;
-
-    @Inject
-    private CallableValidationDestination destination;
+    @JmsDestination(CallableValidationDestination.WITH_VALIDATION)
+    @JmsResultType(CallableValidationResult.class)
+    private JmsCallableClient<CallableValidationEntity, CallableValidationResult> callableClient;
 
     @Test
     public void validationOk() throws JMSException {
-	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
-		= jmsClientFactory.createCallable(destination.getDestination(), CallableValidationResult.class);
-
 	{
 	    final String VALID_MESSAGE = "Hello JMS world!";
 	    final CallableValidationEntity e = new CallableValidationEntity(VALID_MESSAGE);
-	    final CallableValidationResult r = service.call(e);
+	    final CallableValidationResult r = callableClient.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(CallableSimpleResult.PREFIX + e.getMessage()))));
@@ -42,25 +39,24 @@ public class CallableValidationTest extends ArquillianBaseTestCase {
 
     @Test
     public void validationFail() throws Exception {
-	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
-		= jmsClientFactory.createCallable(destination.getDestination(), CallableValidationResult.class);
-
 	{
 	    final String NULL_MESSAGE = null;
 	    final CallableValidationEntity e = new CallableValidationEntity(NULL_MESSAGE);
-	    Assertions.expectException(() -> service.call(e), ValidationException.class);
+	    Assertions.expectException(() -> callableClient.call(e), ValidationException.class);
 	}
     }
 
+    @Inject
+    @JmsDestination(CallableValidationDestination.SKIPPED_VALIDATION)
+    @JmsResultType(CallableValidationResult.class)
+    private JmsCallableClient<CallableValidationEntity, CallableValidationResult> callable2;
+
     @Test
     public void validationNoFail() throws Exception {
-	final JmsCallable<CallableValidationEntity, CallableValidationResult> service //
-		= jmsClientFactory.createCallable(destination.getDestinationSkipValidation(), CallableValidationResult.class);
-
 	{
 	    final String NULL_MESSAGE = null;
 	    final CallableValidationEntity e = new CallableValidationEntity(NULL_MESSAGE);
-	    final CallableValidationResult r = service.call(e);
+	    final CallableValidationResult r = callable2.call(e);
 	    assertThat(r, not(nullValue()));
 	    assertThat(r.getMessage(),
 		    allOf(not(nullValue()), is(equalTo(CallableSimpleResult.PREFIX + e.getMessage()))));

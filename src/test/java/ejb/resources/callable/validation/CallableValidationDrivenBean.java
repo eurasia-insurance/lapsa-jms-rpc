@@ -4,11 +4,11 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.CallableServiceDrivenBean;
+import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableValidationDestination.JNDI_NAME)
+@MessageDriven(mappedName = CallableValidationDestination.WITH_VALIDATION)
 public class CallableValidationDrivenBean
-	extends CallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {
+	extends JmsCallableServiceDrivenBean<CallableValidationEntity, CallableValidationResult> {
 
     public CallableValidationDrivenBean() {
 	super(CallableValidationEntity.class);

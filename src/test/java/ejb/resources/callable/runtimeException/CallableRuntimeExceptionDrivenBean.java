@@ -4,11 +4,11 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.CallableServiceDrivenBean;
+import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 
-@MessageDriven(mappedName = CallableRuntimeExceptionDestination.JNDI_NAME)
+@MessageDriven(mappedName = CallableRuntimeExceptionDestination.GENERAL)
 public class CallableRuntimeExceptionDrivenBean
-	extends CallableServiceDrivenBean<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> {
+	extends JmsCallableServiceDrivenBean<CallableRuntimeExceptionEntity, CallableRuntimeExceptionResult> {
 
     public CallableRuntimeExceptionDrivenBean() {
 	super(CallableRuntimeExceptionEntity.class);

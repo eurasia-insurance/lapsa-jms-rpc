@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.javax.jms.service;
 
 import java.io.Serializable;
 import java.util.Properties;
