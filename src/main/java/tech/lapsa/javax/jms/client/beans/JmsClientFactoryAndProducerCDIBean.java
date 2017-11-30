@@ -15,7 +15,6 @@ import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsClientFactory;
 import tech.lapsa.javax.jms.client.JmsConsumerClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEntityType;
 import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
 import tech.lapsa.javax.jms.client.JmsResultType;
 import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
@@ -49,17 +48,12 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
-	@SuppressWarnings("unused")
-	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
-			.value();
-	final Class<? extends Serializable> wildcartResultClazz //
+	final Class<? extends Serializable> wildcardResultClazz //
 		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsResultType.class) //
 			.value();
-
 	final Class<R> resultClazz;
 	try {
-	    resultClazz = (Class<R>) wildcartResultClazz;
+	    resultClazz = (Class<R>) wildcardResultClazz;
 	} catch (ClassCastException e) {
 	    throw MyExceptions.illegalStateFormat("Types not safe");
 	}
@@ -72,10 +66,6 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
-	@SuppressWarnings("unused")
-	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
-			.value();
 	return createConsumer(destination);
     }
 
@@ -84,10 +74,6 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Destination destination = MyNaming.requireResource(ip.getAnnotated() //
 		.getAnnotation(JmsDestination.class) //
 		.value(), Destination.class);
-	@SuppressWarnings("unused")
-	final Class<? extends Serializable> entityClazz //
-		= MyAnnotated.requireAnnotation(ip.getAnnotated(), JmsEntityType.class) //
-			.value();
 	return createEventNotificator(destination);
     }
 }
