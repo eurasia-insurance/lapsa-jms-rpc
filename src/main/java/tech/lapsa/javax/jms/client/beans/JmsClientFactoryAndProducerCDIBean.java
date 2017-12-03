@@ -10,7 +10,7 @@ import javax.jms.Destination;
 
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
-import tech.lapsa.javax.cdi.utility.MyAnnotated;
+import tech.lapsa.javax.cdi.commons.MyAnnotated;
 import tech.lapsa.javax.jms.client.JmsCallableClient;
 import tech.lapsa.javax.jms.client.JmsClientFactory;
 import tech.lapsa.javax.jms.client.JmsConsumerClient;
