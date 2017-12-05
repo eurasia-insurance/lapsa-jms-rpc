@@ -20,7 +20,7 @@ public interface JmsInternalClient {
 
     UUID sendWithReplyTo(Destination dest, Message message) throws JMSException;
 
-    UUID send(Destination destination, Message... messages) throws JMSException;
+    void send(Destination destination, Message... messages) throws JMSException;
 
     Message createMessage(Serializable entity);
 

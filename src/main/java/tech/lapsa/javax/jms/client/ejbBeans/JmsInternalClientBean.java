@@ -41,8 +41,8 @@ public class JmsInternalClientBean implements JmsInternalClient {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public UUID sendWithReplyTo(final Destination destination, final Message message) {
-	final UUID callId = UUID.randomUUID();
 	try {
+	    final UUID callId = UUID.randomUUID();
 	    final String corellationID = callId.toString();
 	    final JMSProducer producer = context.createProducer();
 	    final Topic replyToDestination = context.createTopic(this.getClass().getName() + ".replyTo");
@@ -53,23 +53,28 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
 	    logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(message));
 	    logger.TRACE.log("%1$s ... with JMSReplyTo %2$s", callId, MyJMSs.getNameOf(replyToDestination));
+	    return callId;
 	} catch (JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
-	return callId;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public UUID send(final Destination destination, final Message... messages) {
-	final UUID callId = UUID.randomUUID();
-	final JMSProducer producer = context.createProducer();
-	for (Message message : messages) {
-	    producer.send(destination, message);
-	    logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
-	    logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
+    public void send(final Destination destination, final Message... messages) {
+	try {
+	    final JMSProducer producer = context.createProducer();
+	    for (Message message : messages) {
+		final UUID callId = UUID.randomUUID();
+		final String corellationID = callId.toString();
+		message.setJMSCorrelationID(corellationID);
+		producer.send(destination, message);
+		logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
+		logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
+	    }
+	} catch (JMSException e) {
+	    throw MyJMSs.uchedked(e);
 	}
-	return callId;
     }
 
     @Override
