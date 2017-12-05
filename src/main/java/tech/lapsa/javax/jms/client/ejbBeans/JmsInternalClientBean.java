@@ -40,36 +40,41 @@ public class JmsInternalClientBean implements JmsInternalClient {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendWithReplyTo(final Destination destination, final Message message) {
+    public UUID sendWithReplyTo(final Destination destination, final Message message) {
+	final UUID callId = UUID.randomUUID();
 	try {
-	    final String corellationID = UUID.randomUUID().toString();
+	    final String corellationID = callId.toString();
 	    final JMSProducer producer = context.createProducer();
 	    final Topic replyToDestination = context.createTopic(this.getClass().getName() + ".replyTo");
 	    message.setJMSReplyTo(replyToDestination);
 	    message.setJMSCorrelationID(corellationID);
 	    producer.send(destination, message);
-	    logger.DEBUG.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
-	    logger.SUPER_TRACE.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
-	    logger.TRACE.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(message));
-	    logger.TRACE.log("... with JMSReplyTo %1$s", MyJMSs.getNameOf(replyToDestination));
+	    logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
+	    logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
+	    logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(message));
+	    logger.TRACE.log("%1$s ... with JMSReplyTo %2$s", callId, MyJMSs.getNameOf(replyToDestination));
 	} catch (JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
+	return callId;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void send(final Destination destination, final Message... messages) {
+    public UUID send(final Destination destination, final Message... messages) {
+	final UUID callId = UUID.randomUUID();
 	final JMSProducer producer = context.createProducer();
 	for (Message message : messages) {
 	    producer.send(destination, message);
-	    logger.DEBUG.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
-	    logger.SUPER_TRACE.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
+	    logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
+	    logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
 	}
+	return callId;
     }
 
     @Override
-    public Message receiveReplyOn(Message message, long timeout) throws ResponseNotReceivedException {
+    public Message receiveReplyOn(final UUID callId, final Message message, final long timeout)
+	    throws ResponseNotReceivedException {
 
 	final Destination replyToDestination;
 	try {
@@ -79,48 +84,52 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	}
 	if (replyToDestination == null)
 	    throw MyExceptions.illegalArgumentFormat(
-		    "JMS-Message %1$ is not configured as ReplyTo message. JMSReplyTo property is null",
-		    MyJMSs.getJMSMessageIDOf(message));
-	logger.DEBUG.log("JMS-Reply started receiving from %1$s", MyJMSs.getNameOf(replyToDestination));
+		    "%1$s JMS-Message %2$ is not configured as ReplyTo message. JMSReplyTo property is null",
+		    callId, MyJMSs.getJMSMessageIDOf(message));
+	logger.DEBUG.log("%1$s JMS-Reply started receiving from %2$s", callId, MyJMSs.getNameOf(replyToDestination));
 	final Optional<String> corellationID = MyJMSs.optJMSCorellationIDOf(message);
 	if (!corellationID.isPresent())
 	    throw MyExceptions.illegalArgumentFormat(
-		    "JMS-Message %1$ has no JMSMessageID property. This may be due to it's not sent.", message);
+		    "%1$s JMS-Message %2$ has no JMSMessageID property. This may be due to it's not sent.", callId,
+		    message);
 	final String messageSelector = String.format("JMSCorrelationID = '%1$s'", corellationID.get());
 	try (final JMSConsumer consumer = context.createConsumer(replyToDestination, messageSelector)) {
-	    logger.TRACE.log("... with timeout of %1$s ms", timeout);
-	    logger.TRACE.log("... with message selector \"%1$s\"", messageSelector);
+	    logger.TRACE.log("%1$s ... with timeout of %2$s ms", callId, timeout);
+	    logger.TRACE.log("%1$s ... with message selector \"%2$s\"", callId, messageSelector);
 	    final Message reply = consumer.receive(timeout);
 	    if (reply != null) {
-		logger.DEBUG.log("JMS-Reply received from %1$s", MyJMSs.getJMSDestination(reply));
-		logger.SUPER_TRACE.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(reply));
-		logger.TRACE.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(reply));
+		logger.DEBUG.log("%1$s JMS-Reply received from %2$s", callId, MyJMSs.getJMSDestination(reply));
+		logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(reply));
+		logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(reply));
 		return reply;
 	    } else
-		logger.DEBUG.log("JMS-Reply NOT received in %1$s ms.", timeout);
+		logger.DEBUG.log("%1$s JMS-Reply NOT received in %2$s ms.", callId, timeout);
 
 	    throw MyExceptions.runtimeExceptionFormat(ResponseNotReceivedException::new,
-		    "Error receiving JMS-Reply from %1$s with %2$s",
-		    MyJMSs.getNameOf(replyToDestination), // 1
-		    messageSelector // 2
+		    "%1$s Error receiving JMS-Reply from %2$s with %3$s",
+		    callId, // 1
+		    MyJMSs.getNameOf(replyToDestination), // 2
+		    messageSelector // 3
 	    );
 	} finally {
 	    if (replyToDestination instanceof TemporaryQueue) {
 		try {
-		    logger.DEBUG.log("Dropping temporary queue %1$s", MyJMSs.getNameOf(replyToDestination));
+		    logger.DEBUG.log("%1$s Dropping temporary queue %2$s", callId,
+			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryQueue) replyToDestination).delete();
-		    logger.TRACE.log("... dropped");
+		    logger.TRACE.log("%1$s ... dropped", callId);
 		} catch (JMSException ignored) {
-		    logger.TRACE.log("... not dropped with exception %1$s", ignored.getMessage());
+		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
 	    }
 	    if (replyToDestination instanceof TemporaryTopic) {
 		try {
-		    logger.DEBUG.log("Dropping temporary topic %1$s", MyJMSs.getNameOf(replyToDestination));
+		    logger.DEBUG.log("%1$s Dropping temporary topic %2$s", callId,
+			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryTopic) replyToDestination).delete();
-		    logger.TRACE.log("... dropped.");
+		    logger.TRACE.log("%1$s ... dropped.", callId);
 		} catch (JMSException ignored) {
-		    logger.TRACE.log("... not dropped with exception %1$s", ignored.getMessage());
+		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
 	    }
 	}

@@ -2,6 +2,7 @@ package tech.lapsa.javax.jms.client.beans;
 
 import java.io.Serializable;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -22,7 +23,8 @@ class GeneralClientImpl<E extends Serializable, R extends Serializable> {
     final Class<R> resultClazz;
     final JmsInternalClient internalClient;
 
-    GeneralClientImpl(final Class<R> resultClazz, final JmsInternalClient internalClient, final Destination destination) {
+    GeneralClientImpl(final Class<R> resultClazz, final JmsInternalClient internalClient,
+	    final Destination destination) {
 	this.resultClazz = MyObjects.requireNonNull(resultClazz, "resultClazz");
 	this.destination = MyObjects.requireNonNull(destination, "destination");
 	this.internalClient = MyObjects.requireNonNull(internalClient, "internalClient");
@@ -53,8 +55,8 @@ class GeneralClientImpl<E extends Serializable, R extends Serializable> {
 	try {
 
 	    final Message message = internalClient.createMessage(entity, properties);
-	    internalClient.sendWithReplyTo(destination, message);
-	    final Message reply = internalClient.receiveReplyOn(message, DEFAULT_TIMEOUT);
+	    final UUID callId = internalClient.sendWithReplyTo(destination, message);
+	    final Message reply = internalClient.receiveReplyOn(callId, message, DEFAULT_TIMEOUT);
 
 	    if (reply == null)
 		throw new ResponseNotReceivedException();
