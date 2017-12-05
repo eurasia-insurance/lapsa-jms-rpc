@@ -29,7 +29,7 @@ public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R
 	implements MessageListener {
 
     private final MyLogger logger = MyLogger.newBuilder() //
-	    .withNameOf(JmsInternalClient.class) //
+	    .withNameOf(this.getClass()) //
 	    .addInstantPrefix() //
 	    .addPrefix("JMS-Service") //
 	    .build();
