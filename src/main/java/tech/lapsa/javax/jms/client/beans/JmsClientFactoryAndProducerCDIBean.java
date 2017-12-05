@@ -17,7 +17,7 @@ import tech.lapsa.javax.jms.client.JmsConsumerClient;
 import tech.lapsa.javax.jms.client.JmsDestination;
 import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
 import tech.lapsa.javax.jms.client.JmsResultType;
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
+import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
 
 @Dependent
 public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {

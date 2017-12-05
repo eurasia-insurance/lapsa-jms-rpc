@@ -6,7 +6,7 @@ import java.util.Properties;
 import javax.jms.Destination;
 
 import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
+import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
 
 class JmsCallableImpl<E extends Serializable, R extends Serializable> extends GeneralClientImpl<E, R>
 	implements JmsCallableClient<E, R> {

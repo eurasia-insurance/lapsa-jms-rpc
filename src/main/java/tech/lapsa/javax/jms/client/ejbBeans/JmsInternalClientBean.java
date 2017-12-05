@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.service.ejbBeans;
+package tech.lapsa.javax.jms.client.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -22,7 +22,6 @@ import javax.jms.Topic;
 
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.logging.MyLogger;
-import tech.lapsa.java.commons.logging.MyLogger.MyLevel;
 import tech.lapsa.javax.jms.Messages;
 import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
 import tech.lapsa.javax.jms.commons.MyJMSs;
@@ -39,24 +38,22 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    .addPrefix("JMS-Client") //
 	    .build();
 
-    private final MyLevel debugLevel = logger.DEBUG;
-    private final MyLevel traceLevel = logger.TRACE;
-    private final MyLevel superTraceLevel = logger.SUPER_TRACE;
-
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void sendWithReplyTo(Destination destination, Message message) {
+    public UUID sendWithReplyTo(final Destination destination, final Message message) {
 	try {
-	    final String corellationID = UUID.randomUUID().toString();
+	    final UUID callId = UUID.randomUUID();
+	    final String corellationID = callId.toString();
 	    final JMSProducer producer = context.createProducer();
 	    final Topic replyToDestination = context.createTopic(this.getClass().getName() + ".replyTo");
 	    message.setJMSReplyTo(replyToDestination);
 	    message.setJMSCorrelationID(corellationID);
 	    producer.send(destination, message);
-	    debugLevel.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
-	    superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
-	    traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(message));
-	    traceLevel.log("... with JMSReplyTo %1$s", MyJMSs.getNameOf(replyToDestination));
+	    logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
+	    logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
+	    logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(message));
+	    logger.TRACE.log("%1$s ... with JMSReplyTo %2$s", callId, MyJMSs.getNameOf(replyToDestination));
+	    return callId;
 	} catch (JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
@@ -65,16 +62,24 @@ public class JmsInternalClientBean implements JmsInternalClient {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void send(final Destination destination, final Message... messages) {
-	final JMSProducer producer = context.createProducer();
-	for (Message message : messages) {
-	    producer.send(destination, message);
-	    debugLevel.log("JMS-Message was sent to %1$s", MyJMSs.getNameOf(destination));
-	    superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(message));
+	try {
+	    final JMSProducer producer = context.createProducer();
+	    for (Message message : messages) {
+		final UUID callId = UUID.randomUUID();
+		final String corellationID = callId.toString();
+		message.setJMSCorrelationID(corellationID);
+		producer.send(destination, message);
+		logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
+		logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
+	    }
+	} catch (JMSException e) {
+	    throw MyJMSs.uchedked(e);
 	}
     }
 
     @Override
-    public Message receiveReplyOn(Message message, long timeout) throws ResponseNotReceivedException {
+    public Message receiveReplyOn(final UUID callId, final Message message, final long timeout)
+	    throws ResponseNotReceivedException {
 
 	final Destination replyToDestination;
 	try {
@@ -84,48 +89,52 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	}
 	if (replyToDestination == null)
 	    throw MyExceptions.illegalArgumentFormat(
-		    "JMS-Message %1$ is not configured as ReplyTo message. JMSReplyTo property is null",
-		    MyJMSs.getJMSMessageIDOf(message));
-	debugLevel.log("JMS-Reply started receiving from %1$s", MyJMSs.getNameOf(replyToDestination));
+		    "%1$s JMS-Message %2$ is not configured as ReplyTo message. JMSReplyTo property is null",
+		    callId, MyJMSs.getJMSMessageIDOf(message));
+	logger.DEBUG.log("%1$s JMS-Reply started receiving from %2$s", callId, MyJMSs.getNameOf(replyToDestination));
 	final Optional<String> corellationID = MyJMSs.optJMSCorellationIDOf(message);
 	if (!corellationID.isPresent())
 	    throw MyExceptions.illegalArgumentFormat(
-		    "JMS-Message %1$ has no JMSMessageID property. This may be due to it's not sent.", message);
+		    "%1$s JMS-Message %2$ has no JMSMessageID property. This may be due to it's not sent.", callId,
+		    message);
 	final String messageSelector = String.format("JMSCorrelationID = '%1$s'", corellationID.get());
 	try (final JMSConsumer consumer = context.createConsumer(replyToDestination, messageSelector)) {
-	    traceLevel.log("... with timeout of %1$s ms", timeout);
-	    traceLevel.log("... with message selector \"%1$s\"", messageSelector);
+	    logger.TRACE.log("%1$s ... with timeout of %2$s ms", callId, timeout);
+	    logger.TRACE.log("%1$s ... with message selector \"%2$s\"", callId, messageSelector);
 	    final Message reply = consumer.receive(timeout);
 	    if (reply != null) {
-		debugLevel.log("JMS-Reply received from %1$s", MyJMSs.getJMSDestination(reply));
-		superTraceLevel.log("... with JMSMessageID %1$s", MyJMSs.getJMSMessageIDOf(reply));
-		traceLevel.log("... with JMSCorrellationID %1$s", MyJMSs.getJMSCorellationIDOf(reply));
+		logger.DEBUG.log("%1$s JMS-Reply received from %2$s", callId, MyJMSs.getJMSDestination(reply));
+		logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(reply));
+		logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(reply));
 		return reply;
 	    } else
-		debugLevel.log("JMS-Reply NOT received in %1$s ms.", timeout);
+		logger.DEBUG.log("%1$s JMS-Reply NOT received in %2$s ms.", callId, timeout);
 
 	    throw MyExceptions.runtimeExceptionFormat(ResponseNotReceivedException::new,
-		    "Error receiving JMS-Reply from %1$s with %2$s",
-		    MyJMSs.getNameOf(replyToDestination), // 1
-		    messageSelector // 2
+		    "%1$s Error receiving JMS-Reply from %2$s with %3$s",
+		    callId, // 1
+		    MyJMSs.getNameOf(replyToDestination), // 2
+		    messageSelector // 3
 	    );
 	} finally {
 	    if (replyToDestination instanceof TemporaryQueue) {
 		try {
-		    debugLevel.log("Dropping temporary queue %1$s", MyJMSs.getNameOf(replyToDestination));
+		    logger.DEBUG.log("%1$s Dropping temporary queue %2$s", callId,
+			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryQueue) replyToDestination).delete();
-		    traceLevel.log("... dropped");
+		    logger.TRACE.log("%1$s ... dropped", callId);
 		} catch (JMSException ignored) {
-		    traceLevel.log("... not dropped with exception %1$s", ignored.getMessage());
+		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
 	    }
 	    if (replyToDestination instanceof TemporaryTopic) {
 		try {
-		    debugLevel.log("Dropping temporary topic %1$s", MyJMSs.getNameOf(replyToDestination));
+		    logger.DEBUG.log("%1$s Dropping temporary topic %2$s", callId,
+			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryTopic) replyToDestination).delete();
-		    traceLevel.log("... dropped.");
+		    logger.TRACE.log("%1$s ... dropped.", callId);
 		} catch (JMSException ignored) {
-		    traceLevel.log("... not dropped with exception %1$s", ignored.getMessage());
+		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
 	    }
 	}
