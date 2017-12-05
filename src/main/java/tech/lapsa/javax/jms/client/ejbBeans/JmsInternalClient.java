@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.service.ejbBeans;
+package tech.lapsa.javax.jms.client.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Properties;

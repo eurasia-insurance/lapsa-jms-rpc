@@ -7,7 +7,7 @@ import javax.jms.Destination;
 
 import tech.lapsa.javax.jms.VoidResult;
 import tech.lapsa.javax.jms.client.JmsConsumerClient;
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
+import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
 
 class JmsConsumerImpl<E extends Serializable> extends GeneralClientImpl<E, VoidResult>
 	implements JmsConsumerClient<E> {

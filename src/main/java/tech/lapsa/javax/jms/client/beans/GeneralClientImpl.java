@@ -11,8 +11,8 @@ import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.function.MyStreams;
 import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
 import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
+import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
 import tech.lapsa.javax.jms.commons.MyJMSs;
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalClient;
 
 class GeneralClientImpl<E extends Serializable, R extends Serializable> {
 
