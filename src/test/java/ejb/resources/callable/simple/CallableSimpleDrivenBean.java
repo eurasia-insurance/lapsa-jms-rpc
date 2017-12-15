@@ -14,14 +14,14 @@ import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
 public class CallableSimpleDrivenBean extends JmsCallableServiceDrivenBean<CallableSimpleEntity, CallableSimpleResult> {
 
     public static final String PROPERTY_NAME = "name";
-    
+
     public CallableSimpleDrivenBean() {
 	super(CallableSimpleEntity.class);
     }
 
     @Override
-    public CallableSimpleResult calling(CallableSimpleEntity callableSimpleEntity, Properties properties) {
-	CallableSimpleResult result = new CallableSimpleResult(callableSimpleEntity);
+    public CallableSimpleResult calling(final CallableSimpleEntity callableSimpleEntity, final Properties properties) {
+	final CallableSimpleResult result = new CallableSimpleResult(callableSimpleEntity);
 	if (properties != null) {
 	    final String name = properties.getProperty(PROPERTY_NAME);
 	    if (MyStrings.nonEmpty(name))

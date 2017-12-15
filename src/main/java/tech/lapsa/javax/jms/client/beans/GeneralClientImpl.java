@@ -38,11 +38,11 @@ class GeneralClientImpl<E extends Serializable, R extends Serializable> {
     @SafeVarargs
     final void _sendNoWait(final Properties properties, final E... entities) {
 	try {
-	    Message[] messages = MyStreams.orEmptyOf(entities) //
+	    final Message[] messages = MyStreams.orEmptyOf(entities) //
 		    .map(e -> internalClient.createMessage(e, properties)) //
 		    .toArray(Message[]::new);
 	    internalClient.send(destination, messages);
-	} catch (JMSException e) {
+	} catch (final JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
     }
@@ -75,7 +75,7 @@ class GeneralClientImpl<E extends Serializable, R extends Serializable> {
 
 	    throw new UnexpectedResponseTypeException("Unknown response type");
 
-	} catch (JMSException e) {
+	} catch (final JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
     }

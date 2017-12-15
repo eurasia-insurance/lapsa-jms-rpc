@@ -19,7 +19,7 @@ public class ConsumerSimpleDrivenBean extends JmsReceiverServiceDrivenBean<Consu
     }
 
     @Override
-    public void receiving(ConsumerSimpleEntity entity, Properties properties) {
+    public void receiving(final ConsumerSimpleEntity entity, final Properties properties) {
 	if (MyObjects.nonNull(properties)) {
 	    final String name = properties.getProperty(PROPERTY_NAME);
 	    if (MyStrings.nonEmpty(name))

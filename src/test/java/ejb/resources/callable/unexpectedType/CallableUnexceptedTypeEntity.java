@@ -8,7 +8,7 @@ public class CallableUnexceptedTypeEntity implements Serializable {
 
     private final String message;
 
-    public CallableUnexceptedTypeEntity(String message) {
+    public CallableUnexceptedTypeEntity(final String message) {
 	this.message = message;
     }
 

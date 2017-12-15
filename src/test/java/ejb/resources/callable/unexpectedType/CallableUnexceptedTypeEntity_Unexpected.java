@@ -8,7 +8,7 @@ public class CallableUnexceptedTypeEntity_Unexpected implements Serializable {
 
     private final String message;
 
-    public CallableUnexceptedTypeEntity_Unexpected(String message) {
+    public CallableUnexceptedTypeEntity_Unexpected(final String message) {
 	this.message = message;
     }
 

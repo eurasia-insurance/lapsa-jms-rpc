@@ -6,7 +6,7 @@ public class ConsumerSimpleEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public ConsumerSimpleEntity(String message) {
+    public ConsumerSimpleEntity(final String message) {
 	this.message = message;
     }
 
@@ -16,7 +16,7 @@ public class ConsumerSimpleEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
 	if (obj == null)
 	    return false;
 	if (obj == this)
@@ -24,7 +24,7 @@ public class ConsumerSimpleEntity implements Serializable {
 	if (!(obj instanceof ConsumerSimpleEntity))
 	    return false;
 	final ConsumerSimpleEntity othr = (ConsumerSimpleEntity) obj;
-	if (othr.message == this.message)
+	if (othr.message == message)
 	    return true;
 	if (message != null && message.equals(othr.message))
 	    return true;

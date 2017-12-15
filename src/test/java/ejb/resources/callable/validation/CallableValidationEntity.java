@@ -11,7 +11,7 @@ public class CallableValidationEntity implements Serializable {
     @NotNull
     private final String message;
 
-    public CallableValidationEntity(String message) {
+    public CallableValidationEntity(final String message) {
 	this.message = message;
     }
 

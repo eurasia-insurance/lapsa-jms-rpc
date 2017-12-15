@@ -16,7 +16,8 @@ import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
 @Local
 public interface JmsInternalClient {
 
-    Message receiveReplyOn(UUID callId, Message message, long timeout) throws JMSException, ResponseNotReceivedException;
+    Message receiveReplyOn(UUID callId, Message message, long timeout)
+	    throws JMSException, ResponseNotReceivedException;
 
     UUID sendWithReplyTo(Destination dest, Message message) throws JMSException;
 

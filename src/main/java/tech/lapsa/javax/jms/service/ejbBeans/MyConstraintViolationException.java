@@ -12,7 +12,7 @@ public class MyConstraintViolationException extends ConstraintViolationException
 
     private static final long serialVersionUID = 1L;
 
-    MyConstraintViolationException(Set<? extends ConstraintViolation<?>> constraintViolations) {
+    MyConstraintViolationException(final Set<? extends ConstraintViolation<?>> constraintViolations) {
 	super(MyOptionals.of(constraintViolations) //
 		.map(x -> x.stream() //
 			.map(y -> String.format("%1$s '%2$s.%3$s' was %4$s",
