@@ -110,7 +110,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    } else
 		logger.DEBUG.log("%1$s JMS-Reply NOT received in %2$s ms.", callId, timeout);
 
-	    throw MyExceptions.runtimeExceptionFormat(ResponseNotReceivedException::new,
+	    throw MyExceptions.format(ResponseNotReceivedException::new,
 		    "%1$s Error receiving JMS-Reply from %2$s with %3$s",
 		    callId, // 1
 		    MyJMSs.getNameOf(replyToDestination), // 2
