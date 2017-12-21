@@ -15,7 +15,7 @@ public class CallableNullsDrivenBean extends JmsCallableServiceDrivenBean<Callab
     }
 
     @Override
-    public CallableNullsResult calling(CallableNullsEntity entity, Properties properties) {
+    public CallableNullsResult calling(final CallableNullsEntity entity, final Properties properties) {
 	MyObjects.requireNull(entity);
 	return null;
     }

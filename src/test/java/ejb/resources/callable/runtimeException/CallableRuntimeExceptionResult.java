@@ -10,8 +10,8 @@ public class CallableRuntimeExceptionResult implements Serializable {
 
     private final String message;
 
-    public CallableRuntimeExceptionResult(CallableRuntimeExceptionEntity callableRuntimeExceptionEntity) {
-	this.message = PREFIX + callableRuntimeExceptionEntity.getMessage();
+    public CallableRuntimeExceptionResult(final CallableRuntimeExceptionEntity callableRuntimeExceptionEntity) {
+	message = PREFIX + callableRuntimeExceptionEntity.getMessage();
     }
 
     @Override

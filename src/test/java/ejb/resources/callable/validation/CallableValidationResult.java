@@ -10,8 +10,8 @@ public class CallableValidationResult implements Serializable {
 
     private final String message;
 
-    public CallableValidationResult(CallableValidationEntity callableValidationEntity) {
-	this.message = PREFIX + callableValidationEntity.getMessage();
+    public CallableValidationResult(final CallableValidationEntity callableValidationEntity) {
+	message = PREFIX + callableValidationEntity.getMessage();
     }
 
     @Override

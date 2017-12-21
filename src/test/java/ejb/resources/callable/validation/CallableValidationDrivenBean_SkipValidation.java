@@ -17,7 +17,8 @@ public class CallableValidationDrivenBean_SkipValidation
     }
 
     @Override
-    public CallableValidationResult calling(CallableValidationEntity callableValidationEntity, Properties properties) {
+    public CallableValidationResult calling(final CallableValidationEntity callableValidationEntity,
+	    final Properties properties) {
 	return new CallableValidationResult(callableValidationEntity);
     }
 

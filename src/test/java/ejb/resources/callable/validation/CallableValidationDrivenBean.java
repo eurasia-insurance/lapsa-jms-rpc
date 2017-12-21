@@ -15,8 +15,8 @@ public class CallableValidationDrivenBean
     }
 
     @Override
-    public CallableValidationResult calling(CallableValidationEntity callableValidationEntity,
-	    Properties properties) {
+    public CallableValidationResult calling(final CallableValidationEntity callableValidationEntity,
+	    final Properties properties) {
 	return new CallableValidationResult(callableValidationEntity);
     }
 

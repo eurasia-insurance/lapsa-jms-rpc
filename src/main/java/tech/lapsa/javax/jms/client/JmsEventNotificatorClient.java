@@ -3,7 +3,7 @@ package tech.lapsa.javax.jms.client;
 import java.io.Serializable;
 import java.util.Properties;
 
-public interface JmsEventNotificatorClient<E extends Serializable> {
+public interface JmsEventNotificatorClient<E extends Serializable> extends JmsClient {
 
     void eventNotify(E entity, Properties properties);
 

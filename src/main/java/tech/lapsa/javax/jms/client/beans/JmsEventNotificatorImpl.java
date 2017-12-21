@@ -24,7 +24,7 @@ class JmsEventNotificatorImpl<E extends Serializable> extends GeneralClientImpl<
     }
 
     @Override
-    public void eventNotify(E entity, Properties properties) {
+    public void eventNotify(final E entity, final Properties properties) {
 	_sendNoWait(properties, entity);
     }
 }

@@ -8,7 +8,7 @@ public class CallableRuntimeExceptionEntity implements Serializable {
 
     private final String message;
 
-    public CallableRuntimeExceptionEntity(String message) {
+    public CallableRuntimeExceptionEntity(final String message) {
 	this.message = message;
     }
 

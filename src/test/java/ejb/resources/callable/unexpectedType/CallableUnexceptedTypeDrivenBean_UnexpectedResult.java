@@ -15,7 +15,8 @@ public class CallableUnexceptedTypeDrivenBean_UnexpectedResult extends
     }
 
     @Override
-    public CallableUnexceptedTypeResult_Unexpected calling(CallableUnexceptedTypeEntity callableUnexceptedTypeEntity, Properties properties) {
+    public CallableUnexceptedTypeResult_Unexpected calling(
+	    final CallableUnexceptedTypeEntity callableUnexceptedTypeEntity, final Properties properties) {
 	return new CallableUnexceptedTypeResult_Unexpected(callableUnexceptedTypeEntity);
     }
 

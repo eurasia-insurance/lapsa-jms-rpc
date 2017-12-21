@@ -8,7 +8,7 @@ public class CallableSimpleEntity implements Serializable {
 
     private final String message;
 
-    public CallableSimpleEntity(String message) {
+    public CallableSimpleEntity(final String message) {
 	this.message = message;
     }
 

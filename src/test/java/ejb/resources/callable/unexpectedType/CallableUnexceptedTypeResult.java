@@ -10,8 +10,8 @@ public class CallableUnexceptedTypeResult implements Serializable {
 
     private final String message;
 
-    public CallableUnexceptedTypeResult(CallableUnexceptedTypeEntity callableUnexceptedTypeEntity) {
-	this.message = PREFIX + callableUnexceptedTypeEntity.getMessage();
+    public CallableUnexceptedTypeResult(final CallableUnexceptedTypeEntity callableUnexceptedTypeEntity) {
+	message = PREFIX + callableUnexceptedTypeEntity.getMessage();
     }
 
     @Override

@@ -26,18 +26,18 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
     private JmsInternalClient internalClient;
 
     @Override
-    public <T extends Serializable> JmsEventNotificatorClient<T> createEventNotificator(Destination destination) {
+    public <T extends Serializable> JmsEventNotificatorClient<T> createEventNotificator(final Destination destination) {
 	return new JmsEventNotificatorImpl<>(internalClient, destination);
     }
 
     @Override
-    public <T extends Serializable> JmsConsumerClient<T> createConsumer(Destination destination) {
+    public <T extends Serializable> JmsConsumerClient<T> createConsumer(final Destination destination) {
 	return new JmsConsumerImpl<>(internalClient, destination);
     }
 
     @Override
     public <T extends Serializable, R extends Serializable> JmsCallableClient<T, R> createCallable(
-	    final Class<R> resultClazz, Destination destination) {
+	    final Class<R> resultClazz, final Destination destination) {
 	return new JmsCallableImpl<>(resultClazz, internalClient, destination);
     }
 
@@ -54,7 +54,7 @@ public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {
 	final Class<R> resultClazz;
 	try {
 	    resultClazz = (Class<R>) wildcardResultClazz;
-	} catch (ClassCastException e) {
+	} catch (final ClassCastException e) {
 	    throw MyExceptions.illegalStateFormat("Types not safe");
 	}
 

@@ -54,7 +54,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    logger.TRACE.log("%1$s ... with JMSCorrellationID %2$s", callId, MyJMSs.getJMSCorellationIDOf(message));
 	    logger.TRACE.log("%1$s ... with JMSReplyTo %2$s", callId, MyJMSs.getNameOf(replyToDestination));
 	    return callId;
-	} catch (JMSException e) {
+	} catch (final JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
     }
@@ -64,7 +64,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
     public void send(final Destination destination, final Message... messages) {
 	try {
 	    final JMSProducer producer = context.createProducer();
-	    for (Message message : messages) {
+	    for (final Message message : messages) {
 		final UUID callId = UUID.randomUUID();
 		final String corellationID = callId.toString();
 		message.setJMSCorrelationID(corellationID);
@@ -72,7 +72,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
 		logger.DEBUG.log("%1$s JMS-Message was sent to %2$s", callId, MyJMSs.getNameOf(destination));
 		logger.SUPER_TRACE.log("%1$s ... with JMSMessageID %2$s", callId, MyJMSs.getJMSMessageIDOf(message));
 	    }
-	} catch (JMSException e) {
+	} catch (final JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
     }
@@ -84,7 +84,7 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	final Destination replyToDestination;
 	try {
 	    replyToDestination = message.getJMSReplyTo();
-	} catch (JMSException e) {
+	} catch (final JMSException e) {
 	    throw MyJMSs.uchedked(e);
 	}
 	if (replyToDestination == null)
@@ -110,33 +110,31 @@ public class JmsInternalClientBean implements JmsInternalClient {
 	    } else
 		logger.DEBUG.log("%1$s JMS-Reply NOT received in %2$s ms.", callId, timeout);
 
-	    throw MyExceptions.runtimeExceptionFormat(ResponseNotReceivedException::new,
+	    throw MyExceptions.format(ResponseNotReceivedException::new,
 		    "%1$s Error receiving JMS-Reply from %2$s with %3$s",
 		    callId, // 1
 		    MyJMSs.getNameOf(replyToDestination), // 2
 		    messageSelector // 3
 	    );
 	} finally {
-	    if (replyToDestination instanceof TemporaryQueue) {
+	    if (replyToDestination instanceof TemporaryQueue)
 		try {
 		    logger.DEBUG.log("%1$s Dropping temporary queue %2$s", callId,
 			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryQueue) replyToDestination).delete();
 		    logger.TRACE.log("%1$s ... dropped", callId);
-		} catch (JMSException ignored) {
+		} catch (final JMSException ignored) {
 		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
-	    }
-	    if (replyToDestination instanceof TemporaryTopic) {
+	    if (replyToDestination instanceof TemporaryTopic)
 		try {
 		    logger.DEBUG.log("%1$s Dropping temporary topic %2$s", callId,
 			    MyJMSs.getNameOf(replyToDestination));
 		    ((TemporaryTopic) replyToDestination).delete();
 		    logger.TRACE.log("%1$s ... dropped.", callId);
-		} catch (JMSException ignored) {
+		} catch (final JMSException ignored) {
 		    logger.TRACE.log("%1$s ... not dropped with exception %2$s", callId, ignored.getMessage());
 		}
-	    }
 	}
     }
 

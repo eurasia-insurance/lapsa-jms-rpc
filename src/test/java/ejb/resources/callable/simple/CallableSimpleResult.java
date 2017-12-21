@@ -11,8 +11,8 @@ public class CallableSimpleResult implements Serializable {
     private final String message;
     private String name;
 
-    public CallableSimpleResult(CallableSimpleEntity callableSimpleEntity) {
-	this.message = PREFIX + callableSimpleEntity.getMessage();
+    public CallableSimpleResult(final CallableSimpleEntity callableSimpleEntity) {
+	message = PREFIX + callableSimpleEntity.getMessage();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CallableSimpleResult implements Serializable {
 	return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+	this.name = name;
     }
 }
