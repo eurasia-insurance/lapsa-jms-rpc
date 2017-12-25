@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.service;
+package tech.lapsa.lapsa.jmsRPC.service;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

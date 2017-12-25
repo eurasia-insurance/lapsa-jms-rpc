@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.client.ejbBeans;
+package tech.lapsa.lapsa.jmsRPC.client.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -22,9 +22,9 @@ import javax.jms.Topic;
 
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.logging.MyLogger;
-import tech.lapsa.javax.jms.Messages;
-import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
 import tech.lapsa.javax.jms.commons.MyJMSs;
+import tech.lapsa.lapsa.jmsRPC.Messages;
+import tech.lapsa.lapsa.jmsRPC.client.ResponseNotReceivedException;
 
 @Stateless
 public class JmsInternalClientBean implements JmsInternalClient {

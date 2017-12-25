@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms;
+package tech.lapsa.lapsa.jmsRPC;
 
 import static tech.lapsa.javax.jms.commons.MyJMSs.*;
 

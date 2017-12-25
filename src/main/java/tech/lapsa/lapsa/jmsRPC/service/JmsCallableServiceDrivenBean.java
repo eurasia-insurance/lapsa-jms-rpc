@@ -1,9 +1,9 @@
-package tech.lapsa.javax.jms.service;
+package tech.lapsa.lapsa.jmsRPC.service;
 
 import java.io.Serializable;
 import java.util.Properties;
 
-import tech.lapsa.javax.jms.service.ejbBeans.JmsInternalServiceBaseDrivenBean;
+import tech.lapsa.lapsa.jmsRPC.service.ejbBeans.JmsInternalServiceBaseDrivenBean;
 
 public abstract class JmsCallableServiceDrivenBean<E extends Serializable, R extends Serializable>
 	extends JmsInternalServiceBaseDrivenBean<E, R> implements JmsCallableService<E, R> {

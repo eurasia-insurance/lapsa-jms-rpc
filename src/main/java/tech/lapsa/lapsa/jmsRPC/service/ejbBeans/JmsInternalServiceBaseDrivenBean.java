@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.service.ejbBeans;
+package tech.lapsa.lapsa.jmsRPC.service.ejbBeans;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -23,10 +23,10 @@ import tech.lapsa.java.commons.logging.MyLogger;
 import tech.lapsa.java.commons.logging.MyLogger.MyLevel;
 import tech.lapsa.java.commons.reflect.MyAnnotations;
 import tech.lapsa.java.commons.util.MyUUIDs;
-import tech.lapsa.javax.jms.Messages;
-import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
 import tech.lapsa.javax.jms.commons.MyJMSs;
-import tech.lapsa.javax.jms.service.JmsSkipValidation;
+import tech.lapsa.lapsa.jmsRPC.Messages;
+import tech.lapsa.lapsa.jmsRPC.UnexpectedTypeRequestedException;
+import tech.lapsa.lapsa.jmsRPC.service.JmsSkipValidation;
 
 public abstract class JmsInternalServiceBaseDrivenBean<E extends Serializable, R extends Serializable>
 	implements MessageListener {

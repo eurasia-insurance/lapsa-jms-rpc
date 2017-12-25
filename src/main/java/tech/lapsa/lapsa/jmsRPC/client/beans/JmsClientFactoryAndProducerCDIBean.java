@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.client.beans;
+package tech.lapsa.lapsa.jmsRPC.client.beans;
 
 import java.io.Serializable;
 
@@ -11,13 +11,13 @@ import javax.jms.Destination;
 import tech.lapsa.java.commons.function.MyExceptions;
 import tech.lapsa.java.commons.naming.MyNaming;
 import tech.lapsa.javax.cdi.commons.MyAnnotated;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsClientFactory;
-import tech.lapsa.javax.jms.client.JmsConsumerClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsEventNotificatorClient;
-import tech.lapsa.javax.jms.client.JmsResultType;
-import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsClientFactory;
+import tech.lapsa.lapsa.jmsRPC.client.JmsConsumerClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsEventNotificatorClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.client.ejbBeans.JmsInternalClient;
 
 @Dependent
 public class JmsClientFactoryAndProducerCDIBean implements JmsClientFactory {

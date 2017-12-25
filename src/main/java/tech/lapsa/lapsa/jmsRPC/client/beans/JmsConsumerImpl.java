@@ -1,13 +1,13 @@
-package tech.lapsa.javax.jms.client.beans;
+package tech.lapsa.lapsa.jmsRPC.client.beans;
 
 import java.io.Serializable;
 import java.util.Properties;
 
 import javax.jms.Destination;
 
-import tech.lapsa.javax.jms.VoidResult;
-import tech.lapsa.javax.jms.client.JmsConsumerClient;
-import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
+import tech.lapsa.lapsa.jmsRPC.VoidResult;
+import tech.lapsa.lapsa.jmsRPC.client.JmsConsumerClient;
+import tech.lapsa.lapsa.jmsRPC.client.ejbBeans.JmsInternalClient;
 
 class JmsConsumerImpl<E extends Serializable> extends GeneralClientImpl<E, VoidResult>
 	implements JmsConsumerClient<E> {

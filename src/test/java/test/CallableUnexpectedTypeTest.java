@@ -8,11 +8,11 @@ import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeDestination;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeEntity_Unexpected;
 import ejb.resources.callable.unexpectedType.CallableUnexceptedTypeResult;
-import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
-import tech.lapsa.javax.jms.UnexpectedTypeRequestedException;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.UnexpectedResponseTypeException;
+import tech.lapsa.lapsa.jmsRPC.UnexpectedTypeRequestedException;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
 import test.assertion.Assertions;
 
 public class CallableUnexpectedTypeTest extends ArquillianBaseTestCase {

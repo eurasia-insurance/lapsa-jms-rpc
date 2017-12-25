@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.client;
+package tech.lapsa.lapsa.jmsRPC.client;
 
 public final class ResponseNotReceivedException extends RuntimeException {
     private static final long serialVersionUID = 1L;

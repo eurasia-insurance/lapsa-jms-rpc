@@ -13,9 +13,9 @@ import ejb.resources.callable.simple.CallableSimpleResult;
 import ejb.resources.callable.validation.CallableValidationDestination;
 import ejb.resources.callable.validation.CallableValidationEntity;
 import ejb.resources.callable.validation.CallableValidationResult;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
 import test.assertion.Assertions;
 
 public class CallableValidationTest extends ArquillianBaseTestCase {

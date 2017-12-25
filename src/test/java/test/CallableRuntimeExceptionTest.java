@@ -7,9 +7,9 @@ import org.junit.Test;
 import ejb.resources.callable.runtimeException.CallableRuntimeExceptionDestination;
 import ejb.resources.callable.runtimeException.CallableRuntimeExceptionEntity;
 import ejb.resources.callable.runtimeException.CallableRuntimeExceptionResult;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
 import test.assertion.Assertions;
 
 public class CallableRuntimeExceptionTest extends ArquillianBaseTestCase {

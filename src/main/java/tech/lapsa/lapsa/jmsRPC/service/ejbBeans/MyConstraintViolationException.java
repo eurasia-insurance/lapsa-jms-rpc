@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.service.ejbBeans;
+package tech.lapsa.lapsa.jmsRPC.service.ejbBeans;
 
 import java.util.Set;
 import java.util.stream.Collectors;

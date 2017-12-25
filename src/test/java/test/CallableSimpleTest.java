@@ -14,9 +14,9 @@ import ejb.resources.callable.simple.CallableSimpleDestination;
 import ejb.resources.callable.simple.CallableSimpleDrivenBean;
 import ejb.resources.callable.simple.CallableSimpleEntity;
 import ejb.resources.callable.simple.CallableSimpleResult;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
 
 public class CallableSimpleTest extends ArquillianBaseTestCase {
 

@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.client.beans;
+package tech.lapsa.lapsa.jmsRPC.client.beans;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -10,10 +10,10 @@ import javax.jms.Message;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.function.MyStreams;
-import tech.lapsa.javax.jms.UnexpectedResponseTypeException;
-import tech.lapsa.javax.jms.client.ResponseNotReceivedException;
-import tech.lapsa.javax.jms.client.ejbBeans.JmsInternalClient;
 import tech.lapsa.javax.jms.commons.MyJMSs;
+import tech.lapsa.lapsa.jmsRPC.UnexpectedResponseTypeException;
+import tech.lapsa.lapsa.jmsRPC.client.ResponseNotReceivedException;
+import tech.lapsa.lapsa.jmsRPC.client.ejbBeans.JmsInternalClient;
 
 class GeneralClientImpl<E extends Serializable, R extends Serializable> {
 

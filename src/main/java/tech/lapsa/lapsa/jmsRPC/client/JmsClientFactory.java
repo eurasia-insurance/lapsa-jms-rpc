@@ -1,4 +1,4 @@
-package tech.lapsa.javax.jms.client;
+package tech.lapsa.lapsa.jmsRPC.client;
 
 import java.io.Serializable;
 

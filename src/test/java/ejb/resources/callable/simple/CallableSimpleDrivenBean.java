@@ -7,7 +7,7 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 
 import tech.lapsa.java.commons.function.MyStrings;
-import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
+import tech.lapsa.lapsa.jmsRPC.service.JmsCallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableSimpleDestination.GENERAL)
 @TransactionManagement(TransactionManagementType.BEAN)
