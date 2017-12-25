@@ -11,9 +11,9 @@ import org.junit.Test;
 import ejb.resources.callable.nulls.CallableNullsDestination;
 import ejb.resources.callable.nulls.CallableNullsEntity;
 import ejb.resources.callable.nulls.CallableNullsResult;
-import tech.lapsa.javax.jms.client.JmsCallableClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
-import tech.lapsa.javax.jms.client.JmsResultType;
+import tech.lapsa.lapsa.jmsRPC.client.JmsCallableClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsResultType;
 
 public class CallableNullsTest extends ArquillianBaseTestCase {
 

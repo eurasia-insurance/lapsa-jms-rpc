@@ -13,8 +13,8 @@ import org.junit.Test;
 import ejb.resources.consumer.simple.ConsumerSimpleDestination;
 import ejb.resources.consumer.simple.ConsumerSimpleDrivenBean;
 import ejb.resources.consumer.simple.ConsumerSimpleEntity;
-import tech.lapsa.javax.jms.client.JmsConsumerClient;
-import tech.lapsa.javax.jms.client.JmsDestination;
+import tech.lapsa.lapsa.jmsRPC.client.JmsConsumerClient;
+import tech.lapsa.lapsa.jmsRPC.client.JmsDestination;
 
 public class ConsumerSimpleTest extends ArquillianBaseTestCase {
 

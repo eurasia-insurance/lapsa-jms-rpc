@@ -6,8 +6,8 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.junit.runner.RunWith;
 
 import ejb.resources.DummyResources;
-import tech.lapsa.javax.jms.VoidResult;
 import tech.lapsa.lapsa.arquillian.archive.ArchiveBuilderFactory;
+import tech.lapsa.lapsa.jmsRPC.VoidResult;
 
 @RunWith(Arquillian.class)
 public abstract class ArquillianBaseTestCase {

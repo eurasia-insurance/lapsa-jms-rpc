@@ -6,7 +6,7 @@ import javax.ejb.MessageDriven;
 
 import tech.lapsa.java.commons.function.MyObjects;
 import tech.lapsa.java.commons.function.MyStrings;
-import tech.lapsa.javax.jms.service.JmsReceiverServiceDrivenBean;
+import tech.lapsa.lapsa.jmsRPC.service.JmsReceiverServiceDrivenBean;
 import test.ConsumerSimpleTest;
 
 @MessageDriven(mappedName = ConsumerSimpleDestination.JNDI_NAME)

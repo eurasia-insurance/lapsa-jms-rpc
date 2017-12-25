@@ -4,8 +4,8 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
-import tech.lapsa.javax.jms.service.JmsSkipValidation;
+import tech.lapsa.lapsa.jmsRPC.service.JmsCallableServiceDrivenBean;
+import tech.lapsa.lapsa.jmsRPC.service.JmsSkipValidation;
 
 @MessageDriven(mappedName = CallableValidationDestination.SKIPPED_VALIDATION)
 @JmsSkipValidation

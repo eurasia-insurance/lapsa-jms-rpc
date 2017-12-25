@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import javax.ejb.MessageDriven;
 
-import tech.lapsa.javax.jms.service.JmsCallableServiceDrivenBean;
+import tech.lapsa.lapsa.jmsRPC.service.JmsCallableServiceDrivenBean;
 
 @MessageDriven(mappedName = CallableUnexceptedTypeDestination.UNEXPECTED_RESULT)
 public class CallableUnexceptedTypeDrivenBean_UnexpectedResult extends
