@@ -9,7 +9,7 @@
 
 	<groupId>tech.lapsa.lapsa</groupId>
 	<artifactId>lapsa-jms-rpc</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<packaging>ejb</packaging>
 
 	<name>Jave EE Lib : JMS RPC framework</name>
@@ -141,7 +141,7 @@
 	<scm>
 		<connection>scm:git:https://gitlab.lapsa.tech/lapsa/lapsa/jms-rpc.git</connection>
 		<developerConnection>scm:git:https://gitlab.lapsa.tech/lapsa/lapsa/jms-rpc.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v1.1</tag>
 	</scm>
 
 	<issueManagement>
