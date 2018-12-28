@@ -139,9 +139,9 @@
 	</build>
 
 	<scm>
-		<connection>scm:git:https://gitlab.lapsa.tech/lapsa/lapsa/jms-rpc.git</connection>
-		<developerConnection>scm:git:https://gitlab.lapsa.tech/lapsa/lapsa/jms-rpc.git</developerConnection>
-		<tag>v1.1</tag>
+		<connection>scm:git:https://github.com/eurasia-insurance/lapsa-jms-rpc.git</connection>
+		<developerConnection>scm:git:https://github.com/eurasia-insurance/lapsa-jms-rpc.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
