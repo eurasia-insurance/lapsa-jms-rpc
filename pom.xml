@@ -12,7 +12,7 @@
 	<version>CURRENT-SNAPSHOT</version>
 	<packaging>ejb</packaging>
 
-	<name>Jave EE Lib : JMS RPC framework</name>
+	<name>Lapsa Lib : JMS RPC framework</name>
 
 	<properties>
 		<!-- BOMS -->
