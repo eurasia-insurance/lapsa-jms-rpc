@@ -144,9 +144,4 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<issueManagement>
-		<system>gitlab</system>
-		<url>https://gitlab.lapsa.tech/lapsa/lapsa/jms-rpc/issues</url>
-	</issueManagement>
-
 </project>
