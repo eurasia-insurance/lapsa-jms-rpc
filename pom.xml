@@ -16,12 +16,12 @@
 
 	<properties>
 		<!-- BOMS -->
-		<javax-javaee-bom.version>CURRENT-SNAPSHOT</javax-javaee-bom.version>
+		<javax-javaee-bom.version>20190128r1</javax-javaee-bom.version>
 		<!-- tech -->
-		<java-commons.version>CURRENT-SNAPSHOT</java-commons.version>
-		<javax-jms-commons.version>CURRENT-SNAPSHOT</javax-jms-commons.version>
-		<javax-cdi-commons.version>CURRENT-SNAPSHOT</javax-cdi-commons.version>
-		<lapsa-arquillian-test.version>CURRENT-SNAPSHOT</lapsa-arquillian-test.version>
+		<java-commons.version>20190128r1</java-commons.version>
+		<javax-jms-commons.version>20190128r1</javax-jms-commons.version>
+		<javax-cdi-commons.version>20190128r1</javax-cdi-commons.version>
+		<lapsa-arquillian-test.version>20190128r1</lapsa-arquillian-test.version>
 		<glassfish.embedded.tmpdir>target</glassfish.embedded.tmpdir>
 	</properties>
 
