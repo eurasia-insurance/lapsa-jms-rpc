@@ -9,7 +9,7 @@
 
 	<groupId>tech.lapsa.lapsa</groupId>
 	<artifactId>lapsa-jms-rpc</artifactId>
-	<version>CURRENT-SNAPSHOT</version>
+	<version>20190317r6</version>
 	<packaging>ejb</packaging>
 
 	<name>Lapsa Lib : JMS RPC framework</name>
@@ -141,7 +141,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/eurasia-insurance/lapsa-jms-rpc.git</connection>
 		<developerConnection>scm:git:https://github.com/eurasia-insurance/lapsa-jms-rpc.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v20190317r6</tag>
 	</scm>
 
 </project>
